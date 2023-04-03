@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='scripts/rotate.js')}}"></script> 
+{% endblock %}
+
+{% block content %}
+    <h1 id="sign-in-title">Sign In</h1>
+    {% if form.username.errors or form.password.errors %}
+    <div class="error-box alert alert-success alert-dismissible">
+        <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+        <strong>Incorrect username or password</strong>
+    </div>
+    {% endif %}
+    <div id="sign-in-container" class="user-form login" style="--grad: 0;">
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="form-input-container">
+                {{ form.username.label }}
+                {{ form.username(size=32, class_="form-control") }}
+            </div>
+            <div class="form-input-container">
+                {{ form.password.label }}
+                {{ form.password(size=32, class_="form-control") }}
+            </div>
+            <div class="form-input-container">{{ form.remember_me() }} {{ form.remember_me.label }}</div>
+            <div>{{ form.submit(id="submit") }}</div>
+            <div>New User? <a href="{{ url_for('register') }}">Click to Register!</a></div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+    <h1 id="sign-in-title">Profile</h1>
+    <div id="sign-in-container" class="user-form login" style="--grad: 0;">
+        <form action="" method="post" enctype="multipart/form-data" novalidate >
+            {{ form.hidden_tag() }}
+            <div class="form-input-container">
+                {{ form.username.label }}
+                {{ form.username(size=32, class_="form-control", value=currentUser.username) }}
+                {% for error in form.username.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-input-container">
+                {{ form.email.label }}
+                {{ form.email(size=64, class_="form-control", id="email", value=currentUser.email) }}
+            </div>
+            <div class="form-input-container">
+                {{ form.profile_pic.label }}
+                {{ form.profile_pic(size=64, class_="form-control", id="profile_pic") }}
+                {% for error in form.profile_pic.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div>{{ form.submit(id="submit") }}</div>
+        </form>
+    </div>
+{% endblock %}

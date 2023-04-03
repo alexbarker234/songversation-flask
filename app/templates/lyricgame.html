@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='scripts/loadPlaylists.js')}}"></script> 
+<script src="{{ url_for('static', filename='scripts/lyricgame.js')}}"></script> 
+{% endblock %}
+
+{% block content %}
+        <h1>hey!</h1>
+        {% if userdata.authorized %}
+
+        <h2>choose a playlist</h2>
+        <div id="playlists"></div>
+        {% endif %}
+{% endblock %}

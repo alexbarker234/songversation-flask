@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='scripts/chattest.js')}}"></script> 
+{% endblock %}
+
+{% block content %}
+    <h1>chatroom</h1>
+    <div id="chatroom">
+        <div id="messages">
+
+        </div>
+        <div id="chat-input">
+            <input type="text" id="myMessage" style="color:black">
+            <button id="sendButton" style="color:black">Send</button>
+        </div>
+    </div>
+{% endblock %}

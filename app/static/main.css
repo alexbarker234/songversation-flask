@@ -1,0 +1,366 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+
+:root{
+    --bg-color:#121314;
+    --bg-color2:#16171a;
+    --bg-color3: #262627;
+    --border-color:#30363d;
+}
+
+body {
+    background-color: var(--bg-color);
+    margin: 0px;
+    padding: 0px;
+    color: white;
+
+    align-items: center;
+    align-content: center;
+    text-align: center;
+
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    font-family: "Montserrat", sans-serif;
+}
+
+/* NAV */
+nav {
+    background-color: var(--bg-color3);
+    text-decoration: none;
+    text-align: left;
+    position:relative;
+
+    color:white;
+
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav a {
+    color:white;
+    text-decoration: none;
+    transition: 300ms;
+} 
+nav a:hover {
+    color: rgb(182, 178, 201);
+    text-decoration: none;
+}
+
+nav p {
+    padding: 0;
+    margin: 0;
+}
+
+.nav-part {
+    width: 33%;
+    height: 6rem;
+    line-height: 6rem;
+    display: block;
+    position:relative;
+}
+
+.nav-left {
+    margin-left: 2rem;
+}
+
+.nav-center{
+    text-align: center;
+}
+
+.nav-right {
+    margin-right: 2rem;
+
+    position:relative;
+    display:flex;
+    justify-content: flex-end;
+}
+.nav-right * {
+    margin-left: 10px;
+}
+.profile-menu {
+    background-color: #151516;
+    border-radius: 4rem;
+    height: 5rem;
+    
+    margin-left: 2rem;
+
+    padding-right: 2rem;
+    padding-left: 0.75rem;
+
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%); 
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-menu img {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 100%;
+
+    object-fit: cover;
+    overflow: hidden;
+
+    margin: 0%;
+    vertical-align:top;
+}
+
+.profile-menu .user-name{
+    font-weight: 700;
+}
+
+.profile-menu .dropdown {
+    width: 0;
+    height: 0;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+
+    width: 100%;
+    top: 100%;
+
+    background-color: #262627;
+    border: 1px #252a31 solid;
+
+    border-radius: 2rem;
+
+    padding: 0rem 2rem;
+    z-index: 1;
+}
+  
+.profile-menu:hover .dropdown-content {
+    display: block;
+}
+
+/* ARTIST SCROLLER */
+#top-artists {
+    background-color: var(--bg-color2);
+    height: 40rem;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    overflow-x: scroll;
+}
+#top-artists img {
+    width: 30rem;
+    height: 30rem;
+    object-fit: cover;   
+
+    -webkit-user-drag: none;  
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+.artist-box {
+    margin: 2rem;
+}
+
+/* PLATLIST BOX */
+#playlists {
+    background-color: var(--bg-color2);
+    width: 100%;
+    
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+}
+.playlist-box {
+    margin: 2rem;
+    margin-bottom: 0px;
+
+    width: 15rem;
+    height: 21rem;
+
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    
+    overflow-y: hidden;
+
+    animation: fade-drop-in 1s;
+    transition: 0.2s;
+}
+
+.playlist-box a {
+    position: absolute;
+    height: 15rem;
+    width: 15rem;
+
+    z-index: 1;
+}
+
+#playlists img:hover {
+    opacity: 0.5;
+}
+
+#playlists img {
+    width: 15rem;
+    height: 15rem;
+    object-fit: cover;   
+
+    -webkit-user-drag: none;  
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+@keyframes fade-drop-in {
+    from { opacity: 0; transform: translateY(-3rem); }
+    to   { opacity: 1; }
+}
+
+/* FORMS */
+.user-form {
+    background-color: var(--bg-color2);
+    border-radius: 0.5rem;
+
+    align-items: center;
+    align-content: center;
+    margin: auto;
+    padding: 2rem;
+
+    position: relative;
+}
+.login {
+    width: 30rem;
+}
+.register {
+    width: 40rem;
+}
+.error-text {
+    color: red
+}
+/* gradients */
+#sign-in-container::before,
+#sign-in-container::after {
+    background: conic-gradient(
+        from calc(var(--grad) * 1deg), /* the most janky conversion*/
+        #217af7,
+        #a445eb,
+        #e3319a,
+        #a445eb,
+        #217af7
+    );
+    border-radius: inherit;
+    z-index: -1;
+    inset: -0.2rem;
+    position: absolute;
+    content: "";
+}
+
+#sign-in-container::after{
+    filter:blur(1rem);
+}
+
+/* submit button */
+#sign-in-container #submit {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: #238636;
+    border-radius: 6px;
+    border: none;
+    margin-left: auto;  
+    margin-right: auto;
+    margin-bottom: 2rem;
+    transition: 250ms ease;
+}
+#sign-in-container #submit:hover:enabled {
+    background-color: #2e962b;
+}
+
+#sign-in-container #submit:disabled {
+    opacity: 0.5;
+}
+.form-control {
+    background-color: var(--bg-color);
+    border: var(--border-color) 1px solid;
+    color: white;
+    transition: 250ms ease;
+    margin-bottom: 0.5rem;
+}
+
+.form-input-container {
+    margin-bottom: 2rem;
+}
+
+
+/* password match checking */
+.incorrect {
+    background-color: #1b0e0e;
+}
+
+.error-box {
+    background-color: #9c2b2e;
+    color: white;
+    border: 2px solid #e84e4f;
+    border-radius: 0.5rem;
+    width: 30rem;
+    margin-left: auto;  
+    margin-right: auto;
+    margin-bottom: 2rem;
+}
+.error-box .close {
+    color: #fff; 
+    opacity: 1;
+    transition: 100ms ease;
+}
+.error-box .close:hover {
+    opacity: 0.5;
+}
+
+/* chatroom */
+
+#chatroom {
+    position: absolute;
+    height: 50%;
+    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: green solid 2px;
+    display: block;
+}
+
+#messages {
+    position: absolute;
+    overflow-y: scroll;
+    height: 90%;
+    width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: red solid 2px;
+    display: block;
+}
+
+#chat-input {
+    position: absolute;
+    left: 50%;
+    width: 100%;
+    top: 100%;
+    transform: translate(-50%,-100%);
+}
+
+.chat-line.server {
+   color: rgb(197, 197, 224);
+}
+
+@media screen and (min-width:1200px) {
+    #chatroom {
+        width: 1000px;
+    }
+}
