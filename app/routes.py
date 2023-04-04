@@ -1,6 +1,5 @@
 from flask import render_template, request, url_for, session, redirect, jsonify
 import time
-import pandas as pd
 from app import app
 
 import urllib.request, json
@@ -61,7 +60,6 @@ def get_all_tracks():
         if (len(curGroup) < 50):
             break
     
-    df = pd.DataFrame(results, columns=["song names"]) 
     return results
 
 @app.route('/topartists', methods=['GET'])
