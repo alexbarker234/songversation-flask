@@ -108,6 +108,31 @@ def get_playlists():
             playlists = None
     return json.dumps([ob.__dict__ for ob in results])
 
+@app.route('/getplaylistsongs/<playlist_id>')
+def get_playlistsongs(playlist_id):
+    session['token_info'], authorized = get_token()
+    session.modified = True
+    if not authorized:
+        return redirect('/')
+    
+    sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
+    
+    current_user = sp.me()
+
+    results = []
+
+    songs = sp.user_playlist_tracks(user=current_user['id'], playlist_id=playlist_id, limit=50,offset=0)
+    while songs:
+        for i, playlistTrack in enumerate(songs['items']):
+            #print("%4d %s %s" % (i + 1 + playlists['offset'], playlist['uri'],  playlist['name']))
+            results.append(Track(playlistTrack['track']))
+        if songs['next']:
+            songs = sp.next(songs)
+        else:
+            songs = None
+    
+    return json.dumps([ob.__dict__ for ob in results])
+
 # Checks to see if token is valid and gets a new token if not
 def get_token():
     token_valid = False
@@ -163,3 +188,10 @@ class Playlist:
         # need to find the actual default icon
         else:
             self.image = 'https://community.spotify.com/t5/image/serverpage/image-id/25294i2836BD1C1A31BDF2/image-size/original?v=mpbl-1&px=-1' 
+
+class Track:
+    def __init__(self, payload):
+        self.name = payload['name']
+        self.id = payload['id']
+        # PREVIEW CAN BE NULL
+        self.preview_url = payload['preview_url']

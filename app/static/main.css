@@ -224,6 +224,106 @@ nav p {
     from { opacity: 0; transform: translateY(-3rem); }
     to   { opacity: 1; }
 }
+@keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+
+/* lyric game! */
+
+.lyric-game {
+    align-items: center;
+    align-content: center;
+
+    display: block;
+}
+
+#lyric-box {
+    height: 20rem;
+    width: 50%;
+
+    margin: 2rem auto;
+    padding: 2rem;
+    overflow: hidden;
+
+    border-radius: 2rem;
+
+    background-color: var(--bg-color2);
+}
+
+.lyric-line {
+    margin-bottom: 2rem;
+
+    animation: fade-in 1s;
+
+    font-size: 2rem;
+}
+
+.selected-playlist {
+    margin: 2rem auto;
+    height: fit-content;
+}
+
+#guess-input {
+    background-color: var(--bg-color3);
+    border-color: var(--border-color);
+    border-radius: 1rem;
+
+    width: 50%;
+    padding: 12px 20px;
+}
+
+#guess-input:focus {
+    outline: none;
+}
+
+.autocomplete-container {
+    width: 50%;
+
+    bottom: 10%;
+    left: 50%;
+    transform: translate(-50%,0%);
+    position: absolute;
+}
+
+.autocomplete-options {
+    background-color: var(--bg-color3);
+    width: 50%;
+    height: fit-content;
+    max-height: 20rem;
+    
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin: 0rem auto;
+
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%,-100%);
+}
+.autocomplete-options li {
+    padding: 1rem 4rem 1rem 4rem;
+    text-decoration: none;
+    list-style-type: none;
+    cursor: pointer;
+
+    text-align: left;
+    transition: 0.2s;
+    
+    border-bottom: solid var(--border-color) 1px;
+
+    -webkit-user-drag: none;  
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+.autocomplete li:hover {
+    background-color: var(--bg-color2);
+}
+
 
 /* FORMS */
 .user-form {
