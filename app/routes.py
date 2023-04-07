@@ -162,6 +162,7 @@ def create_spotify_oauth():
             redirect_uri = url_for('authorize', _external=True),
             scope = "user-library-read user-top-read playlist-read-private")
 
+
 class UserData:
     def __init__(self):
         session['token_info'], self.authorized = get_token()
@@ -169,14 +170,15 @@ class UserData:
         if self.authorized:
             sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
             payload = sp.me()
-            self.username = payload['display_name']
-            self.image_url = payload['images'][0]['url']
+            print(payload)
+            self.username = payload['display_name']     
+            self.image_url = payload['images'][0]['url'] if len(payload['images']) > 0 else None
             self.id = payload['id']
 
 class Artist:
     def __init__(self, payload):
         self.name = payload['name']
-        self.image = payload['images'][0]['url']
+        self.image = payload['images'][0]['url'] if len(payload['images']) > 0 else None
 
 class Playlist:
     def __init__(self, payload):
@@ -184,8 +186,8 @@ class Playlist:
         self.id = payload['id']
         self.ownerID = payload['owner']['id']
         if len(payload['images']) > 0:
-            self.image = payload['images'][0]['url']
-        # need to find the actual default icon
+            self.image = payload['images'][0]['url'] if len(payload['images']) > 0 else None
+        # TODO: need to find the actual default icon
         else:
             self.image = 'https://community.spotify.com/t5/image/serverpage/image-id/25294i2836BD1C1A31BDF2/image-size/original?v=mpbl-1&px=-1' 
 
@@ -195,3 +197,4 @@ class Track:
         self.id = payload['id']
         # PREVIEW CAN BE NULL
         self.preview_url = payload['preview_url']
+

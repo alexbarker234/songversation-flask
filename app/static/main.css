@@ -5,6 +5,7 @@
     --bg-color2:#16171a;
     --bg-color3: #262627;
     --border-color:#30363d;
+    --spotify-green:#1ed760;
 }
 
 body {
@@ -212,6 +213,8 @@ nav p {
     height: 15rem;
     object-fit: cover;   
 
+    cursor: pointer;
+
     -webkit-user-drag: none;  
     user-select: none;
     -moz-user-select: none;
@@ -265,12 +268,61 @@ nav p {
     height: fit-content;
 }
 
+.bottom-container {
+    position: absolute;
+    height: 20rem;
+    width: 100%;
+    bottom: 0%;
+}
+
+.button {
+    padding: 2rem;
+    border-radius: 6rem;
+
+    width: 16rem;
+
+    transition: 0.2s;
+
+    /* remove default button styling */
+    background: none;
+	color: inherit;
+	border: none;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+.button:disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
+#button-container {
+    width: 25%;
+    margin: 2rem auto;
+}
+
+.button:enabled:hover {
+    transform: scale(1.04);
+}
+
+#skip {
+    border: var(--border-color) 1px solid;
+    float: left;
+}
+
+#submit {
+    background-color: var(--spotify-green);
+    float: right;
+}
+
+/* input and autocomplete */
+
 #guess-input {
     background-color: var(--bg-color3);
     border-color: var(--border-color);
     border-radius: 1rem;
 
-    width: 50%;
+    width: 100%;
     padding: 12px 20px;
 }
 
@@ -279,12 +331,8 @@ nav p {
 }
 
 .autocomplete-container {
+    margin: 2rem  auto;
     width: 50%;
-
-    bottom: 10%;
-    left: 50%;
-    transform: translate(-50%,0%);
-    position: absolute;
 }
 
 .autocomplete-options {
@@ -320,8 +368,11 @@ nav p {
     -webkit-user-select: none;
     -ms-user-select: none;
 }
-.autocomplete li:hover {
+.autocomplete-options li:hover {
     background-color: var(--bg-color2);
+}
+.autocomplete-options li.selected {
+    border: var(--spotify-green) 1px solid;
 }
 
 
