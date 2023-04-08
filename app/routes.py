@@ -6,7 +6,7 @@ from app.models import Track, TrackLyrics, Lyric
 
 from datetime import datetime
 
-import requests, json
+import requests
 
 from config import Config
 
@@ -75,7 +75,7 @@ def topArtists():
         if (len(curGroup) < limit):
             break
     
-    return json.dumps([ob.__dict__ for ob in results])
+    return jsonify([ob.__dict__ for ob in results])
 
 @app.route('/getplaylists')
 def get_playlists():
@@ -98,7 +98,7 @@ def get_playlists():
             playlists = sp.next(playlists)
         else:
             playlists = None
-    return json.dumps([ob.__dict__ for ob in results])
+    return jsonify([ob.__dict__ for ob in results])
 
 @app.route('/getplaylisttracks/<playlist_id>')
 def get_playlist_tracks(playlist_id):
@@ -124,9 +124,7 @@ def get_playlist_tracks(playlist_id):
         else:
             tracks = None
 
-    print(json.dumps([ob.__dict__ for ob in results]))
-
-    return json.dumps([ob.__dict__ for ob in results])
+    return jsonify([ob.__dict__ for ob in results])
 
 @app.route('/testing/<param>')
 def testing(param):
@@ -134,14 +132,22 @@ def testing(param):
     # lyrics : 6tnedmxMVEHzPJfWucWzHo
     return get_track_lyrics(param)
 
+@app.route('/gettracklyrics/<track_id>')
 def get_track_lyrics(track_id):
-    lyrics = []
+    return_data = {
+        'error': False,
+        'lyrics': []
+    }
+    if track_id is None or track_id == 'null' or track_id == 'undefined':
+        return_data['error'] = True
+        return jsonify(return_data)
+
 
     # check cache
     lyric_cache = TrackLyrics.query.filter_by(track_id = track_id).first()
     
     if lyric_cache:
-        lyric_cache_list = Lyric.query.filter_by(lyric_cache.id).order_by(Lyric.order.asc()).all()
+        lyric_cache_list = Lyric.query.filter_by(track_lyric_id = lyric_cache.id).order_by(Lyric.order.asc()).all()
 
         # check if cache is old
         old_data = False
@@ -155,17 +161,17 @@ def get_track_lyrics(track_id):
                     db.session.delete(lyric)
                 # add the lyrics to the list
                 else:
-                    lyrics.append(lyric.lyric)
+                    return_data['lyrics'].append(lyric.lyric)
                     
     # request if we did not find any cached lyrics
-    if len(lyrics) == 0:   
+    if len(return_data['lyrics']) == 0:   
         print("Fetching lyrics from API for track_id: " + track_id) 
 
         lyricCount = 0
         response = requests.get("https://spotify-lyric-api.herokuapp.com/?trackid=" + track_id)
         # No lyrics returns 404
         if response.status_code == 404:
-            print("no lyrics")
+            return_data['error'] = True
         else:
             data = response.json()
 
@@ -173,7 +179,7 @@ def get_track_lyrics(track_id):
             for line in data['lines']:
                 if not line or not line['words']  or line['words'] == '♪': 
                     continue
-                lyrics.append(line['words'])
+                return_data['lyrics'].append(line['words'])
                 lyricCache = Lyric(lyric = line['words'], order = lyricCount)
                 db.session.add(lyricCache)
                 lyricCount += 1
@@ -186,7 +192,7 @@ def get_track_lyrics(track_id):
             db.session.add(TrackLyrics(track_id = track_id, lyric_count = lyricCount))
 
     db.session.commit()
-    return lyrics
+    return jsonify(return_data)
 
 # Checks to see if token is valid and gets a new token if not
 def get_token():

@@ -1,5 +1,9 @@
 let currentPlaylist = null;
+
 let playlistCache = {};
+let lyricCache = {};
+let availableTrackIDs = [];
+
 let loadedTracks = null;
 let currentSong = null;
 let rounds = 5;
@@ -47,9 +51,6 @@ function loadPlaylists() {
         addPlaylists(data)
         })
 }
-function getLyrics(trackID) {
-    return $.getJSON(`https://spotify-lyric-api.herokuapp.com/?trackid=${trackID}`);
-}
 function processLyrics(data) {
     if (data.error)  return;
 
@@ -74,7 +75,6 @@ function addPlaylists(data) {
     playlistCache = data;
     let index = 0;
     data.forEach(element => {
-        console.log(element.trackCount)
         if (element.trackCount != 0) {
             playlistCache[element.id] = element;
             playlistDiv.append(createPlaylistBox(element, index))
@@ -84,10 +84,10 @@ function addPlaylists(data) {
 }
 
 function loadGameWithPlaylist(playlist, tracks){
-
-    console.log(playlist)
-
     loadedTracks = tracks;
+    availableTrackIDs = tracks.map(function (obj) { return obj.id });
+    availableTrackIDs = availableTrackIDs.filter(n => n) // remove null track ids (local files)
+
     // delete playlist selector
     $('#playlists').remove()
     $('#title').remove();
@@ -133,6 +133,7 @@ function loadGameWithPlaylist(playlist, tracks){
 
     // start game
     chooseLyrics()
+    console.log(availableTrackIDs)
 }
 
 // AUTOCOMPLETE
@@ -224,18 +225,21 @@ function checkButton() {
 
 // lyric function
 
-function chooseLyrics(){
+function chooseLyrics(trackID){
     // choose random song 
-    currentSong = loadedTracks[Math.floor(Math.random() * loadedTracks.length)];
+    if (!trackID) trackID = availableTrackIDs.pop()
 
-    retry = false;
-    while (retry) {  
-        getLyrics(currentSong.id).then( response => {
-            //if (response.error) return;
-            displayLyrics(processLyrics(response))
-            retry = false;
-        });
-    }
+    $.getJSON(`/gettracklyrics/${trackID}`).done(function(response) {
+        if (response.error) { 
+            if (availableTrackIDs.length == 0) {
+                console.log("out of songs")
+            }
+            else chooseLyrics(availableTrackIDs.pop())
+        }
+        else {
+            displayLyrics(response.lyrics)
+        }
+    })
 }
 
 function displayLyrics(lyrics) {
@@ -280,5 +284,10 @@ function randBetween(min, max) {
 Number.prototype.mod = function (n) {
     "use strict";
     return ((this % n) + n) % n;
-  };
-  
+};
+
+Array.prototype.shuffle = function() {
+    return this.sort(function() {
+        return Math.random() - 0.5;
+      });
+}
