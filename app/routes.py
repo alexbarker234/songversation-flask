@@ -9,6 +9,11 @@ from config import Config
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
+'''
+TODO:
+- caching
+ - lyric cache: to reduce the amount of API calls for lyrics
+'''
 @app.route('/')
 @app.route('/index')
 def index():
@@ -100,16 +105,17 @@ def get_playlists():
     playlists = sp.current_user_playlists(limit=50,offset=0)
     while playlists:
         for i, playlist in enumerate(playlists['items']):
-            #print("%4d %s %s" % (i + 1 + playlists['offset'], playlist['uri'],  playlist['name']))
-            results.append(Playlist(playlist))
+            platlistObj = Playlist(playlist)
+            if platlistObj.trackCount > 0:
+                results.append(platlistObj)
         if playlists['next']:
             playlists = sp.next(playlists)
         else:
             playlists = None
     return json.dumps([ob.__dict__ for ob in results])
 
-@app.route('/getplaylistsongs/<playlist_id>')
-def get_playlistsongs(playlist_id):
+@app.route('/getplaylisttracks/<playlist_id>')
+def get_playlist_tracks(playlist_id):
     session['token_info'], authorized = get_token()
     session.modified = True
     if not authorized:
@@ -117,20 +123,21 @@ def get_playlistsongs(playlist_id):
     
     sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
     
-    current_user = sp.me()
-
     results = []
 
-    songs = sp.user_playlist_tracks(user=current_user['id'], playlist_id=playlist_id, limit=50,offset=0)
-    while songs:
-        for i, playlistTrack in enumerate(songs['items']):
-            #print("%4d %s %s" % (i + 1 + playlists['offset'], playlist['uri'],  playlist['name']))
-            results.append(Track(playlistTrack['track']))
-        if songs['next']:
-            songs = sp.next(songs)
+    print('Fetching Tracks for playlist id: ' + playlist_id)
+
+    tracks = sp.playlist_tracks(playlist_id = playlist_id, limit = 50,offset = 0)
+    while tracks:
+        for i, playlistTrack in enumerate(tracks['items']):
+            # dont add local files 
+            if playlistTrack['track']['is_local'] or playlistTrack['track']['id'] != None:
+                results.append(Track(playlistTrack['track']))
+        if tracks['next']:
+            tracks = sp.next(tracks)
         else:
-            songs = None
-    
+            tracks = None
+
     return json.dumps([ob.__dict__ for ob in results])
 
 # Checks to see if token is valid and gets a new token if not
@@ -170,7 +177,6 @@ class UserData:
         if self.authorized:
             sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
             payload = sp.me()
-            print(payload)
             self.username = payload['display_name']     
             self.image_url = payload['images'][0]['url'] if len(payload['images']) > 0 else None
             self.id = payload['id']
@@ -185,16 +191,20 @@ class Playlist:
         self.name = payload['name']
         self.id = payload['id']
         self.ownerID = payload['owner']['id']
+        self.trackCount = payload['tracks']['total']
         if len(payload['images']) > 0:
-            self.image = payload['images'][0]['url'] if len(payload['images']) > 0 else None
-        # TODO: need to find the actual default icon
+            self.image = payload['images'][0]['url']
+        # default icon
         else:
-            self.image = 'https://community.spotify.com/t5/image/serverpage/image-id/25294i2836BD1C1A31BDF2/image-size/original?v=mpbl-1&px=-1' 
+            self.image = url_for('static', filename='defaultCover.png')
 
 class Track:
     def __init__(self, payload):
         self.name = payload['name']
         self.id = payload['id']
+        self.artists = []
+        for artist in payload['artists']:
+            self.artists.push(artist['name'])
         # PREVIEW CAN BE NULL
         self.preview_url = payload['preview_url']
 

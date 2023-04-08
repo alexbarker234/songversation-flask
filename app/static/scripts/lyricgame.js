@@ -1,6 +1,6 @@
 let currentPlaylist = null;
-let playlists = null;
-let tracks = null;
+let playlistCache = {};
+let loadedTracks = null;
 let currentSong = null;
 let rounds = 5;
 let roundsLeft = rounds;
@@ -19,6 +19,8 @@ const keyUp = 38, keyDown = 40, keyEnter = 13
     - try and avoid putting the song title in the lyrics??
     - remove whole lyric lines like "ooh-ooh" and "yeah"
     - keyboard support - arrowkey autocomplete, enter to submit
+    - some lyric links return 404 - make sure thats fixed
+    - make the autocomplete include artist names 
 */
 
 $(window).on('load', function() {
@@ -32,7 +34,7 @@ $(window).on('load', function() {
     
     $(document).on("click", ".playlist-box img" , function(e) {
         let platlistBox = e.target.parentNode;
-        getPlaylistSongs(platlistBox.dataset.id).then(response => loadGameWithPlaylist(playlists[platlistBox.dataset.index], response))
+        getPlaylistTracks(platlistBox.dataset.id).then(response => loadGameWithPlaylist(playlistCache[platlistBox.dataset.id], response))
     });
 
 
@@ -61,24 +63,31 @@ function processLyrics(data) {
     return lines;
 }
 
-function getPlaylistSongs(playlistID) {
-    return $.getJSON(`/getplaylistsongs/${playlistID}`);
+function getPlaylistTracks(playlistID) {
+    return $.getJSON(`/getplaylisttracks/${playlistID}`);
 }
 
 
 function addPlaylists(data) {
     let playlistDiv = $('#playlists');
-    let url = window.location.href;
-    playlists = data;
+    //let url = window.location.href;
+    playlistCache = data;
     let index = 0;
     data.forEach(element => {
-        playlistDiv.append(createPlaylistBox(element, index))
-        index++;
+        console.log(element.trackCount)
+        if (element.trackCount != 0) {
+            playlistCache[element.id] = element;
+            playlistDiv.append(createPlaylistBox(element, index))
+            index++;
+        }
      });
 }
 
-function loadGameWithPlaylist(playlist, songs){
-    tracks = songs;
+function loadGameWithPlaylist(playlist, tracks){
+
+    console.log(playlist)
+
+    loadedTracks = tracks;
     // delete playlist selector
     $('#playlists').remove()
     $('#title').remove();
@@ -86,7 +95,7 @@ function loadGameWithPlaylist(playlist, songs){
     let gameDiv = $('#lyric-game');
     // playlist icon
     selectedPlaylist = createPlaylistBox(playlist);
-    selectedPlaylist.classList.add('selected-playlist')
+    selectedPlaylist.addClass('selected-playlist')
     gameDiv.append(selectedPlaylist)
 
     // add title
@@ -105,8 +114,8 @@ function loadGameWithPlaylist(playlist, songs){
     inputBox.placeholder = "Guess here...";
 
     const trackList = $("<div>", { id: "track-list", class:"autocomplete-options" }).css("display", 'none');
-    songs.forEach(function(item) {
-        trackList.append($("<li>", { html: item.name }));
+    tracks.forEach(function(track) {
+        trackList.append($("<li>", { html: `${track.name} - ${track.artists.join(', ')}` }));
     });
 
     autocomplete.append(inputBox)
@@ -163,7 +172,9 @@ function autocompleteKeyboard(e) {
     e.preventDefault();
 
     let autocompleteList = $("#track-list");
-    let enabled = autocompleteList.find("li").toArray().filter(elem => elem.style.display != "none")
+    let options = autocompleteList.find("li");
+    let enabled = options.toArray().filter(elem => elem.style.display != "none")
+    let optionHeight = options.first().height() * 2; // TODO: find out why this is 2x
 
     if (e.keyCode == keyUp || e.keyCode == keyDown) {
         if (autocompleteList.css('display') == "none") return;
@@ -173,10 +184,11 @@ function autocompleteKeyboard(e) {
             autocompleteSelected = (autocompleteSelected - 1).mod(optionCount);
         }
         else if (e.keyCode == keyDown) {
-            autocompleteSelected = (autocompleteSelected + 1).mod(optionCount);
+            autocompleteSelected = (autocompleteSelected + 1).mod(optionCount);        
         }
+        
+        autocompleteList.scrollTop(autocompleteSelected * optionHeight);
 
-        console.log(autocompleteSelected)
         // highlight selected
         for (i = 0; i < enabled.length; i++) {
             if (i == autocompleteSelected)
@@ -189,7 +201,7 @@ function autocompleteKeyboard(e) {
         // submit
         if (autocompleteList.css('display') == "none") checkButton()
         // choose
-        else selectAutocomplete(enabled[autocompleteSelected].innerHTML);     
+        else if (autocompleteSelected != -1) selectAutocomplete(enabled[autocompleteSelected].innerHTML);     
     }
 }
 
@@ -214,14 +226,21 @@ function checkButton() {
 
 function chooseLyrics(){
     // choose random song 
-    currentSong = tracks[Math.floor(Math.random() * tracks.length)];
+    currentSong = loadedTracks[Math.floor(Math.random() * loadedTracks.length)];
 
-    getLyrics(currentSong.id).then( response => 
-        displayLyrics(processLyrics(response))
-        );
+    retry = true;
+    while (retry) {  
+        getLyrics(currentSong.id).then( response => {
+            //if (response.error) return;
+            displayLyrics(processLyrics(response))
+            retry = false;
+        });
+    }
 }
 
 function displayLyrics(lyrics) {
+    console.log(lyrics)
+
     let lineStart = randBetween(0, lyrics.length - 3)
     let lyricBox = $('#lyric-box')
 
@@ -237,20 +256,16 @@ function displayLyrics(lyrics) {
 }
 
 function createPlaylistBox(playlistData, index){
-    const playlistBox = document.createElement("div");
-    playlistBox.classList.add("playlist-box")
-    if (index) playlistBox.dataset.index = index;
-    playlistBox.dataset.id = playlistData.id;
+    const playlistBox = $("<div>", { class: "playlist-box" });
+    playlistBox.attr( "data-id", playlistData.id )
+    if (index) playlistBox.attr( "data-index", index )
 
-    const playlistImage = document.createElement("img");
-    playlistImage.src = playlistData.image;
-    playlistImage.draggable = false;
+    const playlistImage = $("<img>", { src: playlistData.image, draggable: false });
 
     playlistBox.append(playlistImage)
     playlistBox.append(playlistData.name)
 
-    return playlistBox;
-    //return `<div class="playlist-box" data-index=${index} data-id=${element.id}><img src="${element.image}" draggable="false">${element.name}</div>`
+    return playlistBox
 }
 
 
