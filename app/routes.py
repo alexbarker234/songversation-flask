@@ -1,18 +1,25 @@
 from flask import render_template, request, url_for, session, redirect, jsonify
 import time
-from app import app
 
-import urllib.request, json
+from app import app, db
+from app.models import Track, TrackLyrics, Lyric
+
+from datetime import datetime
+
+import requests, json
 
 from config import Config
 
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
+SECONDS_IN_HOUR = 3600
+
 '''
 TODO:
 - caching
- - lyric cache: to reduce the amount of API calls for lyrics
+ - button for user to delete their cache? 
+ -
 '''
 @app.route('/')
 @app.route('/index')
@@ -45,28 +52,7 @@ def authorize():
     session["token_info"] = token_info
     return redirect("/index")
 
-@app.route('/getTracks')
-def get_all_tracks():
-    session['token_info'], authorized = get_token()
-    session.modified = True
-    if not authorized:
-        return redirect('/')
-    sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
-    results = []
-    iter = 0
-    while True:
-        offset = iter * 50
-        iter += 1
-        curGroup = sp.current_user_saved_tracks(limit=50, offset=offset)['items']
-        for idx, item in enumerate(curGroup):
-            track = item['track']
-            val = track['name'] + " - " + track['artists'][0]['name']
-            results += [val]
-        if (len(curGroup) < 50):
-            break
-    
-    return results
-
+#TODO: redo this to use code like below
 @app.route('/topartists', methods=['GET'])
 def topArtists():
     session['token_info'], authorized = get_token()
@@ -138,7 +124,69 @@ def get_playlist_tracks(playlist_id):
         else:
             tracks = None
 
+    print(json.dumps([ob.__dict__ for ob in results]))
+
     return json.dumps([ob.__dict__ for ob in results])
+
+@app.route('/testing/<param>')
+def testing(param):
+    # no lyrics: 6k35OOYim5XTSwb1rYW9lT
+    # lyrics : 6tnedmxMVEHzPJfWucWzHo
+    return get_track_lyrics(param)
+
+def get_track_lyrics(track_id):
+    lyrics = []
+
+    # check cache
+    lyric_cache = TrackLyrics.query.filter_by(track_id = track_id).first()
+    
+    if lyric_cache:
+        lyric_cache_list = Lyric.query.filter_by(lyric_cache.id).order_by(Lyric.order.asc()).all()
+
+        # check if cache is old
+        old_data = False
+        if (datetime.utcnow() - lyric_cache.last_cache_date).total_seconds() > SECONDS_IN_HOUR:
+            old_data = True
+
+        if len(lyric_cache_list) > 0:      
+            for lyric in lyric_cache_list:
+                # delete all lyric caches if they are old
+                if old_data:
+                    db.session.delete(lyric)
+                # add the lyrics to the list
+                else:
+                    lyrics.append(lyric.lyric)
+                    
+    # request if we did not find any cached lyrics
+    if len(lyrics) == 0:   
+        print("Fetching lyrics from API for track_id: " + track_id) 
+
+        lyricCount = 0
+        response = requests.get("https://spotify-lyric-api.herokuapp.com/?trackid=" + track_id)
+        # No lyrics returns 404
+        if response.status_code == 404:
+            print("no lyrics")
+        else:
+            data = response.json()
+
+            # turn response into list of each lyric
+            for line in data['lines']:
+                if not line or not line['words']  or line['words'] == '♪': 
+                    continue
+                lyrics.append(line['words'])
+                lyricCache = Lyric(lyric = line['words'], order = lyricCount)
+                db.session.add(lyricCache)
+                lyricCount += 1
+
+        # update/add cache
+        if lyric_cache:
+            lyric_cache.lyric_count = lyricCount
+            lyric_cache.last_cache_date = datetime.utcnow()
+        else:
+            db.session.add(TrackLyrics(track_id = track_id, lyric_count = lyricCount))
+
+    db.session.commit()
+    return lyrics
 
 # Checks to see if token is valid and gets a new token if not
 def get_token():
@@ -204,7 +252,7 @@ class Track:
         self.id = payload['id']
         self.artists = []
         for artist in payload['artists']:
-            self.artists.push(artist['name'])
+            self.artists.append(artist['name'])
         # PREVIEW CAN BE NULL
         self.preview_url = payload['preview_url']
 

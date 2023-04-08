@@ -228,7 +228,7 @@ function chooseLyrics(){
     // choose random song 
     currentSong = loadedTracks[Math.floor(Math.random() * loadedTracks.length)];
 
-    retry = true;
+    retry = false;
     while (retry) {  
         getLyrics(currentSong.id).then( response => {
             //if (response.error) return;
