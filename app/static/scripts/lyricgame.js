@@ -1,11 +1,14 @@
 let currentPlaylist = null;
 
 let playlistCache = {};
-let lyricCache = {};
 let availableTrackIDs = [];
 
-let loadedTracks = null;
-let currentSong = null;
+let loadedTracks = new Map();
+/** List of all trackIDs with lyrics */
+let loadedLyrics = []; 
+
+/** @type Track */
+let currentTrack = null;
 let rounds = 5;
 let roundsLeft = rounds;
 
@@ -84,9 +87,12 @@ function addPlaylists(data) {
 }
 
 function loadGameWithPlaylist(playlist, tracks){
-    loadedTracks = tracks;
+    loadedTracks = tracks.reduce(function(map, obj) {
+        map[obj.id] = obj;
+        return map;
+    }, {});
     availableTrackIDs = tracks.map(function (obj) { return obj.id });
-    availableTrackIDs = availableTrackIDs.filter(n => n) // remove null track ids (local files)
+    availableTrackIDs = availableTrackIDs.filter(n => n).shuffle() // remove null track ids (local files) and shuffle
 
     // delete playlist selector
     $('#playlists').remove()
@@ -115,7 +121,7 @@ function loadGameWithPlaylist(playlist, tracks){
 
     const trackList = $("<div>", { id: "track-list", class:"autocomplete-options" }).css("display", 'none');
     tracks.forEach(function(track) {
-        trackList.append($("<li>", { html: `${track.name} - ${track.artists.join(', ')}` }));
+        trackList.append($("<li>", { html: `${trackListDisplay(track)}` }));
     });
 
     autocomplete.append(inputBox)
@@ -132,8 +138,13 @@ function loadGameWithPlaylist(playlist, tracks){
 
 
     // start game
-    chooseLyrics()
-    console.log(availableTrackIDs)
+    //chooseLyrics()
+    //console.log(loadedTracks)
+    loadLyrics(5, [...availableTrackIDs], true)
+}
+
+function trackListDisplay(track) {
+    return `${track.name} - ${track.artists.join(', ')}`
 }
 
 // AUTOCOMPLETE
@@ -213,7 +224,7 @@ function skipButton() {
 }
 function checkButton() {
     input = $("#guess-input");
-    if (input.val() == currentSong.name) {
+    if (input.val() == trackListDisplay(currentTrack)) {
         console.log("yay")
         chooseLyrics()
     }
@@ -222,27 +233,55 @@ function checkButton() {
     }
     roundsLeft--;
 }
+/** 
+ * Will load all lyrics in order from the availableTrackIDs array into the loadedTracks map
+ * @param {number} numToLoad - The amount of tracks to request lyrics for at once
+ * @param {Array} tracksToLoad - A list of trackIDs to get lyrics for 
+ * @param {boolean} firstLoad - Whether this is the first loadLyrics call 
+ * */ 
+function loadLyrics(numToLoad, tracksToLoad, firstLoad) {
 
-// lyric function
+    numToLoad = Math.min(numToLoad, tracksToLoad.length);
+    toLoad = tracksToLoad.splice(tracksToLoad.length - numToLoad, numToLoad);
+
+    $.ajax({
+        type : "POST",
+        url : '/gettracklyrics',
+        dataType: "json",
+        data: JSON.stringify({track_ids: toLoad}),
+        contentType: 'application/json;charset=UTF-8'
+        }).done(function(response) {
+            console.log(response)
+            for (const track_id in response.track_lyrics) {
+                loadedTracks[track_id].lyrics = response.track_lyrics[track_id]
+                if (response.track_lyrics[track_id].length > 0) loadedLyrics.push(track_id)
+            }
+            
+            // will only be called on the first load
+            if (loadedLyrics.length > 0 && firstLoad) chooseLyrics()
+            
+            if (tracksToLoad.length != 0)  {
+                loadLyrics(numToLoad, tracksToLoad, false);
+            }
+            else {
+                console.log("finished loading lyrics")
+            }
+        })
+}
 
 function chooseLyrics(trackID){
     // choose random song 
-    if (!trackID) trackID = availableTrackIDs.pop()
+    if (!trackID) trackID = loadedLyrics.pop()
 
-    $.getJSON(`/gettracklyrics/${trackID}`).done(function(response) {
-        if (response.error) { 
-            if (availableTrackIDs.length == 0) {
-                console.log("out of songs")
-            }
-            else chooseLyrics(availableTrackIDs.pop())
-        }
-        else {
-            displayLyrics(response.lyrics)
-        }
-    })
+    if (loadedLyrics.length == 0) {
+        console.log("out of songs")
+    }
+
+    displayLyrics(loadedTracks[trackID].lyrics, trackID)
+    currentTrack = loadedTracks[trackID]
 }
 
-function displayLyrics(lyrics) {
+function displayLyrics(lyrics, trackID) {
     console.log(lyrics)
 
     let lineStart = randBetween(0, lyrics.length - 3)
@@ -252,6 +291,12 @@ function displayLyrics(lyrics) {
 
     let lineCurrent = lineStart;
     let interval = setInterval(function() {
+        // stop if the player has already guessed the song correctly
+        if (trackID != currentTrack.id) 
+        {
+            clearInterval(interval);
+            return;
+        }
         lyricBox.append(`<div class="lyric-line">${lyrics[lineCurrent]}</div>`)
         lineCurrent++;
         if (lineCurrent - lineStart >= 3) clearInterval(interval);

@@ -6,7 +6,7 @@ from app.models import Track, TrackLyrics, Lyric
 
 from datetime import datetime
 
-import requests
+import requests, asyncio, aiohttp
 
 from config import Config
 
@@ -132,64 +132,88 @@ def testing(param):
     # lyrics : 6tnedmxMVEHzPJfWucWzHo
     return get_track_lyrics(param)
 
-@app.route('/gettracklyrics/<track_id>')
-def get_track_lyrics(track_id):
+@app.route('/gettracklyrics', methods=['POST'])
+async def get_track_lyrics():
     return_data = {
         'error': False,
-        'lyrics': []
+        'track_lyrics': {}
     }
-    if track_id is None or track_id == 'null' or track_id == 'undefined':
+    '''if track_id is None or track_id == 'null' or track_id == 'undefined':
         return_data['error'] = True
         return jsonify(return_data)
+    '''
+    track_ids = request.json['track_ids']
 
+    # init
+    for track_id in track_ids:
+        return_data['track_lyrics'][track_id] = []
 
     # check cache
-    lyric_cache = TrackLyrics.query.filter_by(track_id = track_id).first()
-    
-    if lyric_cache:
-        lyric_cache_list = Lyric.query.filter_by(track_lyric_id = lyric_cache.id).order_by(Lyric.order.asc()).all()
-
-        # check if cache is old
-        old_data = False
-        if (datetime.utcnow() - lyric_cache.last_cache_date).total_seconds() > SECONDS_IN_HOUR:
-            old_data = True
-
-        if len(lyric_cache_list) > 0:      
-            for lyric in lyric_cache_list:
-                # delete all lyric caches if they are old
-                if old_data:
-                    db.session.delete(lyric)
-                # add the lyrics to the list
-                else:
-                    return_data['lyrics'].append(lyric.lyric)
-                    
-    # request if we did not find any cached lyrics
-    if len(return_data['lyrics']) == 0:   
-        print("Fetching lyrics from API for track_id: " + track_id) 
-
-        lyricCount = 0
-        response = requests.get("https://spotify-lyric-api.herokuapp.com/?trackid=" + track_id)
-        # No lyrics returns 404
-        if response.status_code == 404:
-            return_data['error'] = True
-        else:
-            data = response.json()
-
-            # turn response into list of each lyric
-            for line in data['lines']:
-                if not line or not line['words']  or line['words'] == '♪': 
-                    continue
-                return_data['lyrics'].append(line['words'])
-                lyricCache = Lyric(lyric = line['words'], order = lyricCount)
-                db.session.add(lyricCache)
-                lyricCount += 1
-
-        # update/add cache
+    uncached_track_ids = []
+    for track_id in track_ids:
+        lyric_cache = TrackLyrics.query.filter_by(track_id = track_id).first()
         if lyric_cache:
-            lyric_cache.lyric_count = lyricCount
-            lyric_cache.last_cache_date = datetime.utcnow()
+            lyric_lines_cache = Lyric.query.filter_by(track_lyric_id = lyric_cache.id).order_by(Lyric.order.asc()).all()
+
+            # check if cache is old
+            old_data = False
+            if (datetime.utcnow() - lyric_cache.last_cache_date).total_seconds() > SECONDS_IN_HOUR:
+                old_data = True
+
+            if len(lyric_lines_cache) > 0:      
+                for lyric in lyric_lines_cache:
+                    # delete all lyric caches if they are old
+                    if old_data:
+                        db.session.delete(lyric)
+                    # add the lyrics to the list
+                    else:
+                        return_data['track_lyrics'][track_id].append(lyric.lyric)
         else:
-            db.session.add(TrackLyrics(track_id = track_id, lyric_count = lyricCount))
+            uncached_track_ids.append(track_id)
+
+    if len(uncached_track_ids) > 0: 
+        # asynchrnously get all uncached lyrics
+        async with aiohttp.ClientSession() as session:
+            tasks = []
+            for track_id in uncached_track_ids:
+                    tasks.append(
+                        fetch(session, "https://spotify-lyric-api.herokuapp.com/?trackid=" + track_id, track_id)
+                    )
+            responses = await asyncio.gather(*tasks, return_exceptions=True)
+
+            # process responses
+            for response in responses:
+                track_id = response['data']
+
+                lyric_cache = TrackLyrics.query.filter_by(track_id = track_id).first()
+
+                # initialise cache 
+                if not lyric_cache:
+                    lyric_cache = TrackLyrics(track_id = track_id)
+                    db.session.add(lyric_cache)
+                    # required in order to use lyric_cache.id
+                    db.session.flush()
+                    db.session.refresh(lyric_cache)
+
+                # No lyrics returns 404
+                if response['json']['error']:
+                    return_data['error'] = True
+                else:
+                    # turn response into list of each lyric
+                    lyricCount = 0
+                    for line in response['json']['lines']:
+                        if not line or not line['words']  or line['words'] == '♪': 
+                            continue
+                        return_data['track_lyrics'][track_id].append(line['words'])
+                        lyric_line = Lyric(lyric = line['words'], order = lyricCount, track_lyric_id = lyric_cache.id)
+                        db.session.add(lyric_line)
+                        lyricCount += 1
+
+                # update cache
+                lyric_cache.lyric_count = lyricCount
+                lyric_cache.last_cache_date = datetime.utcnow()
+
+                print("Caching lyrics for track_id:" + track_id )
 
     db.session.commit()
     return jsonify(return_data)
@@ -223,7 +247,20 @@ def create_spotify_oauth():
             redirect_uri = url_for('authorize', _external=True),
             scope = "user-library-read user-top-read playlist-read-private")
 
-
+# expanded upon https://dev.to/matteo/async-request-with-python-1hpo
+async def fetch(session, url, data):
+    """Execute an http call async
+    Args:
+        session: context for making the http call
+        url: URL to call
+        data: optional, additional data attached to the call
+    Return:
+        A dictionary containing 'url', 'json' dictionary of response & additional data attached to the call
+    """ 
+    async with session.get(url) as response:
+            resp = await response.json()
+            return { 'url': url, 'json': resp, 'data': data }
+    
 class UserData:
     def __init__(self):
         session['token_info'], self.authorized = get_token()
