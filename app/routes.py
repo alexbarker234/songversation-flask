@@ -156,14 +156,18 @@ async def get_track_lyrics():
             lyric_lines_cache = Lyric.query.filter_by(track_lyric_id = lyric_cache.id).order_by(Lyric.order.asc()).all()
 
             # check if cache is old
-            old_data = False
+            needs_refresh = False
             if (datetime.utcnow() - lyric_cache.last_cache_date).total_seconds() > SECONDS_IN_HOUR:
-                old_data = True
+                needs_refresh = True
+
+            if lyric_cache.lyric_count != len(lyric_lines_cache):
+                print("Mismatch between lyric count and lines recieved")
+                needs_refresh = True
 
             if len(lyric_lines_cache) > 0:      
                 for lyric in lyric_lines_cache:
                     # delete all lyric caches if they are old
-                    if old_data:
+                    if needs_refresh:
                         db.session.delete(lyric)
                     # add the lyrics to the list
                     else:
@@ -194,13 +198,14 @@ async def get_track_lyrics():
                     # required in order to use lyric_cache.id
                     db.session.flush()
                     db.session.refresh(lyric_cache)
+                
+                lyricCount = 0
 
                 # No lyrics returns 404
                 if response['json']['error']:
                     return_data['error'] = True
                 else:
                     # turn response into list of each lyric
-                    lyricCount = 0
                     for line in response['json']['lines']:
                         if not line or not line['words']  or line['words'] == '♪': 
                             continue

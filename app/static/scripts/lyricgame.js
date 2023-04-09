@@ -136,6 +136,10 @@ function loadGameWithPlaylist(playlist, tracks){
 
     gameDiv.append(bottomBox);
 
+    const loaderOverlay = $("<div>", {id: "loader-container"});
+    loaderOverlay.append($("<div>", {id: "loader-overlay"}));
+    loaderOverlay.append($("<div>", {id: "loader-spinner"}));
+    gameDiv.append(loaderOverlay);
 
     // start game
     //chooseLyrics()
@@ -235,11 +239,12 @@ function checkButton() {
 }
 /** 
  * Will load all lyrics in order from the availableTrackIDs array into the loadedTracks map
+ * First time loads of playlists with large amounts of lyric-less songs could be slow
  * @param {number} numToLoad - The amount of tracks to request lyrics for at once
  * @param {Array} tracksToLoad - A list of trackIDs to get lyrics for 
- * @param {boolean} firstLoad - Whether this is the first loadLyrics call 
+ * @param {boolean} startGame - Whether the game will start when finding suitable lyrics
  * */ 
-function loadLyrics(numToLoad, tracksToLoad, firstLoad) {
+function loadLyrics(numToLoad, tracksToLoad, startGame) {
 
     numToLoad = Math.min(numToLoad, tracksToLoad.length);
     toLoad = tracksToLoad.splice(tracksToLoad.length - numToLoad, numToLoad);
@@ -258,13 +263,19 @@ function loadLyrics(numToLoad, tracksToLoad, firstLoad) {
             }
             
             // will only be called on the first load
-            if (loadedLyrics.length > 0 && firstLoad) chooseLyrics()
-            
+            if (loadedLyrics.length > 0 && startGame) 
+            {
+                chooseLyrics();
+                loader = $('#loader-container')
+                if (loader) loader.remove()
+                startGame = false;
+            }
             if (tracksToLoad.length != 0)  {
-                loadLyrics(numToLoad, tracksToLoad, false);
+                loadLyrics(numToLoad, tracksToLoad, startGame);
             }
             else {
                 console.log("finished loading lyrics")
+                console.log(loadedLyrics)
             }
         })
 }
@@ -277,31 +288,27 @@ function chooseLyrics(trackID){
         console.log("out of songs")
     }
 
-    displayLyrics(loadedTracks[trackID].lyrics, trackID)
     currentTrack = loadedTracks[trackID]
+    displayLyrics(loadedTracks[trackID].lyrics, trackID)
 }
 
 function displayLyrics(lyrics, trackID) {
-    console.log(lyrics)
+    // clear box from any previous attempts
+    $('#lyric-box').empty();
 
-    let lineStart = randBetween(0, lyrics.length - 3)
+    let startLine = randBetween(0, lyrics.length - 3)
+    setTimeout(function() { displayLyricLine(lyrics, trackID, startLine, startLine)},500)
+}
+
+function displayLyricLine(lyrics, trackID, startLine, curLine) {
+    // stop if the player has already guessed the song correctly
+    if (trackID != currentTrack.id) return
+
     let lyricBox = $('#lyric-box')
-
-    lyricBox.empty();
-
-    let lineCurrent = lineStart;
-    let interval = setInterval(function() {
-        // stop if the player has already guessed the song correctly
-        if (trackID != currentTrack.id) 
-        {
-            clearInterval(interval);
-            return;
-        }
-        lyricBox.append(`<div class="lyric-line">${lyrics[lineCurrent]}</div>`)
-        lineCurrent++;
-        if (lineCurrent - lineStart >= 3) clearInterval(interval);
-    }, 3000)
-
+    lyricBox.append(`<div class="lyric-line">${lyrics[curLine]}</div>`)
+    curLine++;
+    // call next if less than 3 lyrics have been displayed
+    if (curLine - startLine < 3) setTimeout(function() { displayLyricLine(lyrics, trackID, startLine, curLine) }, 3000);
 }
 
 function createPlaylistBox(playlistData, index){
