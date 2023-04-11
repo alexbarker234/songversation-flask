@@ -249,13 +249,8 @@ function loadLyrics(numToLoad, tracksToLoad, startGame) {
     numToLoad = Math.min(numToLoad, tracksToLoad.length);
     toLoad = tracksToLoad.splice(tracksToLoad.length - numToLoad, numToLoad);
 
-    $.ajax({
-        type : "POST",
-        url : '/gettracklyrics',
-        dataType: "json",
-        data: JSON.stringify({track_ids: toLoad}),
-        contentType: 'application/json;charset=UTF-8'
-        }).done(function(response) {
+    $.getJSON('/gettracklyrics?track_ids=' + toLoad)
+        .done(function(response) {
             console.log(response)
             for (const track_id in response.track_lyrics) {
                 loadedTracks[track_id].lyrics = response.track_lyrics[track_id]

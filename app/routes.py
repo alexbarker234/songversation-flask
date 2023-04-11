@@ -14,6 +14,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
 SECONDS_IN_HOUR = 3600
+SECONDS_IN_DAY = SECONDS_IN_HOUR * 24
 
 '''
 TODO:
@@ -132,7 +133,7 @@ def testing(param):
     # lyrics : 6tnedmxMVEHzPJfWucWzHo
     return get_track_lyrics(param)
 
-@app.route('/gettracklyrics', methods=['POST'])
+@app.route('/gettracklyrics', methods=['GET'])
 async def get_track_lyrics():
     return_data = {
         'error': False,
@@ -142,7 +143,10 @@ async def get_track_lyrics():
         return_data['error'] = True
         return jsonify(return_data)
     '''
-    track_ids = request.json['track_ids']
+    track_ids = request.args.get('track_ids').split(',')
+    if len(track_ids) == 0:
+        return_data['error'] = True
+        return_data['error_message'] = "No track ids entered"
 
     # init
     for track_id in track_ids:
@@ -157,11 +161,11 @@ async def get_track_lyrics():
 
             # check if cache is old
             needs_refresh = False
-            if (datetime.utcnow() - lyric_cache.last_cache_date).total_seconds() > SECONDS_IN_HOUR:
+            if (datetime.utcnow() - lyric_cache.last_cache_date).total_seconds() > SECONDS_IN_DAY:
+                print(f"Cache expired for track_id: {track_id}")
                 needs_refresh = True
-
-            if lyric_cache.lyric_count != len(lyric_lines_cache):
-                print("Mismatch between lyric count and lines recieved")
+            elif lyric_cache.lyric_count != len(lyric_lines_cache):
+                print(f"Mismatch between lyric count and lines recieved: count: {lyric_cache.lyric_count}, lines: {len(lyric_lines_cache)}")
                 needs_refresh = True
 
             if len(lyric_lines_cache) > 0:      
@@ -172,7 +176,7 @@ async def get_track_lyrics():
                     # add the lyrics to the list
                     else:
                         return_data['track_lyrics'][track_id].append(lyric.lyric)
-        else:
+        if not lyric_cache or needs_refresh:
             uncached_track_ids.append(track_id)
 
     if len(uncached_track_ids) > 0: 
@@ -202,9 +206,7 @@ async def get_track_lyrics():
                 lyricCount = 0
 
                 # No lyrics returns 404
-                if response['json']['error']:
-                    return_data['error'] = True
-                else:
+                if not response['json']['error']:
                     # turn response into list of each lyric
                     for line in response['json']['lines']:
                         if not line or not line['words']  or line['words'] == '♪': 
