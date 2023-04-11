@@ -9,8 +9,10 @@ let loadedLyrics = [];
 
 /** @type Track */
 let currentTrack = null;
-let rounds = 5;
+
+let rounds = 2;
 let roundsLeft = rounds;
+let score = 0;
 
 let autocompleteSelected = -1;
 let optionCount = 0;
@@ -54,23 +56,9 @@ function loadPlaylists() {
         addPlaylists(data)
         })
 }
-function processLyrics(data) {
-    if (data.error)  return;
-
-    lines = [];
-
-    for (let i = 0; i < data.lines.length; i++) {
-        const element = data.lines[i];
-        if (!element || !element.words || element.words === '♪') continue;
-        lines.push(element.words);
-    }
-    return lines;
-}
-
 function getPlaylistTracks(playlistID) {
     return $.getJSON(`/getplaylisttracks/${playlistID}`);
 }
-
 
 function addPlaylists(data) {
     let playlistDiv = $('#playlists');
@@ -80,7 +68,9 @@ function addPlaylists(data) {
     data.forEach(element => {
         if (element.trackCount != 0) {
             playlistCache[element.id] = element;
-            playlistDiv.append(createPlaylistBox(element, index))
+            playlistBox = createPlaylistBox(element, index);
+            playlistBox.css("animation", "fade-drop-in 1s")
+            playlistDiv.append(playlistBox)
             index++;
         }
      });
@@ -131,6 +121,9 @@ function loadGameWithPlaylist(playlist, tracks){
     // submit buttons
     const buttonContainer = $("<div>", {id: "button-container"});
     buttonContainer.append($("<button>", {id: "skip", "class": "button", html:"Skip"}))
+    const score = $("<div>", {id: "score-container"})
+    score.append($("<p>", {id: "score-text", html:`0 / ${rounds}`}))
+    buttonContainer.append(score)
     buttonContainer.append($("<button>", {id: "submit", "class": "button", html:"Submit", onclick:"checkButton()"}))
     bottomBox.append(buttonContainer)
 
@@ -145,6 +138,24 @@ function loadGameWithPlaylist(playlist, tracks){
     //chooseLyrics()
     //console.log(loadedTracks)
     loadLyrics(5, [...availableTrackIDs], true)
+}
+
+function finishScreen(){
+    /*
+        TODO:
+        - replay with same playlist
+        - back to playlists
+    */
+    const winScreen = $("<div>", { id: "win-screen" });
+
+    winScreen.append($("<p>", { id: "test", html: "you win" }))
+
+    $('#lyric-game').append(winScreen)
+
+    // remove rest of content after 
+    setTimeout(function() {
+        $('#lyric-game').children('*').not('#win-screen').remove()
+    }, 1000)
 }
 
 function trackListDisplay(track) {
@@ -229,8 +240,13 @@ function skipButton() {
 function checkButton() {
     input = $("#guess-input");
     if (input.val() == trackListDisplay(currentTrack)) {
-        console.log("yay")
-        chooseLyrics()
+        score++;
+        roundsLeft--;
+        $("#score-text").html(`${score} / ${rounds}`)
+        if (roundsLeft <= 0) {
+            finishScreen()
+        }
+        else chooseLyrics()
     }
     else {
         console.log("wrong")

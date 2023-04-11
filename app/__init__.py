@@ -8,11 +8,17 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
+from flask_assets import Environment, Bundle
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+assets = Environment(app)
+
+# bundles
+css = Bundle('css/main.css', 'css/nav.css', 'css/animation.css', output='gen/packed.css')
+assets.register('css_all', css)
 
 # logging
 if not app.debug:

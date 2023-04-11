@@ -4,8 +4,13 @@
         <title>{{ title }}</title>
         <!-- Latest compiled and minified Bootstrap CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+        <!-- <link rel="stylesheet" href="../static/main.css"> -->
+        {% assets "css_all" %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}">    
+        {% endassets %}
+
         <!-- jQuery library -->
-        <link rel="stylesheet" href="../static/main.css">
         <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
         <script
             src="https://code.jquery.com/jquery-3.3.1.min.js"

@@ -139,10 +139,7 @@ async def get_track_lyrics():
         'error': False,
         'track_lyrics': {}
     }
-    '''if track_id is None or track_id == 'null' or track_id == 'undefined':
-        return_data['error'] = True
-        return jsonify(return_data)
-    '''
+
     track_ids = request.args.get('track_ids').split(',')
     if len(track_ids) == 0:
         return_data['error'] = True
