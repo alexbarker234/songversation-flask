@@ -7,6 +7,7 @@ from app.models import Track, TrackLyrics, Lyric
 from datetime import datetime
 
 import requests, asyncio, aiohttp
+import json
 
 from config import Config
 
@@ -29,7 +30,15 @@ def index():
 
 @app.route('/lyricgame')
 def lyricGame():
-    return render_template('lyricgame.html', title='Home', userdata=UserData())
+    return render_template('game/playlistScreen.html', title='Home', userdata=UserData())
+
+@app.route('/lyricgame/playlist/<playlist_id>')
+def lyricGamePlaylist(playlist_id):
+    return render_template('game/lyricgame.html', title='Home', userdata=UserData())
+
+@app.route('/lyricgame/artist/<artist_id>')
+def lyricGameArtist(artist_id):
+    return "not implemented"
 
 
 @app.route('/login')
@@ -101,6 +110,25 @@ def get_playlists():
             playlists = None
     return jsonify([ob.__dict__ for ob in results])
 
+@app.route('/getplaylist/<playlist_id>')
+def get_playlist(playlist_id):
+    session['token_info'], authorized = get_token()
+    session.modified = True
+    if not authorized:
+        return redirect('/')
+    
+    sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
+    
+    try:
+        playlist = sp.playlist(playlist_id=playlist_id)
+        tracks = request_tracks(sp, playlist["tracks"])
+
+        playlistObj = Playlist(playlist, tracks)
+        return jsonify(to_dict(playlistObj))
+    except:    
+        return jsonify({'error':True, 'message':'Invalid Playlist ID'})
+
+
 @app.route('/getplaylisttracks/<playlist_id>')
 def get_playlist_tracks(playlist_id):
     session['token_info'], authorized = get_token()
@@ -115,6 +143,15 @@ def get_playlist_tracks(playlist_id):
     print('Fetching Tracks for playlist id: ' + playlist_id)
 
     tracks = sp.playlist_tracks(playlist_id = playlist_id, limit = 50,offset = 0)
+    results = request_tracks(sp, tracks)
+
+    return jsonify([ob.__dict__ for ob in results])
+
+def request_tracks(sp, tracks):
+    '''
+    Requests the rest of the tracks given an existing request and turns them into a Track object for ease of use
+    '''
+    results = []
     while tracks:
         for i, playlistTrack in enumerate(tracks['items']):
             # dont add local files 
@@ -124,8 +161,7 @@ def get_playlist_tracks(playlist_id):
             tracks = sp.next(tracks)
         else:
             tracks = None
-
-    return jsonify([ob.__dict__ for ob in results])
+    return results
 
 @app.route('/testing/<param>')
 def testing(param):
@@ -264,7 +300,24 @@ async def fetch(session, url, data):
     async with session.get(url) as response:
             resp = await response.json()
             return { 'url': url, 'json': resp, 'data': data }
-    
+
+def to_dict(obj):
+     # check if the object is a list
+    if isinstance(obj, list):
+        return [to_dict(item) for item in obj]
+    # check if the object is a dictionary
+    elif isinstance(obj, dict):
+        return {key: to_dict(value) for key, value in obj.items()}
+    # check if the object has a __dict__ attribute
+    elif hasattr(obj, '__dict__'):
+        return to_dict(obj.__dict__)
+    # check if the object has a vars() function
+    elif hasattr(obj, 'vars'):
+        return to_dict(vars(obj))
+    # base case: return the object as is
+    else:
+        return obj
+
 class UserData:
     def __init__(self):
         session['token_info'], self.authorized = get_token()
@@ -282,11 +335,12 @@ class Artist:
         self.image = payload['images'][0]['url'] if len(payload['images']) > 0 else None
 
 class Playlist:
-    def __init__(self, payload):
+    def __init__(self, payload, tracks=[]):
         self.name = payload['name']
         self.id = payload['id']
         self.ownerID = payload['owner']['id']
         self.trackCount = payload['tracks']['total']
+        self.tracks = tracks
         if len(payload['images']) > 0:
             self.image = payload['images'][0]['url']
         # default icon

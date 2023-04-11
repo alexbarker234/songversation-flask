@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 
-{% block scripts %}
-<script src="{{ url_for('static', filename='scripts/lyricgame.js')}}"></script> 
-{% endblock %}
-
 {% block content %}
     {% if userdata.authorized %}
     <div id="lyric-game">

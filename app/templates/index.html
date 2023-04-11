@@ -1,15 +1,11 @@
 {% extends "base.html" %}
 
-{% block scripts %}
-<script src="{{ url_for('static', filename='scripts/index.js')}}"></script> 
-{% endblock %}
-
 {% block content %}
-        <h1>hey!</h1>
-        <a href="/lyricgame">to game</a>
+    <h1>hey!</h1>
+    <a href="/lyricgame">to game</a>
 
-        {% if userdata.authorized %}
-        <h2>top artists</h2>
-        <div id="top-artists"></div>
-        {% endif %}
+    {% if userdata.authorized %}
+    <h2>top artists</h2>
+    <div id="top-artists"></div>
+    {% endif %}
 {% endblock %}

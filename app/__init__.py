@@ -20,6 +20,15 @@ assets = Environment(app)
 css = Bundle('css/main.css', 'css/nav.css', 'css/animation.css', output='gen/packed.css')
 assets.register('css_all', css)
 
+# could potentially include jQuery & bootstrap.js in here
+js = Bundle('scripts/extensions.js', 
+            'scripts/main.js', 
+            'scripts/index.js',
+            'scripts/game/lyricgame.js',
+            'scripts/game/playlistScreen.js',
+            output='gen/main.js')
+assets.register('js_all', js)
+
 # logging
 if not app.debug:
     if not os.path.exists('logs'):

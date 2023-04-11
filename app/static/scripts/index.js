@@ -1,6 +1,9 @@
 $(window).on('load', function() {
-    loadTopArtists();
+    if (window.location.pathname === '/index' || window.location.pathname === '') {
+        loadTopArtists()
+    }
 })
+
 function loadTopArtists() {
     $.getJSON('/topartists', function (data) {
         addArtists(data)

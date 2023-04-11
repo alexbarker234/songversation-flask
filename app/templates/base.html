@@ -4,25 +4,30 @@
         <title>{{ title }}</title>
         <!-- Latest compiled and minified Bootstrap CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
-        <!-- <link rel="stylesheet" href="../static/main.css"> -->
-        {% assets "css_all" %}
-        <link rel="stylesheet" href="{{ ASSET_URL }}">    
-        {% endassets %}
-
+  
         <!-- jQuery library -->
         <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
         <script
             src="https://code.jquery.com/jquery-3.3.1.min.js"
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous"></script>      
-        <!-- Latest compiled JavaScript -->
+            crossorigin="anonymous">
+        </script>    
+
+        <!-- Bootstrap JS -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
         {% block scripts %}
         {% endblock %}
-        <!--link rel="stylesheet" media="screen" href="static/bootstrap.min.css">
-            <link rel="stylesheet" href="static/bootstrap-theme.min.css">
-            <script src="static/bootstrap.min.js"></script-->
+
+        {% assets "css_all" %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}">    
+        {% endassets %}
+
+        {% assets "js_all" %}
+        <script src="{{ ASSET_URL }}"></script> 
+        {% endassets %}
+
+
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>

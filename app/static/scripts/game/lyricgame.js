@@ -10,7 +10,7 @@ let loadedLyrics = [];
 /** @type Track */
 let currentTrack = null;
 
-let rounds = 2;
+let rounds = 5;
 let roundsLeft = rounds;
 let score = 0;
 
@@ -33,110 +33,69 @@ const keyUp = 38, keyDown = 40, keyEnter = 13
 */
 
 $(window).on('load', function() {
-    loadPlaylists();
+    if (window.location.pathname.includes('/playlist/')) {
+        playlist_id = window.location.pathname.split('/').pop(); // get the last part in the path
 
-    $(document).on("click", ".autocomplete-options li" , function(e) { selectAutocomplete(e.target.innerHTML) });
-
-    // close autocomplete menu
-    $(document).on("click", ".autocomplete-options" , function(e) { e.stopPropagation() }); // dont close when clicking this
-    $(document).on("click", function(e) { setAutocompleteVisibility(e.target.id =="guess-input" && e.target.value != '') });
-    
-    $(document).on("click", ".playlist-box img" , function(e) {
-        let platlistBox = e.target.parentNode;
-        getPlaylistTracks(platlistBox.dataset.id).then(response => loadGameWithPlaylist(playlistCache[platlistBox.dataset.id], response))
-    });
-
-
-    $(document).on("keyup", "#guess-input" , manageAutocomplete);
-    
-    $(document).on("keydown", autocompleteKeyboard);
-})
-function loadPlaylists() {
-    $.getJSON('/getplaylists', function (data) {
-        addPlaylists(data)
+        getPlaylist(playlist_id).then(response => { 
+            if (response.error === true) {
+                displayError(response.message)
+            }
+            else {
+             loadGameWithPlaylist(response) 
+            }
         })
+
+        $(document).on("click", ".autocomplete-options li" , function(e) { selectAutocomplete(e.target.innerHTML) });
+
+        // close autocomplete menu
+        $(document).on("click", ".autocomplete-options" , function(e) { e.stopPropagation() }); // dont close when clicking this
+        $(document).on("click", function(e) { setAutocompleteVisibility(e.target.id =="guess-input" && e.target.value != '') });
+
+        $(document).on("keyup", "#guess-input" , manageAutocomplete);
+        
+        $(document).on("keydown", autocompleteKeyboard);
+    }
+})
+
+function displayError(message) {
+    let game = $('#lyric-game');
+    game.empty();
+    game.append($('<h1>', { html: message }))
+    game.append($('<a>', { html: 'Back', href: "/" }))
+
+    $('#loader-container').remove()
 }
+
+function getPlaylist(playlistID) {
+    return $.getJSON(`/getplaylist/${playlistID}`);
+}
+
 function getPlaylistTracks(playlistID) {
     return $.getJSON(`/getplaylisttracks/${playlistID}`);
 }
 
-function addPlaylists(data) {
-    let playlistDiv = $('#playlists');
-    //let url = window.location.href;
-    playlistCache = data;
-    let index = 0;
-    data.forEach(element => {
-        if (element.trackCount != 0) {
-            playlistCache[element.id] = element;
-            playlistBox = createPlaylistBox(element, index);
-            playlistBox.css("animation", "fade-drop-in 1s")
-            playlistDiv.append(playlistBox)
-            index++;
-        }
-     });
-}
 
-function loadGameWithPlaylist(playlist, tracks){
-    loadedTracks = tracks.reduce(function(map, obj) {
+function loadGameWithPlaylist(playlist){
+    loadedTracks = playlist.tracks.reduce(function(map, obj) {
         map[obj.id] = obj;
         return map;
     }, {});
-    availableTrackIDs = tracks.map(function (obj) { return obj.id });
+    availableTrackIDs = playlist.tracks.map(function (obj) { return obj.id });
     availableTrackIDs = availableTrackIDs.filter(n => n).shuffle() // remove null track ids (local files) and shuffle
 
-    // delete playlist selector
-    $('#playlists').remove()
-    $('#title').remove();
-
-    let gameDiv = $('#lyric-game');
     // playlist icon
     selectedPlaylist = createPlaylistBox(playlist);
     selectedPlaylist.addClass('selected-playlist')
-    gameDiv.append(selectedPlaylist)
+    $("selected-playlist").append(selectedPlaylist)
 
-    // add title
-    gameDiv.append('<h2 id="title">Which song is this?</h2>')
-
-    // add lyric display
-    gameDiv.append('<div id="lyric-box"></div>')
-
-    // input box & autocomplete
-    const bottomBox = $("<div>", { class:"bottom-container" })
-
-    const autocomplete = $("<div>", { class:"autocomplete-container" })
-
-    const inputBox = document.createElement("input");
-    inputBox.id = 'guess-input';
-    inputBox.placeholder = "Guess here...";
-
-    const trackList = $("<div>", { id: "track-list", class:"autocomplete-options" }).css("display", 'none');
-    tracks.forEach(function(track) {
+    // register autocomplete options
+    const trackList = $("track-list");
+    playlist.tracks.forEach(function(track) {
         trackList.append($("<li>", { html: `${trackListDisplay(track)}` }));
     });
 
-    autocomplete.append(inputBox)
-    autocomplete.append(trackList)
-    bottomBox.append(autocomplete)
-    
-    // submit buttons
-    const buttonContainer = $("<div>", {id: "button-container"});
-    buttonContainer.append($("<button>", {id: "skip", "class": "button", html:"Skip"}))
-    const score = $("<div>", {id: "score-container"})
-    score.append($("<p>", {id: "score-text", html:`0 / ${rounds}`}))
-    buttonContainer.append(score)
-    buttonContainer.append($("<button>", {id: "submit", "class": "button", html:"Submit", onclick:"checkButton()"}))
-    bottomBox.append(buttonContainer)
+    $("#score-text").html(`0 / ${rounds}`)
 
-    gameDiv.append(bottomBox);
-
-    const loaderOverlay = $("<div>", {id: "loader-container"});
-    loaderOverlay.append($("<div>", {id: "loader-overlay"}));
-    loaderOverlay.append($("<div>", {id: "loader-spinner"}));
-    gameDiv.append(loaderOverlay);
-
-    // start game
-    //chooseLyrics()
-    //console.log(loadedTracks)
     loadLyrics(5, [...availableTrackIDs], true)
 }
 
@@ -267,7 +226,6 @@ function loadLyrics(numToLoad, tracksToLoad, startGame) {
 
     $.getJSON('/gettracklyrics?track_ids=' + toLoad)
         .done(function(response) {
-            console.log(response)
             for (const track_id in response.track_lyrics) {
                 loadedTracks[track_id].lyrics = response.track_lyrics[track_id]
                 if (response.track_lyrics[track_id].length > 0) loadedLyrics.push(track_id)
@@ -286,7 +244,6 @@ function loadLyrics(numToLoad, tracksToLoad, startGame) {
             }
             else {
                 console.log("finished loading lyrics")
-                console.log(loadedLyrics)
             }
         })
 }
@@ -320,37 +277,4 @@ function displayLyricLine(lyrics, trackID, startLine, curLine) {
     curLine++;
     // call next if less than 3 lyrics have been displayed
     if (curLine - startLine < 3) setTimeout(function() { displayLyricLine(lyrics, trackID, startLine, curLine) }, 3000);
-}
-
-function createPlaylistBox(playlistData, index){
-    const playlistBox = $("<div>", { class: "playlist-box" });
-    playlistBox.attr( "data-id", playlistData.id )
-    if (index) playlistBox.attr( "data-index", index )
-
-    const playlistImage = $("<img>", { src: playlistData.image, draggable: false });
-
-    playlistBox.append(playlistImage)
-    playlistBox.append(playlistData.name)
-
-    return playlistBox
-}
-
-
-// min & max inclusive
-function randBetween(min, max) { 
-    return Math.floor(Math.random() * (max - min + 1) + min)
-}
-
-
-// interesting
-// https://web.archive.org/web/20090717035140if_/javascript.about.com/od/problemsolving/a/modulobug.htm
-Number.prototype.mod = function (n) {
-    "use strict";
-    return ((this % n) + n) % n;
-};
-
-Array.prototype.shuffle = function() {
-    return this.sort(function() {
-        return Math.random() - 0.5;
-      });
 }
