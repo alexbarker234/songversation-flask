@@ -166,6 +166,15 @@ body {
     margin: 0px;
 }
 
+#selected-playlist {
+    width: 15rem;
+    min-height: 17rem;
+    height: fit-content;
+
+    margin: 2rem auto;
+    margin-bottom: 0px;
+}
+
 #title {
     padding: 1rem;
     font-size: 3rem;
@@ -194,8 +203,8 @@ body {
 }
 
 .selected-playlist {
-    margin: 2rem auto;
-    height: fit-content;
+    height: auto;
+    margin: 0;
 }
 
 .bottom-container {

@@ -85,8 +85,9 @@ function loadGameWithPlaylist(playlist){
 
     // playlist icon
     selectedPlaylist = createPlaylistBox(playlist);
+    selectedPlaylist.css("animation", "fade-in 1s")
     selectedPlaylist.addClass('selected-playlist')
-    $("selected-playlist").append(selectedPlaylist)
+    $("#selected-playlist").append(selectedPlaylist)
 
     // register autocomplete options
     const trackList = $("track-list");
