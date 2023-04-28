@@ -6,22 +6,20 @@
         <div id="selected-cover-art"></div>
         <p id="title">Which song is this?</p>
         <div id="lyric-box"></div>
-        <div class="bottom-container">
-            <div class="autocomplete-container">
-                <div class="autocomplete-wrapper gradient-border">
-                    <div id = "track-list" class = "autocomplete-options" style="display:none"></div>
-                    <input id = "guess-input" class = "autocomplete-input" placeholder="Guess here...">
-                </div>
-            </div>
-            <div id = "button-container">
-                <button id="skip" class="button">Skip</button>
-                <div id="score-container">
-                    <p id="score-text"></p>
-                </div>
-                <button id="submit" class="button" onclick="checkButton()">Submit</button>
-            </div>
-        </div>
     </div>
+    <div class="bottom-container">
+        <div class="autocomplete-wrapper gradient-border">
+            <div id = "track-list" class = "autocomplete-options" style="display:none"></div>
+            <input id = "guess-input" class = "autocomplete-input" placeholder="Guess here...">
+        </div>
+    <div id = "button-container">
+        <button id="skip" class="button">Skip</button>
+        <div id="score-container">
+            <p id="score-text"></p>
+        </div>
+        <button id="submit" class="button" onclick="checkButton()">Submit</button>
+    </div>
+</div>
     {% endif %}
     {% include "loader.html" %}
 {% endblock %}

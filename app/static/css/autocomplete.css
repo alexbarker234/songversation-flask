@@ -13,15 +13,13 @@
     outline: none;
 }
 
-.autocomplete-container {
-    position: relative;
-    margin: 2rem auto;
-    width: 50%;
-}
 .autocomplete-wrapper {
     position: absolute;
-    width: 100%;
-    bottom: 90%;
+    bottom: 100%;
+    width: 90%;
+    max-width: 1000px;
+    left:50%;
+    transform: translate(-50%, 100%);
     z-index: 2;
 }
 

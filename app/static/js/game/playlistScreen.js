@@ -6,12 +6,12 @@ $(window).on("load", function () {
 
 function loadPlaylists() {
     loader = createLoader();
-    loader.css('margin', 'auto')
+    loader.css("margin", "auto");
     $("#cover-art").append(loader);
 
     $.getJSON("/getplaylists", function (data) {
         addPlaylists(data);
-        loader.remove()
+        loader.remove();
     });
 }
 
@@ -28,8 +28,11 @@ function addPlaylists(data) {
                 index,
                 `lyricgame/playlist/${element.id}`
             );
-            playlistBox.css("animation", "fade-drop-in 1s");
-            playlistBox.css("animation-delay", `${index * 0.01}s`);
+            playlistBox.css({
+                "opacity": "0",
+                "animation": "fade-drop-in 1s forwards",
+                "animation-delay": `${index * 0.05}s`,
+            });
             /*playlistBox.children('img').click(function(e) {
                 let playlistBox = e.target.parentNode;
                 //getPlaylistTracks(playlistBox.dataset.id).then(response => loadGameWithPlaylist(playlistCache[playlistBox.dataset.id], response))

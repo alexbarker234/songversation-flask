@@ -233,7 +233,6 @@ function checkButton() {
 function loadLyrics(numToLoad, tracksToLoad, startGame) {
     numToLoad = Math.min(numToLoad, tracksToLoad.length);
     toLoad = tracksToLoad.splice(tracksToLoad.length - numToLoad, numToLoad);
-
     $.getJSON("/gettracklyrics?track_ids=" + toLoad).done(function (response) {
         for (const track_id in response.track_lyrics) {
             loadedTracks[track_id].lyrics = response.track_lyrics[track_id];
@@ -273,21 +272,40 @@ function displayLyrics(lyrics, trackID) {
     $("#lyric-box").empty();
 
     let startLine = randBetween(0, lyrics.length - 3);
+    initialiseLyricBox(loadedTracks[trackID].lyrics, 3, startLine);
     setTimeout(function () {
-        displayLyricLine(lyrics, trackID, startLine, startLine);
+        displayLyricLine(trackID, startLine, startLine);
     }, 500);
 }
 
-function displayLyricLine(lyrics, trackID, startLine, curLine) {
+function initialiseLyricBox(lyrics, numLines, startLine) {
+    let lyricBox = $("#lyric-box");
+    // for adjustment if we add difficulties
+    for (let i = 0; i < numLines; i++) {
+        lyricBox.append(
+            `<div class="lyric-line" style="opacity:0">
+                <p>${lyrics[startLine + i]}<p>
+            </div>`
+        );
+    }
+}
+
+function displayLyricLine(trackID, startLine, curLine) {
     // stop if the player has already guessed the song correctly
     if (trackID != currentTrack.id) return;
 
-    let lyricBox = $("#lyric-box");
-    lyricBox.append(`<div class="lyric-line">${lyrics[curLine]}</div>`);
+    const lyricNum = curLine - startLine;
+
+    const lyricBox = $("#lyric-box");
+    const lyricLines = lyricBox.children(".lyric-line")
+    const lyricLine = lyricLines.eq(lyricNum);
+    lyricLine.css({
+        "animation": "fade-in 1s forwards",
+    });
     curLine++;
     // call next if less than 3 lyrics have been displayed
-    if (curLine - startLine < 3)
+    if (lyricNum < lyricLines.length)
         setTimeout(function () {
-            displayLyricLine(lyrics, trackID, startLine, curLine);
+            displayLyricLine(trackID, startLine, curLine);
         }, 3000);
 }
