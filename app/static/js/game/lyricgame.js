@@ -97,7 +97,7 @@ function loadGameWithPlaylist(playlist) {
     selectedPlaylist = createCoverArtBox(playlist);
     selectedPlaylist.css("animation", "fade-in 1s");
     selectedPlaylist.addClass("selected-playlist");
-    $("#selected-playlist").append(selectedPlaylist);
+    $("#selected-cover-art").append(selectedPlaylist);
 
     // register autocomplete options
     const trackList = $("track-list");

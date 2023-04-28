@@ -2,20 +2,21 @@
 
 /* cover-art links */
 #cover-art {
-    background-color: var(--bg-color2);
+    /*background-color: var(--bg-color2);*/
     width: 100%;
     
     display: grid;
     justify-content: center;
     align-items: center;
-    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
 }
 .cover-art-box {
-    margin: 2rem;
+    margin: auto;
     margin-bottom: 0px;
+    padding-bottom: 4rem;
 
-    width: 15rem;
-    height: 21rem;
+    width: 12rem;
+    height: 17rem;
 
     position: relative;
 
@@ -27,21 +28,12 @@
     transition: 0.2s;
 }
 
-.cover-art-box a {
-    position: absolute;
-    height: 15rem;
-    width: 15rem;
-
-    z-index: 1;
-}
-
-.cover-art-box img:hover {
+.cover-art-box a img:hover {
     opacity: 0.5;
 }
 
 .cover-art-box img {
-    width: 15rem;
-    height: 15rem;
+    width: 100%;
     object-fit: cover;   
 
     cursor: pointer;
@@ -53,8 +45,6 @@
     -webkit-user-select: none;
     -ms-user-select: none;
 }
-
-
 
 /* lyric game! */
 
