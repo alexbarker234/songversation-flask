@@ -1,6 +1,7 @@
+/* game.css */
 
-/* PLATLIST BOX */
-#playlists {
+/* cover-art links */
+#cover-art {
     background-color: var(--bg-color2);
     width: 100%;
     
@@ -9,7 +10,7 @@
     align-items: center;
     grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
 }
-.playlist-box {
+.cover-art-box {
     margin: 2rem;
     margin-bottom: 0px;
 
@@ -26,7 +27,7 @@
     transition: 0.2s;
 }
 
-.playlist-box a {
+.cover-art-box a {
     position: absolute;
     height: 15rem;
     width: 15rem;
@@ -34,11 +35,11 @@
     z-index: 1;
 }
 
-#playlists img:hover {
+.cover-art-box img:hover {
     opacity: 0.5;
 }
 
-#playlists img {
+.cover-art-box img {
     width: 15rem;
     height: 15rem;
     object-fit: cover;   
@@ -70,7 +71,7 @@
     margin: 0px;
 }
 
-#selected-playlist {
+#selected-cover-art {
     width: 15rem;
     min-height: 17rem;
     height: fit-content;
@@ -106,7 +107,7 @@
     font-size: 2rem;
 }
 
-.selected-playlist {
+.selected-cover-art {
     height: auto;
     margin: 0;
 }
