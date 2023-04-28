@@ -1,0 +1,255 @@
+
+/* PLATLIST BOX */
+#playlists {
+    background-color: var(--bg-color2);
+    width: 100%;
+    
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+}
+.playlist-box {
+    margin: 2rem;
+    margin-bottom: 0px;
+
+    width: 15rem;
+    height: 21rem;
+
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    
+    overflow-y: hidden;
+
+    transition: 0.2s;
+}
+
+.playlist-box a {
+    position: absolute;
+    height: 15rem;
+    width: 15rem;
+
+    z-index: 1;
+}
+
+#playlists img:hover {
+    opacity: 0.5;
+}
+
+#playlists img {
+    width: 15rem;
+    height: 15rem;
+    object-fit: cover;   
+
+    cursor: pointer;
+
+    -webkit-user-drag: none;  
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+
+
+/* lyric game! */
+
+#lyric-game {
+    align-items: center;
+    align-content: center;
+
+    position: absolute;
+    display: block;
+
+    width: 100%;
+
+    height: calc(100% - var(--nav-height));
+    margin: 0px;
+}
+
+#selected-playlist {
+    width: 15rem;
+    min-height: 17rem;
+    height: fit-content;
+
+    margin: 2rem auto;
+    margin-bottom: 0px;
+}
+
+#title {
+    padding: 1rem;
+    font-size: 3rem;
+    margin:0;
+}
+
+#lyric-box {
+    height: 20rem;
+    width: 50%;
+
+    margin: 2rem auto;
+    padding: 2rem;
+    overflow: hidden;
+
+    border-radius: 2rem;
+
+    background-color: var(--bg-color2);
+}
+
+.lyric-line {
+    margin-bottom: 2rem;
+
+    animation: fade-in 1s;
+
+    font-size: 2rem;
+}
+
+.selected-playlist {
+    height: auto;
+    margin: 0;
+}
+
+.bottom-container {
+    position: absolute;
+    height: 20rem;
+    width: 100%;
+    bottom: 0%;
+}
+
+.button {
+    padding: 2rem;
+    border-radius: 6rem;
+
+    width: 16rem;
+
+    transition: 0.2s;
+
+    /* remove default button styling */
+    background: none;
+	color: inherit;
+	border: none;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+.button:disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
+#button-container {
+    width: 40%;
+    margin: 2rem auto;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.button:enabled:hover {
+    transform: scale(1.04);
+}
+
+#skip {
+    border: var(--border-color) 1px solid;
+    float: left;
+}
+
+#submit {
+    background-color: var(--spotify-green);
+    float: right;
+}
+
+#score-container {
+    margin: 0;
+
+    width: 16rem;
+}
+
+#score-text {
+    margin: auto;
+    height: fit-content;
+    float: 50%;
+    font-size: 3rem;
+
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* win screen */
+
+#win-screen {
+    background-color: var(--bg-color);
+
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+    top: 0%;
+    left: 0%;
+}
+
+/* input and autocomplete */
+
+#guess-input {
+    background-color: var(--bg-color3);
+    border-color: var(--border-color);
+    border-radius: 1rem;
+
+    width: 100%;
+    padding: 12px 20px;
+}
+
+#guess-input:focus {
+    outline: none;
+}
+
+.autocomplete-container {
+    margin: 2rem  auto;
+    width: 50%;
+}
+
+.autocomplete-options {
+    background-color: var(--bg-color3);
+    width: 50%;
+    height: fit-content;
+    max-height: 20rem;
+    
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin: 0rem auto;
+
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%,-100%);
+}
+.autocomplete-options li {
+    padding: 1rem 4rem 1rem 4rem;
+    text-decoration: none;
+    list-style-type: none;
+    cursor: pointer;
+
+    text-align: left;
+    transition: 0.2s;
+    
+    border-bottom: solid var(--border-color) 1px;
+
+    -webkit-user-drag: none;  
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+.autocomplete-options li:hover {
+    background-color: var(--bg-color2);
+}
+.autocomplete-options li.selected {
+    border: var(--spotify-green) 1px solid;
+}
+
+
