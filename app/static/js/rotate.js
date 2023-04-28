@@ -1,8 +1,14 @@
-$(window).on('load', function() {
-    signIn = document.getElementById("sign-in-container")
-    if (signIn) {
+$(window).on("load", function () {
+    let borderElements = $(".gradient-border");
+    console.log({borderElements})
+    if (borderElements) {
         setInterval(() => {
-            signIn.style.setProperty('--grad', (parseInt(signIn.style.getPropertyValue("--grad")) + 2) % 360);
+            borderElements.each(function (index) {
+                borderElements[index].style.setProperty(
+                    "--grad",
+                    ((parseInt(borderElements[index].style.getPropertyValue("--grad")) || 0) + 2) % 360
+                );
+            });
         }, 20);
     }
 });
