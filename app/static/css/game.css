@@ -33,10 +33,13 @@
 }
 
 .cover-art-box img {
-    width: 100%;
+    width: 12rem;
+    height: 12rem;
     object-fit: cover;   
 
     cursor: pointer;
+
+    transition: 0.2s;
 
     -webkit-user-drag: none;  
     user-select: none;
@@ -182,65 +185,3 @@
     top: 0%;
     left: 0%;
 }
-
-/* input and autocomplete */
-
-#guess-input {
-    background-color: var(--bg-color3);
-    border-color: var(--border-color);
-    border-radius: 1rem;
-
-    width: 100%;
-    padding: 12px 20px;
-}
-
-#guess-input:focus {
-    outline: none;
-}
-
-.autocomplete-container {
-    margin: 2rem  auto;
-    width: 50%;
-}
-
-.autocomplete-options {
-    background-color: var(--bg-color3);
-    width: 50%;
-    height: fit-content;
-    max-height: 20rem;
-    
-    overflow-y: scroll;
-    overflow-x: hidden;
-    margin: 0rem auto;
-
-    position: absolute;
-    top: 0%;
-    left: 50%;
-    transform: translate(-50%,-100%);
-}
-.autocomplete-options li {
-    padding: 1rem 4rem 1rem 4rem;
-    text-decoration: none;
-    list-style-type: none;
-    cursor: pointer;
-
-    text-align: left;
-    transition: 0.2s;
-    
-    border-bottom: solid var(--border-color) 1px;
-
-    -webkit-user-drag: none;  
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-drag: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-}
-.autocomplete-options li:hover {
-    background-color: var(--bg-color2);
-}
-.autocomplete-options li.selected {
-    border: var(--spotify-green) 1px solid;
-}
-
-

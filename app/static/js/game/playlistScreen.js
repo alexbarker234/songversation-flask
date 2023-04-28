@@ -29,6 +29,7 @@ function addPlaylists(data) {
                 `lyricgame/playlist/${element.id}`
             );
             playlistBox.css("animation", "fade-drop-in 1s");
+            playlistBox.css("animation-delay", `${index * 0.01}s`);
             /*playlistBox.children('img').click(function(e) {
                 let playlistBox = e.target.parentNode;
                 //getPlaylistTracks(playlistBox.dataset.id).then(response => loadGameWithPlaylist(playlistCache[playlistBox.dataset.id], response))

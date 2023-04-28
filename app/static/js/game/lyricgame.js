@@ -100,7 +100,7 @@ function loadGameWithPlaylist(playlist) {
     $("#selected-cover-art").append(selectedPlaylist);
 
     // register autocomplete options
-    const trackList = $("track-list");
+    const trackList = $("#track-list");
     playlist.tracks.forEach(function (track) {
         trackList.append($("<li>", { html: `${trackListDisplay(track)}` }));
     });
