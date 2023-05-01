@@ -20,7 +20,7 @@
         </a>
     </div>
     <div class="nav-part nav-right">
-        {% if not userdata or not userdata.authorised %}
+        {% if not user_data or not user_data.authorised %}
         <a class="nav-button" href="{{ url_for('login') }}">
             <div class="show-on-mobile" style="padding:0px; width:64px">
                 <svg width="30px" height="30px" viewBox="0 0 1024 1024" version="1.1"
@@ -37,8 +37,8 @@
         <div class="profile-dropdown">
             <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">
-                <img class="profile-image" src="{{ userdata.image_url }}">
-                <div class="hide-on-mobile">{{ userdata.username }}</div>
+                <img class="profile-image" src="{{ user_data.image_url }}">
+                <div class="hide-on-mobile">{{ user_data.username }}</div>
             </button>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                 <a href="#">Friends</a>

@@ -24,6 +24,23 @@ from app import app, db
 def topArtists():
     try:
         sp = SpotifyHelper()
+    
+        results = []
+
+        artists = sp.current_user_top_artists(limit=50,offset=0, time_range='short_term')
+        while artists:
+            for i, playlist in enumerate(artists['items']):
+                platlistObj = Playlist(playlist)
+                if platlistObj.trackCount > 0:
+                    results.append(platlistObj)
+            if artists['next']:
+                artists = sp.next(artists)
+            else:
+                artists = None
+        return jsonify([ob.__dict__ for ob in results])
+
+
+        sp = SpotifyHelper()
         results = []
         iter = 0
 
