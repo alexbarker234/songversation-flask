@@ -20,7 +20,7 @@
         </a>
     </div>
     <div class="nav-part nav-right">
-        {% if not userdata or not userdata.authorized %}
+        {% if not userdata or not userdata.authorised %}
         <a class="nav-button" href="{{ url_for('login') }}">
             <div class="show-on-mobile" style="padding:0px; width:64px">
                 <svg width="30px" height="30px" viewBox="0 0 1024 1024" version="1.1"
