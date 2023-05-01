@@ -20,13 +20,13 @@ def index():
 @app.route('/lyricgame')
 def game_page():
     user_data = SpotifyWebUserData()
-    return render_template('game/playlistScreen.html', title='Home', user_data=user_data) if user_data else redirect("/")
+    return render_template('game/playlistScreen.html', title='Home', user_data=user_data) if user_data.authorised else redirect("/")
 
 
 @app.route('/lyricgame/playlist/<playlist_id>')
 def playlist_page(playlist_id):
     user_data = SpotifyWebUserData()
-    return render_template('game/lyricgame.html', title='Home', user_data=user_data) if user_data else redirect("/")
+    return render_template('game/lyricgame.html', title='Home', user_data=user_data) if user_data.authorised else redirect("/")
 
 
 @app.route('/lyricgame/artist/<artist_id>')
