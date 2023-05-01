@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import redirect, render_template
 
 from app import app
 from app.helpers.spotify_helper import SpotifyWebUserData
@@ -9,19 +9,26 @@ TODO:
  - button for user to delete their cache? 
  -
 '''
+
+
 @app.route('/')
 @app.route('/index')
 def index():
     return render_template('index.html', title='Home', userdata=SpotifyWebUserData())
 
+
 @app.route('/lyricgame')
-def lyricGame():
-    return render_template('game/playlistScreen.html', title='Home', userdata=SpotifyWebUserData())
+def game_page():
+    user_data = SpotifyWebUserData()
+    return render_template('game/playlistScreen.html', title='Home', user_data=user_data) if user_data else redirect("/")
+
 
 @app.route('/lyricgame/playlist/<playlist_id>')
-def lyricGamePlaylist(playlist_id):
-    return render_template('game/lyricgame.html', title='Home', userdata=SpotifyWebUserData())
+def playlist_page(playlist_id):
+    user_data = SpotifyWebUserData()
+    return render_template('game/lyricgame.html', title='Home', user_data=user_data) if user_data else redirect("/")
+
 
 @app.route('/lyricgame/artist/<artist_id>')
-def lyricGameArtist(artist_id):
+def artist_page(artist_id):
     return "not implemented"

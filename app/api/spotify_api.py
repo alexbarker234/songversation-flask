@@ -40,7 +40,7 @@ def topArtists():
         
         return jsonify([ob.__dict__ for ob in results])
     except UnauthorisedException:
-        return UNAUTHORISED_MESSAGE, 501
+        return UNAUTHORISED_MESSAGE, 401
     
 
 @app.route('/getplaylists')
@@ -62,7 +62,7 @@ def get_playlists():
                 playlists = None
         return jsonify([ob.__dict__ for ob in results])
     except UnauthorisedException:
-        return UNAUTHORISED_MESSAGE, 501
+        return UNAUTHORISED_MESSAGE, 401
 
 @app.route('/getplaylist/<playlist_id>')
 def get_playlist(playlist_id):
@@ -78,7 +78,7 @@ def get_playlist(playlist_id):
         except:    
             return jsonify({'error':True, 'message':'Invalid Playlist ID'})
     except UnauthorisedException:
-        return UNAUTHORISED_MESSAGE, 501
+        return UNAUTHORISED_MESSAGE, 401
 
 
 @app.route('/getplaylisttracks/<playlist_id>')
@@ -95,7 +95,7 @@ def get_playlist_tracks(playlist_id):
 
         return jsonify([ob.__dict__ for ob in results])
     except UnauthorisedException:
-        return UNAUTHORISED_MESSAGE, 501
+        return UNAUTHORISED_MESSAGE, 401
 
 def request_tracks(sp, tracks):
     '''

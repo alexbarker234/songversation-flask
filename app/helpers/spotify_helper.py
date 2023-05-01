@@ -63,13 +63,12 @@ class SpotifyHelper(spotipy.Spotify):
 class SpotifyWebUserData: 
     def __init__(self):
         try:
-            sp = SpotifyHelper()
+            '''sp = SpotifyHelper()
             payload = sp.me()
             self.authorised = True
             self.username = payload['display_name']
             self.image_url = payload['images'][0]['url'] if len(
                 payload['images']) > 0 else None
-            self.id = payload['id']
+            self.id = payload['id']'''
         except UnauthorisedException:
             self.authorised = False
-            pass
