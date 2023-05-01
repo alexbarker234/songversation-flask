@@ -31,6 +31,13 @@ function setAutocompleteVisibility(autocomplete, enabled) {
     autocomplete = $(autocomplete);
     autocomplete.children(".autocomplete-options:first-child").css("display", enabled ? "" : "none");
 }
+
+/**
+ * Sets the input of the autocomplete to a value
+ * @param {*} autocomplete - the .autocomplete-wrapper element to set option visibility to
+ * @param {*} value - the value to set the autocomplete input to
+ */
+
 function selectAutocomplete(autocomplete, value) {
     autocomplete = $(autocomplete);
     console.log(autocomplete)
@@ -38,11 +45,6 @@ function selectAutocomplete(autocomplete, value) {
     setAutocompleteVisibility(autocomplete, false);
 }
 
-/**
- *
- * @param {*} e
- * @returns
- */
 function onAutocompleteKeyPress(e) {
     if (e.keyCode == keyUp || e.keyCode == keyDown || e.keyCode == keyEnter) return;
 
@@ -50,6 +52,10 @@ function onAutocompleteKeyPress(e) {
     filterOptions($(e.target).parent());
 }
 
+/**
+ * Changes which elements are displayed from the .autocomplete-options list
+ * @param {*} autocomplete - the .autocomplete-wrapper element to set option visibility to
+ */
 function filterOptions(autocomplete) {
     autocomplete = $(autocomplete);
     let input = autocomplete.children(".autocomplete-input").first();

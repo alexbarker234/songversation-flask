@@ -8,7 +8,7 @@ $(window).on("load", function () {
 });
 
 function loadTopArtists() {
-    $.getJSON("/topartists", function (data) {
+    $.getJSON("/top-artists", function (data) {
         addArtists(data);
     });
 }

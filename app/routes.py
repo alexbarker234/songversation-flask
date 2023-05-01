@@ -10,6 +10,7 @@ TODO:
  -
 '''
 
+# all the web pages for Songversation - see api for REST api routes 
 
 @app.route('/')
 @app.route('/index')

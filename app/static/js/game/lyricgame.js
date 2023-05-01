@@ -58,11 +58,11 @@ function displayError(message) {
 }
 
 function getPlaylist(playlistID) {
-    return $.getJSON(`/getplaylist/${playlistID}`);
+    return $.getJSON(`/get-playlist/${playlistID}`);
 }
 
 function getPlaylistTracks(playlistID) {
-    return $.getJSON(`/getplaylisttracks/${playlistID}`);
+    return $.getJSON(`/get-playlist-tracks/${playlistID}`);
 }
 
 function loadGameWithPlaylist(playlist) {
@@ -142,7 +142,7 @@ function checkButton() {
 function loadLyrics(numToLoad, tracksToLoad, startGame) {
     numToLoad = Math.min(numToLoad, tracksToLoad.length);
     toLoad = tracksToLoad.splice(tracksToLoad.length - numToLoad, numToLoad);
-    $.getJSON("/gettracklyrics?track_ids=" + toLoad).done(function (response) {
+    $.getJSON("/get-track-lyrics?track_ids=" + toLoad).done(function (response) {
         for (const track_id in response.track_lyrics) {
             loadedTracks[track_id].lyrics = response.track_lyrics[track_id];
             if (response.track_lyrics[track_id].length > 0)

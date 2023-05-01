@@ -19,9 +19,11 @@ UNAUTHORISED_MESSAGE = "User Unauthorised"
 
 from app import app, db
 
-#TODO: redo this to use code like below
-@app.route('/topartists', methods=['GET'])
-def topArtists():
+@app.route('/top-artists', methods=['GET'])
+def top_artists():
+    '''
+    returns the current users top 50 artists over the past 4 weeks
+    '''
     try:
         sp = SpotifyHelper()
     
@@ -29,39 +31,22 @@ def topArtists():
 
         artists = sp.current_user_top_artists(limit=50,offset=0, time_range='short_term')
         while artists:
-            for i, playlist in enumerate(artists['items']):
-                platlistObj = Playlist(playlist)
-                if platlistObj.trackCount > 0:
-                    results.append(platlistObj)
+            for i, artist in enumerate(artists['items']):
+                results.append(Artist(artist))
             if artists['next']:
                 artists = sp.next(artists)
             else:
                 artists = None
         return jsonify([ob.__dict__ for ob in results])
-
-
-        sp = SpotifyHelper()
-        results = []
-        iter = 0
-
-        limit = 20
-
-        while True:
-            offset = iter * limit
-            iter += 1
-            curGroup = sp.current_user_top_artists(limit=limit, offset=offset, time_range='short_term')['items']
-            for idx, item in enumerate(curGroup):
-                results += [Artist(item)]
-            if (len(curGroup) < limit):
-                break
-        
-        return jsonify([ob.__dict__ for ob in results])
     except UnauthorisedException:
         return UNAUTHORISED_MESSAGE, 401
     
 
-@app.route('/getplaylists')
+@app.route('/get-playlists')
 def get_playlists():
+    '''
+    returns the current users playlists
+    '''
     try:
         sp = SpotifyHelper()
     
@@ -81,7 +66,7 @@ def get_playlists():
     except UnauthorisedException:
         return UNAUTHORISED_MESSAGE, 401
 
-@app.route('/getplaylist/<playlist_id>')
+@app.route('/get-playlist/<playlist_id>')
 def get_playlist(playlist_id):
     try:
         sp = SpotifyHelper()
@@ -98,7 +83,7 @@ def get_playlist(playlist_id):
         return UNAUTHORISED_MESSAGE, 401
 
 
-@app.route('/getplaylisttracks/<playlist_id>')
+@app.route('/get-playlist-tracks/<playlist_id>')
 def get_playlist_tracks(playlist_id):
     try:
         sp = SpotifyHelper()
@@ -130,8 +115,11 @@ def request_tracks(sp, tracks):
             tracks = None
     return results
 
-@app.route('/gettracklyrics', methods=['GET'])
+@app.route('/get-track-lyrics', methods=['GET'])
 async def get_track_lyrics():
+    '''
+    
+    '''
     return_data = {
         'error': False,
         'track_lyrics': {}
