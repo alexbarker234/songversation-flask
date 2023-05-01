@@ -1,5 +1,7 @@
+import glob
 import os
 import logging
+from pathlib import Path
 from config import Config
 from logging.handlers import RotatingFileHandler
 from datetime import date
@@ -16,29 +18,27 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 assets = Environment(app)
 
-# bundles
-css = Bundle('css/main.css', 'css/nav.css', 'css/animation.css', output='gen/packed.css')
+# bundles - dynamically load all files in css & js files
+
+css_files = [str(path.relative_to('app/static')) for path in Path('app/static/css').rglob('*.css')]
+css = Bundle(*css_files, output='gen/packed.css')
 assets.register('css_all', css)
 
 # could potentially include jQuery & bootstrap.js in here
-js = Bundle('scripts/extensions.js', 
-            'scripts/main.js', 
-            'scripts/index.js',
-            'scripts/game/lyricgame.js',
-            'scripts/game/playlistScreen.js',
-            output='gen/main.js')
-assets.register('js_all', js)
+js_files = [str(path.relative_to('app/static')) for path in Path('app/static/js').rglob('*.js')]
+css = Bundle(*js_files, output='gen/packed.js')
+assets.register('js_all', css)
 
 # logging
 if not app.debug:
     if not os.path.exists('logs'):
         os.mkdir('logs')
-    file_handler = RotatingFileHandler('logs/flasktest_{}.log'.format(date.today()))
+    file_handler = RotatingFileHandler('logs/songversation_{}.log'.format(date.today()))
     file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
 
     app.logger.setLevel(logging.INFO)
-    app.logger.info('flasktest startup')
+    app.logger.info('Starting Songversation...')
 
 from app import routes, models, errors

@@ -1,0 +1,46 @@
+
+/* ARTIST SCROLLER */
+#top-artists {
+    background-color: var(--bg-color2);
+    height: 40rem;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    overflow-x: scroll;
+}
+#top-artists img {
+    width: 30rem;
+    height: 30rem;
+    object-fit: cover;   
+
+    -webkit-user-drag: none;  
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+.artist-box {
+    margin: 2rem;
+}
+
+.menu-button-container {
+    width: 90%;
+    max-width: 1000px;
+
+    margin: auto;
+
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.menu-button-container a {
+    text-decoration: none;
+}
+.menu-button {
+    width: 6rem;
+    height: 4rem;
+    background-color: var(--spotify-green);
+    color:white;
+}

@@ -37,7 +37,13 @@ A lyric guessing game - powered by Flask with [Spotipy](https://spotipy.readthed
     ```
     - You will need to get the Spotify Client ID & Secret by going to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) and creating a Spotify app
 
-6. Start the app through
+6. Initialise the database
+    ```
+    flask db init
+    flask db upgrade
+    ```
+
+7. Start the app through
     ```
     flask run
     ```

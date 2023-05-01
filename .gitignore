@@ -6,6 +6,8 @@ userdata
 tmp-env
 venv*
 
+app.db
+
 __pycache__
 
 app/static/gen

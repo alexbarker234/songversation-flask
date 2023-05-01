@@ -2,10 +2,19 @@
 
 {% block content %}
     <h1>hey!</h1>
-    <a href="/lyricgame">to game</a>
 
     {% if userdata.authorized %}
     <h2>top artists</h2>
-    <div id="top-artists"></div>
+    <div id="top-artists" style="display:none"></div>
+    <div class="menu-button-container">
+        <a href="/lyricgame">
+            <div class="menu-button">Guess the Song</div>
+        </a>
+        <a href="#">
+            <div class="menu-button">Lyric Battle</div>
+        </a>
+    </div>
+    {% else %}
+    <h2>Please <a href="{{ url_for('login') }}">Log In</a></h2>
     {% endif %}
 {% endblock %}

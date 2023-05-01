@@ -1,0 +1,86 @@
+/* autocomplete.css */
+
+#guess-input {
+    background-color: var(--bg-color3);
+    border-color: var(--border-color);
+
+    color: white;
+    width: 100%;
+    padding: 12px 20px;
+}
+
+#guess-input:focus {
+    outline: none;
+}
+
+.autocomplete-wrapper {
+    position: absolute;
+    bottom: 100%;
+    width: 90%;
+    max-width: 1000px;
+    left:50%;
+    transform: translate(-50%, 100%);
+    z-index: 2;
+}
+
+/* gradients */
+.gradient-border::before,
+.gradient-border::after {
+    background: conic-gradient(
+        from calc(var(--grad) * 1deg),
+        /* the most janky conversion*/ #217af7,
+        #a445eb,
+        #e3319a,
+        #a445eb,
+        #217af7
+    );
+    border-radius: inherit;
+    z-index: -1;
+    inset: -0.2rem;
+    position: absolute;
+    content: "";
+}
+
+.gradient-border:after {
+    filter: blur(1rem);
+}
+
+.autocomplete-wrapper ::before,
+.autocomplete-wrapper ::after {
+    z-index: 1;
+}
+
+.autocomplete-options {
+    background-color: var(--bg-color3);
+    width: 100%;
+    height: fit-content;
+    max-height: 20rem;
+
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin: 0rem auto;
+}
+.autocomplete-options li {
+    padding: 1rem 4rem 1rem 4rem;
+    text-decoration: none;
+    list-style-type: none;
+    cursor: pointer;
+
+    text-align: left;
+    transition: 0.2s;
+
+    border-bottom: solid var(--border-color) 1px;
+
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+.autocomplete-options li:hover {
+    background-color: var(--bg-color2);
+}
+.autocomplete-options li.selected {
+    border: var(--spotify-green) 1px solid;
+}
