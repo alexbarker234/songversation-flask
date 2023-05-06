@@ -11,6 +11,8 @@ class Config(object):
     SPOTIPY_CLIENT_SECRET = os.environ.get('SPOTIPY_CLIENT_SECRET')
 
     # Databases
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+    SQLALCHEMY_DATABASE_URI = os.getenv('POSTGRES_URL', '').replace("postgres://", "postgresql://") or \
+        os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'app.db')
+    
     SQLALCHEMY_TRACK_MODIFICATIONS = False
