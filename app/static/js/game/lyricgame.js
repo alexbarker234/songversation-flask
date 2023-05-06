@@ -45,24 +45,6 @@ $(window).on("load", function () {
                 loadGameWithPlaylist(response);
             }
         });
-
-        $(document).on("click", ".autocomplete-options li", function (e) {
-            selectAutocomplete(e.target.innerHTML);
-        });
-
-        // close autocomplete menu
-        $(document).on("click", ".autocomplete-options", function (e) {
-            e.stopPropagation();
-        }); // dont close when clicking this
-        $(document).on("click", function (e) {
-            setAutocompleteVisibility(
-                e.target.id == "guess-input" && e.target.value != ""
-            );
-        });
-
-        $(document).on("keyup", "#guess-input", manageAutocomplete);
-
-        $(document).on("keydown", autocompleteKeyboard);
     }
 });
 
@@ -76,11 +58,11 @@ function displayError(message) {
 }
 
 function getPlaylist(playlistID) {
-    return $.getJSON(`/getplaylist/${playlistID}`);
+    return $.getJSON(`/get-playlist/${playlistID}`);
 }
 
 function getPlaylistTracks(playlistID) {
-    return $.getJSON(`/getplaylisttracks/${playlistID}`);
+    return $.getJSON(`/get-playlist-tracks/${playlistID}`);
 }
 
 function loadGameWithPlaylist(playlist) {
@@ -132,79 +114,6 @@ function trackListDisplay(track) {
     return `${track.name} - ${track.artists.join(", ")}`;
 }
 
-// AUTOCOMPLETE
-function manageAutocomplete(e) {
-    if (e.keyCode == keyUp || e.keyCode == keyDown || e.keyCode == keyEnter)
-        return;
-
-    setAutocompleteVisibility(e.target.value != "");
-
-    let filter = e.target.value.toUpperCase();
-    let trackList = $("#track-list");
-    let options = trackList.find("li");
-
-    optionCount = 0;
-    autocompleteSelected = -1;
-
-    for (i = 0; i < options.length; i++) {
-        txtValue = options[i].textContent || options[i].innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            $(options[i]).css("display", "");
-            optionCount++;
-        } else {
-            $(options[i]).css("display", "none");
-        }
-        $(options[i]).removeClass("selected");
-    }
-}
-function setAutocompleteVisibility(enabled) {
-    $("#track-list").css("display", enabled ? "" : "none");
-}
-function selectAutocomplete(value) {
-    $("#guess-input").val(value);
-    setAutocompleteVisibility(false);
-}
-function autocompleteKeyboard(e) {
-    if (
-        (e.keyCode != keyUp && e.keyCode != keyDown && e.keyCode != keyEnter) ||
-        optionCount == 0
-    )
-        return;
-    e.preventDefault();
-
-    let autocompleteList = $("#track-list");
-    let options = autocompleteList.find("li");
-    let enabled = options
-        .toArray()
-        .filter((elem) => elem.style.display != "none");
-    let optionHeight = options.first().height() * 2; // TODO: find out why this is 2x
-
-    if (e.keyCode == keyUp || e.keyCode == keyDown) {
-        if (autocompleteList.css("display") == "none") return;
-
-        if (e.keyCode == keyUp) {
-            if (autocompleteSelected == -1) autocompleteSelected++;
-            autocompleteSelected = (autocompleteSelected - 1).mod(optionCount);
-        } else if (e.keyCode == keyDown) {
-            autocompleteSelected = (autocompleteSelected + 1).mod(optionCount);
-        }
-
-        autocompleteList.scrollTop(autocompleteSelected * optionHeight);
-
-        // highlight selected
-        for (i = 0; i < enabled.length; i++) {
-            if (i == autocompleteSelected) $(enabled[i]).addClass("selected");
-            else $(enabled[i]).removeClass("selected");
-        }
-    } else if (e.keyCode == keyEnter) {
-        // submit
-        if (autocompleteList.css("display") == "none") checkButton();
-        // choose
-        else if (autocompleteSelected != -1)
-            selectAutocomplete(enabled[autocompleteSelected].innerHTML);
-    }
-}
-
 // BUTTONS
 function skipButton() {
     roundsLeft--;
@@ -233,7 +142,7 @@ function checkButton() {
 function loadLyrics(numToLoad, tracksToLoad, startGame) {
     numToLoad = Math.min(numToLoad, tracksToLoad.length);
     toLoad = tracksToLoad.splice(tracksToLoad.length - numToLoad, numToLoad);
-    $.getJSON("/gettracklyrics?track_ids=" + toLoad).done(function (response) {
+    $.getJSON("/get-track-lyrics?track_ids=" + toLoad).done(function (response) {
         for (const track_id in response.track_lyrics) {
             loadedTracks[track_id].lyrics = response.track_lyrics[track_id];
             if (response.track_lyrics[track_id].length > 0)

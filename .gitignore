@@ -1,7 +1,6 @@
 # Custom Ignores
 logs
 .env
-userdata
 
 tmp-env
 venv*
