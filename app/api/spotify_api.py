@@ -175,7 +175,7 @@ async def get_track_lyrics():
             for response in responses:
                 track_id = response['data']
 
-                lyric_cache = TrackLyrics.query.filter_by(TrackLyrics.track_id == track_id).first()
+                lyric_cache = TrackLyrics.query.filter(TrackLyrics.track_id == track_id).first()
 
                 # initialise cache 
                 if not lyric_cache:
