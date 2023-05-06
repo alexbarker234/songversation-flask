@@ -4,20 +4,29 @@ from flask import request, url_for, session
 import time
 from config import Config
 
+
 class UnauthorisedException(Exception):
     "Raised when user is not authorised"
     pass
+
 
 class SpotifyHelper(spotipy.Spotify):
     '''
     Creates a wrapper class of spotipy.Spotify that checks if the user is logged in first 
     '''
+
     def __init__(self):
         session['token_info'], authorised = self.get_token()
         session.modified = True
         if not authorised:
             raise UnauthorisedException("The user is not logged in")
         super(SpotifyHelper, self).__init__(auth=session.get('token_info').get('access_token'))
+
+        '''cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
+        auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
+        if not auth_manager.validate_token(cache_handler.get_cached_token()):
+             raise UnauthorisedException("The user is not logged in")
+        super(SpotifyHelper, self).__init__(auth_manager=auth_manager)'''
 
     def get_token(self):
         '''
@@ -33,7 +42,8 @@ class SpotifyHelper(spotipy.Spotify):
 
         # Checking if token has expired
         now = int(time.time())
-        is_token_expired = session.get('token_info').get('expires_at') - now < 60
+        is_token_expired = session.get(
+            'token_info').get('expires_at') - now < 60
 
         # Refreshing token if it has expired
         if (is_token_expired):
@@ -43,24 +53,28 @@ class SpotifyHelper(spotipy.Spotify):
 
         token_valid = True
         return token_info, token_valid
-    
+
     @staticmethod
     def create_spotify_oauth():
+        cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
         return SpotifyOAuth(
             client_id=Config.SPOTIPY_CLIENT_ID,
             client_secret=Config.SPOTIPY_CLIENT_SECRET,
             redirect_uri=url_for('authorise', _external=True),
-            scope="user-library-read user-top-read playlist-read-private user-read-private")
-    
+            scope="user-library-read user-top-read playlist-read-private user-read-private",
+            cache_handler=cache_handler,
+            show_dialog=True)
+
     @staticmethod
     def authorise():
         sp_oauth = SpotifyHelper.create_spotify_oauth()
-        session.clear()
+        session.pop("token_info", None)
         code = request.args.get('code')
         token_info = sp_oauth.get_access_token(code)
         session["token_info"] = token_info
 
-class SpotifyWebUserData: 
+
+class SpotifyWebUserData:
     def __init__(self):
         try:
             sp = SpotifyHelper()
@@ -68,7 +82,7 @@ class SpotifyWebUserData:
             self.authorised = True
             self.username = payload['display_name']
             self.image_url = payload['images'][0]['url'] if len(
-                payload['images']) > 0 else None
+                payload['images']) > 0 else url_for('static', filename='defaultPfp.png')
             self.id = payload['id']
         except UnauthorisedException:
             self.authorised = False

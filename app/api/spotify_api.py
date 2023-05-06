@@ -137,9 +137,9 @@ async def get_track_lyrics():
     # check cache
     uncached_track_ids = []
     for track_id in track_ids:
-        lyric_cache = TrackLyrics.query.filter_by(track_id = track_id).first()
+        lyric_cache = TrackLyrics.query.filter(TrackLyrics.track_id == track_id).first()
         if lyric_cache:
-            lyric_lines_cache = Lyric.query.filter_by(track_lyric_id = lyric_cache.id).order_by(Lyric.order.asc()).all()
+            lyric_lines_cache = Lyric.query.filter(Lyric.track_lyric_id == lyric_cache.id).order_by(Lyric.order.asc()).all()
 
             # check if cache is old
             needs_refresh = False
@@ -175,7 +175,7 @@ async def get_track_lyrics():
             for response in responses:
                 track_id = response['data']
 
-                lyric_cache = TrackLyrics.query.filter_by(track_id = track_id).first()
+                lyric_cache = TrackLyrics.query.filter(TrackLyrics.track_id == track_id).first()
 
                 # initialise cache 
                 if not lyric_cache:
