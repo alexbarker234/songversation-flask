@@ -44,3 +44,86 @@
     background-color: var(--spotify-green);
     color:white;
 }
+
+.cta-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--spotify-green);
+    color: #000000;
+    text-decoration: none;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    font-family: 'Circular Std', Arial, sans-serif;
+    cursor: pointer;
+  }
+.cta-button:hover {
+    background-color: var(--spotify-green);
+    color: rgba(0, 0, 0, 0.58);
+}
+
+.align-to-middle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.welcome-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.welcome-bubble {
+    position: absolute;
+    animation: float 8s linear infinite;
+    fill: var(--spotify-green);
+}
+
+.welcome-bubble:nth-child(1) {
+    top: 20%;
+    left: 20%;
+}
+
+.welcome-bubble:nth-child(2) {
+    top: 60%;
+    left: 40%;
+}
+
+.welcome-bubble:nth-child(3) {
+    top: 40%;
+    left: 80%;
+}
+
+
+@keyframes float {
+    0% {
+        transform: translate(0, 0);
+        opacity: 0;
+    }
+    5% {
+        opacity: 1;
+    }
+    90% {
+        transform: translate(calc(100vw - 100%), calc(100vh - 100%));
+        opacity: 1;
+    }
+    95% {
+        opacity: 0;
+    }
+    100% {
+        transform: translate(0, 0);
+        opacity: 0;
+    }
+}
+
+
+.welcome-bubble {
+    width: 150px;
+    height: 150px;
+}
