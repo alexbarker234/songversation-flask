@@ -10,12 +10,9 @@ let loadedLyrics = [];
 /** @type Track */
 let currentTrack = null;
 
-let rounds = 5;
+let rounds = 1;
 let roundsLeft = rounds;
 let score = 0;
-
-let autocompleteSelected = -1;
-let optionCount = 0;
 
 const keyUp = 38,
     keyDown = 40,
@@ -27,8 +24,6 @@ const keyUp = 38,
     - ensure playlists have songs on spotify 
     - remove local tracks
     - remove punctuation from autocomplete search
-    - try and avoid putting the song title in the lyrics??
-    - remove whole lyric lines like "ooh-ooh" and "yeah"
     - keyboard support - arrowkey autocomplete, enter to submit
     - some lyric links return 404 - make sure thats fixed
     - make the autocomplete include artist names 
@@ -51,9 +46,7 @@ $(window).on("load", function () {
 function displayError(message) {
     let game = $("#lyric-game");
     game.empty();
-    game.append($("<h1>", { html: message }));
-    game.append($("<a>", { html: "Back", href: "/" }));
-
+    game.append(errorMessageComponent(message))
     $("#loader-container").remove();
 }
 
@@ -76,7 +69,7 @@ function loadGameWithPlaylist(playlist) {
     availableTrackIDs = availableTrackIDs.filter((n) => n).shuffle(); // remove null track ids (local files) and shuffle
 
     // playlist icon
-    selectedPlaylist = createCoverArtBox(playlist);
+    selectedPlaylist = coverArtBoxComponent(playlist);
     selectedPlaylist.css("animation", "fade-in 1s");
     selectedPlaylist.addClass("selected-playlist");
     $("#selected-cover-art").append(selectedPlaylist);
@@ -98,16 +91,9 @@ function finishScreen() {
         - replay with same playlist
         - back to playlists
     */
-    const winScreen = $("<div>", { id: "win-screen" });
 
-    winScreen.append($("<p>", { id: "test", html: "you win" }));
-
-    $("#lyric-game").append(winScreen);
-
-    // remove rest of content after
-    setTimeout(function () {
-        $("#lyric-game").children("*").not("#win-screen").remove();
-    }, 1000);
+    $('#streak-score').html(`Final Streak: ${score}`)
+    $('#win-modal').modal('show');
 }
 
 function trackListDisplay(track) {
@@ -130,7 +116,8 @@ function checkButton() {
     } else {
         console.log("wrong");
     }
-    roundsLeft--;
+
+    input.val('')
 }
 /**
  * Will load all lyrics in order from the availableTrackIDs array into the loadedTracks map

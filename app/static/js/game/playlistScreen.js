@@ -5,7 +5,7 @@ $(window).on("load", function () {
 });
 
 function loadPlaylists() {
-    loader = createLoader();
+    loader = loaderComponent();
     loader.css("margin", "auto");
     $("#cover-art").append(loader);
 
@@ -23,7 +23,7 @@ function addPlaylists(data) {
     data.forEach((element) => {
         if (element.trackCount != 0) {
             playlistCache[element.id] = element;
-            playlistBox = createCoverArtBox(
+            playlistBox = coverArtBoxComponent(
                 element,
                 index,
                 `lyricgame/playlist/${element.id}`
