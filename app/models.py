@@ -1,7 +1,16 @@
 from app import db
 from datetime import datetime
 
-#class User(db.Model):
+#each row is a game done by an individual, records their id, the streak they had, and the date and time of the game
+class Stats(db.Model): 
+    user_id = db.Column(db.String(120), primary_key=True)
+    streaknum = db.Column(db.Integer)
+    date_of_game = db.Column(db.DateTime, default=datetime.utcnow) #
+
+#user table that has all the user ids and when they joined
+class User(db.Model):
+    user_id = db.Column(db.String(120), primary_key=True)
+    date_joined = db.Column(db.DateTime, default=datetime.utcnow)
 
 # cache some data locally to speed up load times (especially with lyrics)
 class Playlist(db.Model):
