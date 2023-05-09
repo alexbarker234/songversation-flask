@@ -1,0 +1,5 @@
+.win-modal-body {
+    display: block;
+    background-color: var(--bg-color2);
+    color: white;
+}

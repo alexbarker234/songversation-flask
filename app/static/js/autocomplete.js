@@ -29,7 +29,16 @@ $(window).on("load", function () {
  */
 function setAutocompleteVisibility(autocomplete, enabled) {
     autocomplete = $(autocomplete);
-    autocomplete.children(".autocomplete-options:first-child").css("display", enabled ? "" : "none");
+
+    textBox = autocomplete.children(".autocomplete-input:first-child")
+    optionDiv = autocomplete.children(".autocomplete-options:first-child")
+
+    // never display if input is empty
+    if (textBox.val() == "") enabled = false; 
+
+    if (!enabled) acSelected[autocomplete.id] = -1
+
+    optionDiv.css("display", enabled ? "" : "none");
 }
 
 /**
@@ -48,8 +57,10 @@ function selectAutocomplete(autocomplete, value) {
 function onAutocompleteKeyPress(e) {
     if (e.keyCode == keyUp || e.keyCode == keyDown || e.keyCode == keyEnter) return;
 
-    setAutocompleteVisibility(e.target, true);
-    filterOptions($(e.target).parent());
+    autocomplete = $(e.target).parent()
+    
+    setAutocompleteVisibility(autocomplete, true);
+    filterOptions(autocomplete);
 }
 
 /**
@@ -62,8 +73,6 @@ function filterOptions(autocomplete) {
     let optionList = autocomplete.children(".autocomplete-options").first();
     let options = optionList.find("li");
 
-    optionCount = 0;
-
     let filter = input.val().toUpperCase();
 
     for (i = 0; i < options.length; i++) {
@@ -71,7 +80,6 @@ function filterOptions(autocomplete) {
         // if the input isnt blank and the value matches then display
         if (input.val() != "" && txtValue.toUpperCase().indexOf(filter) > -1) {
             $(options[i]).css("display", "");
-            optionCount++;
         } else {
             $(options[i]).css("display", "none");
         }
@@ -79,45 +87,52 @@ function filterOptions(autocomplete) {
     }
 }
 
+acSelected = {}
+
 /**
  *
  * @param {*} e
  * @returns
  */
 function autocompleteKeyControls(e) {
-    if ((e.keyCode != keyUp && e.keyCode != keyDown && e.keyCode != keyEnter) || optionCount == 0) return;
+    if (e.keyCode != keyUp && e.keyCode != keyDown && e.keyCode != keyEnter) return;
     e.preventDefault();
 
-    let autocomplete = e.target;
-
+    let autocomplete = $(e.target).parent();
     let optionsList = autocomplete.children(".autocomplete-options:first-child");
-    let options = optionsList.find("li");
-    let enabled = options.toArray().filter((elem) => elem.style.display != "none");
-    let optionHeight = options.first().height() * 2;
 
-    console.log(autocomplete);
+    enabled = optionsList.children('li:visible')
+    optionCount = enabled.length
+
+    if (optionCount == 0 || optionsList.css('display') == "none") return;
+
+    let optionHeight = enabled.first().height() * 2;
+
+    // may not be the best way
+    if (!acSelected[autocomplete.id]) acSelected[autocomplete.id] = 0
 
     if (e.keyCode == keyUp || e.keyCode == keyDown) {
         if (optionsList.css("display") == "none") return;
 
         if (e.keyCode == keyUp) {
-            if (autocompleteSelected == -1) autocompleteSelected++;
-            autocompleteSelected = (autocompleteSelected - 1).mod(optionCount);
+            console.log(acSelected[autocomplete.id])
+            if (acSelected[autocomplete.id] == -1) acSelected[autocomplete.id]++;
+            acSelected[autocomplete.id] = (acSelected[autocomplete.id] - 1).mod(optionCount);
         } else if (e.keyCode == keyDown) {
-            autocompleteSelected = (autocompleteSelected + 1).mod(optionCount);
+            acSelected[autocomplete.id] = (acSelected[autocomplete.id] + 1).mod(optionCount);
         }
 
-        optionsList.scrollTop(autocompleteSelected * optionHeight);
+        optionsList.scrollTop(acSelected[autocomplete.id] * optionHeight);
 
         // highlight selected
         for (i = 0; i < enabled.length; i++) {
-            if (i == autocompleteSelected) $(enabled[i]).addClass("selected");
+            if (i == acSelected[autocomplete.id]) $(enabled[i]).addClass("selected");
             else $(enabled[i]).removeClass("selected");
         }
     } else if (e.keyCode == keyEnter) {
         // submit
         if (optionsList.css("display") == "none") checkButton();
         // choose
-        else if (autocompleteSelected != -1) selectAutocomplete(enabled[autocompleteSelected].innerHTML);
+        else if (acSelected[autocomplete.id] != -1) selectAutocomplete(autocomplete, enabled[acSelected[autocomplete.id]].innerHTML);
     }
 }
