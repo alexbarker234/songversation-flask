@@ -51,9 +51,7 @@ $(window).on("load", function () {
 function displayError(message) {
     let game = $("#lyric-game");
     game.empty();
-    game.append($("<h1>", { html: message }));
-    game.append($("<a>", { html: "Back", href: "/" }));
-
+    game.append(errorMessageComponent(message))
     $("#loader-container").remove();
 }
 
@@ -76,7 +74,7 @@ function loadGameWithPlaylist(playlist) {
     availableTrackIDs = availableTrackIDs.filter((n) => n).shuffle(); // remove null track ids (local files) and shuffle
 
     // playlist icon
-    selectedPlaylist = createCoverArtBox(playlist);
+    selectedPlaylist = coverArtBoxComponent(playlist);
     selectedPlaylist.css("animation", "fade-in 1s");
     selectedPlaylist.addClass("selected-playlist");
     $("#selected-cover-art").append(selectedPlaylist);
@@ -98,16 +96,13 @@ function finishScreen() {
         - replay with same playlist
         - back to playlists
     */
-    const winScreen = $("<div>", { id: "win-screen" });
 
-    winScreen.append($("<p>", { id: "test", html: "you win" }));
-
-    $("#lyric-game").append(winScreen);
+    /*$("#lyric-game").append(winScreenComponent(score));
 
     // remove rest of content after
     setTimeout(function () {
         $("#lyric-game").children("*").not("#win-screen").remove();
-    }, 1000);
+    }, 1000);*/
 }
 
 function trackListDisplay(track) {
