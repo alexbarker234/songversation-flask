@@ -1,8 +1,10 @@
 
 from flask import session, redirect
-from app import app
+from app import app, db
 from app.helpers.spotify_helper import SpotifyHelper
 from spotipy.exceptions import SpotifyException
+from app.models import User
+from datetime import datetime
 
 @app.route('/login')
 def login():    
@@ -19,18 +21,30 @@ def logout():
 @app.route('/authorise')
 def authorise():
 
-    print("test1")
-
     SpotifyHelper.authorise()
-    print("test2")
-
+    
     # TEST IF THE USER HAS ACCESS
     try:
-        SpotifyHelper().me()      
+        SpotifyHelper().me() 
+        spotify_helper = SpotifyHelper()     
+        user_info = spotify_helper.me()
+
+        user = User.query.filter_by(user_id=user_info['id']).first()
+
+        if not user:
+            # Create new user row if user does not exist in database
+            user = User(user_id=user_info['id'], date_joined=datetime.utcnow())
+            db.session.add(user)
+            db.session.commit()
+
     except SpotifyException as e:
         if 'User not registered in the Developer Dashboard' in e.msg: 
             for key in list(session.keys()):
                 session.pop(key)
             return f"Please ask Alex for access - send email associated with spotify account\nBack to <a href='/'>index</a>"
+    sp = SpotifyHelper()
+    user_id = sp.me()['id']
+
+
         
     return redirect("/")
