@@ -14,9 +14,6 @@ let rounds = 1;
 let roundsLeft = rounds;
 let score = 0;
 
-let autocompleteSelected = -1;
-let optionCount = 0;
-
 const keyUp = 38,
     keyDown = 40,
     keyEnter = 13;
@@ -27,8 +24,6 @@ const keyUp = 38,
     - ensure playlists have songs on spotify 
     - remove local tracks
     - remove punctuation from autocomplete search
-    - try and avoid putting the song title in the lyrics??
-    - remove whole lyric lines like "ooh-ooh" and "yeah"
     - keyboard support - arrowkey autocomplete, enter to submit
     - some lyric links return 404 - make sure thats fixed
     - make the autocomplete include artist names 
@@ -121,6 +116,8 @@ function checkButton() {
     } else {
         console.log("wrong");
     }
+
+    input.val('')
 }
 /**
  * Will load all lyrics in order from the availableTrackIDs array into the loadedTracks map
