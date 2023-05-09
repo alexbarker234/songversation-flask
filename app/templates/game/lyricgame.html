@@ -19,6 +19,24 @@
         </div>
         <button id="submit" class="button" onclick="checkButton()">Submit</button>
     </div>
+    <div id="win-screen" style="display:none">
+        <h1 id="streak"></h1>
+        <button id="play-again" class="button" onclick="playAgain()">Play Again?</button>
+    </div>
+
+    <!-- Win Screen Modal via Bootstrap -->
+    <div class="modal fade win-modal" id="win-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body win-modal-body">
+                    <div id="streak-score">hello test</div>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="playAgain()">Play Again?</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="playAgain()">Choose a playlist</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
     {% endif %}
     {% include "loader.html" %}

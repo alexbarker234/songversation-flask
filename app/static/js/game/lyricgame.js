@@ -10,7 +10,7 @@ let loadedLyrics = [];
 /** @type Track */
 let currentTrack = null;
 
-let rounds = 5;
+let rounds = 1;
 let roundsLeft = rounds;
 let score = 0;
 
@@ -97,12 +97,8 @@ function finishScreen() {
         - back to playlists
     */
 
-    /*$("#lyric-game").append(winScreenComponent(score));
-
-    // remove rest of content after
-    setTimeout(function () {
-        $("#lyric-game").children("*").not("#win-screen").remove();
-    }, 1000);*/
+    $('#streak-score').html(`Final Streak: ${score}`)
+    $('#win-modal').modal('show');
 }
 
 function trackListDisplay(track) {
