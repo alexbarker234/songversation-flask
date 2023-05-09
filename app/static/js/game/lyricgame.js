@@ -121,7 +121,6 @@ function checkButton() {
     } else {
         console.log("wrong");
     }
-    roundsLeft--;
 }
 /**
  * Will load all lyrics in order from the availableTrackIDs array into the loadedTracks map
