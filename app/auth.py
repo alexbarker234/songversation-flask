@@ -33,7 +33,7 @@ def authorise():
 
         if not user:
             # Create new user row if user does not exist in database
-            user = User(user_id=user_info['id'], date_joined=datetime.utcnow())
+            user = User(user_id=user_info['id'], name=user_info['display_name'], date_joined=datetime.utcnow())
             db.session.add(user)
             db.session.commit()
 
@@ -42,9 +42,6 @@ def authorise():
             for key in list(session.keys()):
                 session.pop(key)
             return f"Please ask Alex for access - send email associated with spotify account\nBack to <a href='/'>index</a>"
-    sp = SpotifyHelper()
-    user_id = sp.me()['id']
-
 
         
     return redirect("/")
