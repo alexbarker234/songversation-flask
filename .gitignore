@@ -10,7 +10,6 @@ Songversationvenv
 app.db
 
 __pycache__
-migrations
 app/static/gen
 
 # Mac OS
