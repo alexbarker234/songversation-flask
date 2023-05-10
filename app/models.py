@@ -1,9 +1,10 @@
 from app import db
 from datetime import datetime
 
-#each row is a game done by an individual, records their id, the streak they had, and the date and time of the game
+#each row is a given game done by a given user id, and holds the streak they had, and the date and time of the game
 class Stats(db.Model): 
-    user_id = db.Column(db.String(120), primary_key=True)
+    game_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(120))
     streaknum = db.Column(db.Integer)
     date_of_game = db.Column(db.DateTime, default=datetime.utcnow) #
 
