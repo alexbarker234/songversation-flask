@@ -1,5 +1,5 @@
 from datetime import datetime
-from app.models import Stats
+from app.models import Game
 from flask import redirect, render_template, request
 from app import app, db
 from app.helpers.spotify_helper import SpotifyWebUserData, SpotifyHelper
@@ -35,23 +35,3 @@ def playlist_page(playlist_id):
 def artist_page(artist_id):
     return "not implemented"
 
-@app.route('/stats', methods=['POST'])
-def save_stats():
-    spotify_helper = SpotifyHelper()     
-    user_info = spotify_helper.me()
-    user_id = user_info['id']
-    score = request.form['score']
-
-    # Get the max game_id from the Stats table
-    max_game_id = Stats.query.order_by(Stats.game_id.desc()).first()
-    if max_game_id is None:
-        game_id = 1
-    else:
-        game_id = max_game_id.game_id + 1
-
-    # Create a new row in the Stats table
-    new_stats = Stats(game_id=game_id, user_id=user_id, streaknum=score, date_of_game=datetime.utcnow())
-    db.session.add(new_stats)
-    db.session.commit()
-
-    return 'Stats saved successfully.'
