@@ -10,8 +10,6 @@ let loadedLyrics = [];
 /** @type Track */
 let currentTrack = null;
 
-let rounds = 1;
-let roundsLeft = rounds;
 let score = 0;
 
 const keyUp = 38,
@@ -80,7 +78,7 @@ function loadGameWithPlaylist(playlist) {
         trackList.append($("<li>", { html: `${trackListDisplay(track)}` }));
     });
 
-    $("#score-text").html(`0 / ${rounds}`);
+    $("#score-text").html(`0`);
 
     loadLyrics(5, [...availableTrackIDs], true);
 }
@@ -94,6 +92,7 @@ function finishScreen() {
 
     $('#streak-score').html(`Final Streak: ${score}`)
     $('#win-modal').modal('show');
+
 }
 
 function trackListDisplay(track) {
@@ -102,18 +101,17 @@ function trackListDisplay(track) {
 
 // BUTTONS
 function skipButton() {
-    roundsLeft--;
+    finishScreen();
 }
+
 function checkButton() {
     input = $("#guess-input");
     if (input.val() == trackListDisplay(currentTrack)) {
         score++;
-        roundsLeft--;
-        $("#score-text").html(`${score} / ${rounds}`);
-        if (roundsLeft <= 0) {
-            finishScreen();
-        } else chooseLyrics();
+        $("#score-text").html(`${score}`);
+        chooseLyrics();
     } else {
+        finishScreen();
         console.log("wrong");
     }
 
@@ -205,3 +203,10 @@ function displayLyricLine(trackID, startLine, curLine) {
             displayLyricLine(trackID, startLine, curLine);
         }, 3000);
 }
+
+function playAgain(){
+    score=0;
+    $("#score-text").html(`${score}`);
+    chooseLyrics();
+}
+
