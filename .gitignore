@@ -5,6 +5,8 @@ logs
 tmp-env
 venv*
 
+Songversationvenv
+
 app.db
 
 __pycache__
