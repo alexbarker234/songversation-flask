@@ -89,10 +89,25 @@ function finishScreen() {
         - replay with same playlist
         - back to playlists
     */
-
-    $('#streak-score').html(`Final Streak: ${score}`)
+    commitStats(score);
+    $('#streak-score').html(`Final Streak: ${score}`);
     $('#win-modal').modal('show');
+}
 
+function commitStats(score){
+    $.ajax({
+        url: "/stats",
+        type: "POST",
+        data: {
+          score: score,
+        },
+        success: function(response) {
+          console.log("Stats saved successfully.");
+        },
+        error: function(xhr) {
+          console.log("Error saving stats.");
+        }
+    });
 }
 
 function trackListDisplay(track) {
