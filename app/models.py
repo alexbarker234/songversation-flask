@@ -11,6 +11,7 @@ class Stats(db.Model):
 #user table that has all the user ids and when they joined
 class User(db.Model):
     user_id = db.Column(db.String(120), primary_key=True)
+    name = db.Column(db.String(120))
     date_joined = db.Column(db.DateTime, default=datetime.utcnow)
 
 # cache some data locally to speed up load times (especially with lyrics)
