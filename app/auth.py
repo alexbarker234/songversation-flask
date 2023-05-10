@@ -29,7 +29,7 @@ def authorise():
         spotify_helper = SpotifyHelper()     
         user_info = spotify_helper.me()
 
-        user = User.query.filter_by(user_id=user_info['id']).first()
+        user = User.query.filter(User.user_id == user_info['id']).first()
 
         if not user:
             # Create new user row if user does not exist in database
