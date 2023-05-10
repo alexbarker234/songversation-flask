@@ -44,16 +44,16 @@ $(window).on("load", function () {
 function displayError(message) {
     let game = $("#lyric-game");
     game.empty();
-    game.append(errorMessageComponent(message))
+    game.append(errorMessageComponent(message));
     $("#loader-container").remove();
 }
 
 function getPlaylist(playlistID) {
-    return $.getJSON(`/get-playlist/${playlistID}`);
+    return $.getJSON(`/api/get-playlist/${playlistID}`);
 }
 
 function getPlaylistTracks(playlistID) {
-    return $.getJSON(`/get-playlist-tracks/${playlistID}`);
+    return $.getJSON(`/api/get-playlist-tracks/${playlistID}`);
 }
 
 function loadGameWithPlaylist(playlist) {
@@ -90,24 +90,18 @@ function finishScreen() {
         - back to playlists
     */
     commitStats(score);
-    $('#streak-score').html(`Final Streak: ${score}`);
-    $('#win-modal').modal('show');
+    $("#streak-score").html(`Final Streak: ${score}`);
+    $("#win-modal").modal("show");
 }
 
-function commitStats(score){
-    $.ajax({
-        url: "/stats",
-        type: "POST",
-        data: {
-          score: score,
-        },
-        success: function(response) {
-          console.log("Stats saved successfully.");
-        },
-        error: function(xhr) {
-          console.log("Error saving stats.");
-        }
-    });
+function commitStats(score) {
+    $.post("/api/add-game", { score: score, test: "test" })
+        .done(function () {
+            console.log("Stats saved successfully.");
+        })
+        .fail(function () {
+            console.log("Error saving stats.");
+        });
 }
 
 function trackListDisplay(track) {
@@ -130,7 +124,7 @@ function checkButton() {
         console.log("wrong");
     }
 
-    input.val('')
+    input.val("");
 }
 /**
  * Will load all lyrics in order from the availableTrackIDs array into the loadedTracks map
@@ -142,11 +136,10 @@ function checkButton() {
 function loadLyrics(numToLoad, tracksToLoad, startGame) {
     numToLoad = Math.min(numToLoad, tracksToLoad.length);
     toLoad = tracksToLoad.splice(tracksToLoad.length - numToLoad, numToLoad);
-    $.getJSON("/get-track-lyrics?track_ids=" + toLoad).done(function (response) {
+    $.getJSON("/api/get-track-lyrics?track_ids=" + toLoad).done(function (response) {
         for (const track_id in response.track_lyrics) {
             loadedTracks[track_id].lyrics = response.track_lyrics[track_id];
-            if (response.track_lyrics[track_id].length > 0)
-                loadedLyrics.push(track_id);
+            if (response.track_lyrics[track_id].length > 0) loadedLyrics.push(track_id);
         }
 
         // will only be called on the first load
@@ -206,10 +199,10 @@ function displayLyricLine(trackID, startLine, curLine) {
     const lyricNum = curLine - startLine;
 
     const lyricBox = $("#lyric-box");
-    const lyricLines = lyricBox.children(".lyric-line")
+    const lyricLines = lyricBox.children(".lyric-line");
     const lyricLine = lyricLines.eq(lyricNum);
     lyricLine.css({
-        "animation": "fade-in 1s forwards",
+        animation: "fade-in 1s forwards",
     });
     curLine++;
     // call next if less than 3 lyrics have been displayed
@@ -219,9 +212,8 @@ function displayLyricLine(trackID, startLine, curLine) {
         }, 3000);
 }
 
-function playAgain(){
-    score=0;
+function playAgain() {
+    score = 0;
     $("#score-text").html(`${score}`);
     chooseLyrics();
 }
-

@@ -19,7 +19,7 @@ UNAUTHORISED_MESSAGE = "User Unauthorised"
 
 from app import app, db
 
-@app.route('/top-artists', methods=['GET'])
+@app.route('/api/top-artists', methods=['GET'])
 def top_artists():
     '''
     returns the current users top 50 artists over the past 4 weeks
@@ -42,7 +42,7 @@ def top_artists():
         return UNAUTHORISED_MESSAGE, 401
     
 
-@app.route('/get-playlists')
+@app.route('/api/get-playlists')
 def get_playlists():
     '''
     returns the current users playlists
@@ -66,7 +66,7 @@ def get_playlists():
     except UnauthorisedException:
         return UNAUTHORISED_MESSAGE, 401
 
-@app.route('/get-playlist/<playlist_id>')
+@app.route('/api/get-playlist/<playlist_id>')
 def get_playlist(playlist_id):
     try:
         sp = SpotifyHelper()
@@ -83,7 +83,7 @@ def get_playlist(playlist_id):
         return UNAUTHORISED_MESSAGE, 401
 
 
-@app.route('/get-playlist-tracks/<playlist_id>')
+@app.route('/api/get-playlist-tracks/<playlist_id>')
 def get_playlist_tracks(playlist_id):
     try:
         sp = SpotifyHelper()
@@ -115,7 +115,7 @@ def request_tracks(sp, tracks):
             tracks = None
     return results
 
-@app.route('/get-track-lyrics', methods=['GET'])
+@app.route('/api/get-track-lyrics', methods=['GET'])
 async def get_track_lyrics():
     '''
     

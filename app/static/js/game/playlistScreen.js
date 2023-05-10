@@ -9,7 +9,7 @@ function loadPlaylists() {
     loader.css("margin", "auto");
     $("#cover-art").append(loader);
 
-    $.getJSON("/get-playlists", function (data) {
+    $.getJSON("/api/get-playlists", function (data) {
         addPlaylists(data);
         loader.remove();
     });
