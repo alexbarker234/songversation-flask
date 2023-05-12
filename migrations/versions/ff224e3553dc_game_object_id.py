@@ -7,7 +7,7 @@ Create Date: 2023-05-12 19:16:10.196269
 """
 from alembic import op
 import sqlalchemy as sa
-
+from sqlalchemy.sql import text
 
 # revision identifiers, used by Alembic.
 revision = 'ff224e3553dc'
@@ -27,7 +27,8 @@ def upgrade():
         batch_op.alter_column('track_lyric_id',
                existing_type=sa.VARCHAR(length=120),
                type_=sa.Integer(),
-               existing_nullable=True)
+               existing_nullable=True,
+               postgresql_using='track_lyric_id::int') # MODIFIED BY ALEX FOR POSTGRES DB
 
     with op.batch_alter_table('user', schema=None) as batch_op:
         batch_op.drop_column('name')
