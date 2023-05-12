@@ -6,6 +6,7 @@ class Game(db.Model):
     game_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(120))
     score = db.Column(db.Integer)
+    song_loston = db.Column(db.String(120))
     date_of_game = db.Column(db.DateTime, default=datetime.utcnow) #
 
 #user table that has all the user ids and when they joined
