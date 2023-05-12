@@ -7,13 +7,13 @@ from flask import jsonify, redirect, request, session, url_for
 
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from app.cache_manager.track_lyrics_cache import get_lyrics
 from app.helpers.spotify_helper import SpotifyHelper, UnauthorisedException
 
 from app.models import Lyric, TrackLyrics
 from config import Config
 
-SECONDS_IN_HOUR = 3600
-SECONDS_IN_DAY = SECONDS_IN_HOUR * 24
+
 
 UNAUTHORISED_MESSAGE = "User Unauthorised"
 
@@ -117,9 +117,6 @@ def request_tracks(sp, tracks):
 
 @app.route('/api/get-track-lyrics', methods=['GET'])
 async def get_track_lyrics():
-    '''
-    
-    '''
     return_data = {
         'error': False,
         'track_lyrics': {}
@@ -130,96 +127,16 @@ async def get_track_lyrics():
         return_data['error'] = True
         return_data['error_message'] = "No track ids entered"
 
-    # init
-    for track_id in track_ids:
-        return_data['track_lyrics'][track_id] = []
+    # fetch lyrics from cache/refresh cache
+    return_data['track_lyrics'] = await get_lyrics(track_ids)
 
-    # check cache
-    uncached_track_ids = []
-    for track_id in track_ids:
-        lyric_cache = TrackLyrics.query.filter(TrackLyrics.track_id == track_id).first()
-        if lyric_cache:
-            lyric_lines_cache = Lyric.query.filter(Lyric.track_lyric_id == lyric_cache.id).order_by(Lyric.order.asc()).all()
-
-            # check if cache is old
-            needs_refresh = False
-            if (datetime.utcnow() - lyric_cache.last_cache_date).total_seconds() > SECONDS_IN_DAY:
-                print(f"Cache expired for track_id: {track_id}")
-                needs_refresh = True
-            elif lyric_cache.lyric_count != len(lyric_lines_cache):
-                print(f"Mismatch between lyric count and lines recieved: count: {lyric_cache.lyric_count}, lines: {len(lyric_lines_cache)}")
-                needs_refresh = True
-
-            if len(lyric_lines_cache) > 0:      
-                for lyric in lyric_lines_cache:
-                    # delete all lyric caches if they are old
-                    if needs_refresh:
-                        db.session.delete(lyric)
-                    # add the lyrics to the list
-                    else:
-                        return_data['track_lyrics'][track_id].append(lyric.lyric)
-        if not lyric_cache or needs_refresh:
-            uncached_track_ids.append(track_id)
-
-    if len(uncached_track_ids) > 0: 
-        # asynchrnously get all uncached lyrics
-        async with aiohttp.ClientSession() as session:
-            tasks = []
-            for track_id in uncached_track_ids:
-                    tasks.append(
-                        fetch(session, "https://spotify-lyric-api.herokuapp.com/?trackid=" + track_id, track_id)
-                    )
-            responses = await asyncio.gather(*tasks, return_exceptions=True)
-
-            # process responses
-            for response in responses:
-                track_id = response['data']
-
-                lyric_cache = TrackLyrics.query.filter(TrackLyrics.track_id == track_id).first()
-
-                # initialise cache 
-                if not lyric_cache:
-                    lyric_cache = TrackLyrics(track_id = track_id)
-                    db.session.add(lyric_cache)
-                    # required in order to use lyric_cache.id
-                    db.session.flush()
-                    db.session.refresh(lyric_cache)
-                
-                lyricCount = 0
-
-                # No lyrics returns 404
-                if not response['json']['error']:
-                    # turn response into list of each lyric
-                    for line in response['json']['lines']:
-                        if not line or not line['words']  or line['words'] == '♪': 
-                            continue
-                        return_data['track_lyrics'][track_id].append(line['words'])
-                        lyric_line = Lyric(lyric = line['words'], order = lyricCount, track_lyric_id = lyric_cache.id)
-                        db.session.add(lyric_line)
-                        lyricCount += 1
-
-                # update cache
-                lyric_cache.lyric_count = lyricCount
-                lyric_cache.last_cache_date = datetime.utcnow()
-
-                print("Caching lyrics for track_id:" + track_id )
-
-    db.session.commit()
     return jsonify(return_data)
+    
+def cache_track_data(track_ids):
+    pass
 
-# expanded upon https://dev.to/matteo/async-request-with-python-1hpo
-async def fetch(session, url, data):
-    """Execute an http call async
-    Args:
-        session: context for making the http call
-        url: URL to call
-        data: optional, additional data attached to the call
-    Return:
-        A dictionary containing 'url', 'json' dictionary of response & additional data attached to the call
-    """ 
-    async with session.get(url) as response:
-            resp = await response.json()
-            return { 'url': url, 'json': resp, 'data': data }
+
+
 
 def to_dict(obj):
      # check if the object is a list

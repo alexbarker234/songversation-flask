@@ -6,13 +6,16 @@ class Game(db.Model):
     game_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(120))
     score = db.Column(db.Integer)
-    song_loston = db.Column(db.String(120))
-    date_of_game = db.Column(db.DateTime, default=datetime.utcnow) #
 
+    game_type = db.Column(db.String(120)) # current only supports playlist, but can be expanded to artist later
+    game_object_id = db.Column(db.String(120)) # decided how to handle from game_type
+
+    song_failed_on = db.Column(db.String(120))
+    date_of_game = db.Column(db.DateTime, default=datetime.utcnow)
+    
 #user table that has all the user ids and when they joined
 class User(db.Model):
     user_id = db.Column(db.String(120), primary_key=True)
-    name = db.Column(db.String(120))
     date_joined = db.Column(db.DateTime, default=datetime.utcnow)
 
 # cache some data locally to speed up load times (especially with lyrics)
@@ -56,7 +59,7 @@ class TrackLyrics(db.Model):
 
 class Lyric(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    track_lyric_id = db.Column(db.Integer) # UNENFORCED FK
 
     order = db.Column(db.Integer)
     lyric = db.Column(db.String())
-    track_lyric_id = db.Column(db.String(120)) # UNENFORCED FK

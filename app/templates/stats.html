@@ -10,19 +10,17 @@
     <table class="table" style="color: rgb(202, 202, 202);">
         <thead>
             <tr>
-                <th scope="col">#</th>
+                <th scope="col">Date</th>
                 <th scope="col">Score</th>
                 <th scope="col">Song You Failed To Get</th>
-                <th scope="col">Date</th>
             </tr>
         </thead>
         <tbody>
             {% for game in game_info %}
             <tr>
-                <th scope="row">{{ game.game_id }}</th>
-                <td>{{ game.score }}</td>
-                <td>{{ game.song_loston }}</td>
                 <td>{{ game.date_of_game.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ game.score }}</td>
+                <td>{{ game.song_failed_on }}</td>
             </tr>
             {% endfor %}
         </tbody>
