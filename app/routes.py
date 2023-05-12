@@ -1,5 +1,5 @@
 from datetime import datetime
-from app.models import Game
+from app.models import Game, User
 from flask import redirect, render_template, request
 from app import app, db
 from app.helpers.spotify_helper import SpotifyWebUserData, SpotifyHelper
@@ -35,3 +35,12 @@ def playlist_page(playlist_id):
 def artist_page(artist_id):
     return "not implemented"
 
+@app.route('/stats')
+def stats():
+    user_data = SpotifyWebUserData()
+    user_id = user_data.id
+    user_name = db.session.query(User.name).filter(User.user_id==user_id).first()[0]
+    print(user_name)
+    game_info = db.session.query(Game.game_id, Game.score, Game.song_loston, Game.date_of_game)\
+            .filter(Game.user_id==user_id).all()
+    return render_template('stats.html', title='My Stats', user_name=user_name, game_info=game_info)
