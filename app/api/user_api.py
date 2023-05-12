@@ -13,9 +13,10 @@ def save_game():
     user_info = spotify_helper.me()
     user_id = user_info['id']
     score = request.form['score']
+    song_loston = request.form['song']
 
     # Create a new row in the Game table
-    new_game = Game(user_id=user_id, score=score, date_of_game=datetime.utcnow())
+    new_game = Game(user_id=user_id, score=score, song_loston=song_loston, date_of_game=datetime.utcnow())
     db.session.add(new_game)
     db.session.commit()
 
