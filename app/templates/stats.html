@@ -6,27 +6,27 @@
 {% block content %}
 
 <div class="container-fluid">
-    <h1>My Stats - {{ user_name }}</h1><br><br>
-    <table class="table" style="color: rgb(202, 202, 202);">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Score</th>
-                <th scope="col">Song You Failed To Get</th>
-                <th scope="col">Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for game in game_info %}
-            <tr>
-                <th scope="row">{{ game.game_id }}</th>
-                <td>{{ game.score }}</td>
-                <td>{{ game.song_loston }}</td>
-                <td>{{ game.date_of_game.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <h1 class="stats-header">My Stats - {{ user_name }}</h1>
+    <div class="games-table-container">
+        <table class="games-table">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Score</th>
+                    <th scope="col">Song You Failed To Get</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for game in game_info %}
+                <tr>
+                    <td>{{ game.date_of_game.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>{{ game.score }}</td>
+                    <td class="song"><img src="{{ game.failed_track.image }}" width="50px" height="50px"><div>{{ game.failed_track.name }}</div></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 {% endblock %}

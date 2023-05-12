@@ -25,17 +25,17 @@ def authorise():
     
     # TEST IF THE USER HAS ACCESS
     try:
-        SpotifyHelper().me() 
         spotify_helper = SpotifyHelper()     
         user_info = spotify_helper.me()
 
+        # add user to database on first log in
         user = User.query.filter(User.user_id == user_info['id']).first()
-
         if not user:
             # Create new user row if user does not exist in database
-            user = User(user_id=user_info['id'], name=user_info['display_name'], date_joined=datetime.utcnow())
+            user = User(user_id=user_info['id'], date_joined=datetime.utcnow())
             db.session.add(user)
             db.session.commit()
+            print(f"Registered user '{user_info['display_name']}' with id '{user_info['id']}'")
 
     except SpotifyException as e:
         if 'User not registered in the Developer Dashboard' in e.msg: 

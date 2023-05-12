@@ -1,5 +1,3 @@
-let currentPlaylist = null;
-
 let playlistCache = {};
 let availableTrackIDs = [];
 
@@ -11,7 +9,8 @@ let loadedLyrics = [];
 let currentTrack = null;
 
 let score = 0;
-let song_loston = null;
+
+let playlistID;
 
 const keyUp = 38,
     keyDown = 40,
@@ -30,9 +29,9 @@ const keyUp = 38,
 
 $(window).on("load", function () {
     if (window.location.pathname.includes("/playlist/")) {
-        playlist_id = window.location.pathname.split("/").pop(); // get the last part in the path
+        playlistID = window.location.pathname.split("/").pop(); // get the last part in the path
 
-        getPlaylist(playlist_id).then((response) => {
+        getPlaylist(playlistID).then((response) => {
             if (response.error === true) {
                 displayError(response.message);
             } else {
@@ -90,14 +89,13 @@ function finishScreen() {
         - replay with same playlist
         - back to playlists
     */
-    song_loston = trackListDisplay(currentTrack);
-    commitStats(score, song_loston);
+    commitStats(score, currentTrack['id']);
     $("#streak-score").html(`Final Streak: ${score}`);
     $("#win-modal").modal("show");
 }
 
-function commitStats(score, song) {
-    $.post("/api/add-game", { score: score, song: song, test: "test" })
+function commitStats(score, songFailedOn) {
+    $.post("/api/add-game", { score: score, last_song: songFailedOn, game_type: 'playlist', game_object_id: playlistID })
         .done(function () {
             console.log("Stats saved successfully.");
         })

@@ -1,0 +1,54 @@
+.stats-header {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+
+/* PREVIOUS GAMES TABLE */
+.games-table-container {
+    border-radius: 1rem;
+    padding: 1rem 0 ;
+    background: #121212;
+
+    margin: auto;
+    width: 100%;
+    max-width: 1500px;
+
+    text-align: left;
+}
+
+.games-table {
+    width: 100%;
+}
+
+.games-table th,
+.games-table tr {
+    height: 4rem;
+    border-bottom: #202020 2px solid;
+    border-top: #202020 2px solid;
+}
+
+.games-table th {
+    background: #121212;
+}
+
+.games-table tr:nth-child(even) {
+    background: #121212;
+}
+.games-table tr:nth-child(odd) {
+    background: #202020;
+}
+.games-table td, 
+.games-table th {
+    padding: 0 1rem;
+}
+
+.games-table .song {
+    display: flex;
+    justify-content: left;
+}
+
+.games-table .song img {
+    float: left;
+    margin-right: 1rem;
+}
