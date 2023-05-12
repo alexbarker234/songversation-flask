@@ -1,5 +1,6 @@
 from datetime import datetime
-from app.models import Game, User
+from app.cache_manager.track_cache import get_tracks
+from app.models import Game, Track, User
 from flask import redirect, render_template, request
 from app import app, db
 from app.helpers.spotify_helper import SpotifyWebUserData, SpotifyHelper
@@ -42,7 +43,21 @@ def stats():
     user_data = SpotifyWebUserData()
     if not user_data.authorised:
         return redirect("/")
-    
-    game_info = db.session.query(Game.game_id, Game.score, Game.song_failed_on, Game.date_of_game)\
-        .filter(Game.user_id == user_data.id).all()
-    return render_template('stats.html', title='My Stats',user_data=user_data, user_name=user_data.username, game_info=game_info)
+
+    game_list: list[Game] = Game.query.filter(
+        Game.user_id == user_data.id).all()
+
+    track_ids = [game.song_failed_on for game in game_list]
+    tracks = get_tracks(track_ids)
+
+    for game in game_list:
+        game.failed_track = FailedTrack(game, tracks[game.song_failed_on])
+
+    return render_template('stats.html', title='My Stats', user_data=user_data, user_name=user_data.username, game_info=game_list)
+
+
+class FailedTrack(object):
+    def __init__(self, game: Game, track: Track) -> None:
+        self.id = game.song_failed_on
+        self.name = track.name
+        self.image =  track.image_url

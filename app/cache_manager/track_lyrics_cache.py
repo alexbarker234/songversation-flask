@@ -7,10 +7,9 @@ from app.models import Lyric, TrackLyrics
 
 from app import db
 
-SECONDS_IN_HOUR = 3600
-SECONDS_IN_DAY = SECONDS_IN_HOUR * 24
+from constants import SECONDS_IN_DAY
 
-async def get_lyrics(track_ids):
+async def get_lyrics(track_ids: list[str]) -> dict:
     ''' Returns a dictionary with keys of track ids containing arrays of lyrics '''
     track_lyrics = {}
 
@@ -75,17 +74,17 @@ async def get_lyrics(track_ids):
     db.session.commit()
     return track_lyrics 
 
-def get_cached_track_lyrics(track_id):
-    lyric_cache = TrackLyrics.query.filter(TrackLyrics.track_id == track_id).first()
+def get_cached_track_lyrics(track_id) -> list[str]:
+    lyric_cache: TrackLyrics = TrackLyrics.query.filter(TrackLyrics.track_id == track_id).first()
     # check if the lyric_cache exists
     if not lyric_cache:
         return None
     
-    lyric_lines_cache = Lyric.query.filter(Lyric.track_lyric_id == lyric_cache.id).order_by(Lyric.order.asc()).all()
+    lyric_lines_cache: list[Lyric] = Lyric.query.filter(Lyric.track_lyric_id == lyric_cache.id).order_by(Lyric.order.asc()).all()
 
     # check if cache is old
     if (datetime.utcnow() - lyric_cache.last_cache_date).total_seconds() > SECONDS_IN_DAY:
-        print(f"Cache expired for track_id: {track_id}")
+        print(f"Cache expired for lyrics with track_id: {track_id}")
         delete_old_lyrics(lyric_lines_cache)
         return None
     # this case shouldnt happen - failsafe

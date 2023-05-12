@@ -1,23 +1,13 @@
 
-import asyncio
-from datetime import datetime
-import time
-import aiohttp
-from flask import jsonify, redirect, request, session, url_for
+from flask import jsonify, request, url_for
 
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
+from app.cache_manager.track_cache import get_tracks
 from app.cache_manager.track_lyrics_cache import get_lyrics
 from app.helpers.spotify_helper import SpotifyHelper, UnauthorisedException
 
-from app.models import Lyric, TrackLyrics
-from config import Config
 
-
-
-UNAUTHORISED_MESSAGE = "User Unauthorised"
-
-from app import app, db
+from app import app
+from constants import UNAUTHORISED_MESSAGE
 
 @app.route('/api/top-artists', methods=['GET'])
 def top_artists():
@@ -130,13 +120,10 @@ async def get_track_lyrics():
     # fetch lyrics from cache/refresh cache
     return_data['track_lyrics'] = await get_lyrics(track_ids)
 
+    # also add track to cache
+    get_tracks(track_ids)
+
     return jsonify(return_data)
-    
-def cache_track_data(track_ids):
-    pass
-
-
-
 
 def to_dict(obj):
      # check if the object is a list

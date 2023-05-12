@@ -20,7 +20,7 @@
             <tr>
                 <td>{{ game.date_of_game.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                 <td>{{ game.score }}</td>
-                <td>{{ game.song_failed_on }}</td>
+                <td><img src="{{ game.failed_track.image }}" width="50px" height="50px">{{ game.failed_track.name }}</td>
             </tr>
             {% endfor %}
         </tbody>
