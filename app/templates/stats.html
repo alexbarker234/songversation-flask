@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <h1>My Stats - {{ user_name }}</h1><br><br>
+    <table class="table" style="color: rgb(202, 202, 202);">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Score</th>
+                <th scope="col">Song You Failed To Get</th>
+                <th scope="col">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for game in game_info %}
+            <tr>
+                <th scope="row">{{ game.game_id }}</th>
+                <td>{{ game.score }}</td>
+                <td>{{ game.song_loston }}</td>
+                <td>{{ game.date_of_game.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
