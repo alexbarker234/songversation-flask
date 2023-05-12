@@ -11,6 +11,7 @@ let loadedLyrics = [];
 let currentTrack = null;
 
 let score = 0;
+let song_loston = null;
 
 const keyUp = 38,
     keyDown = 40,
@@ -89,13 +90,14 @@ function finishScreen() {
         - replay with same playlist
         - back to playlists
     */
-    commitStats(score);
+    song_loston = trackListDisplay(currentTrack);
+    commitStats(score, song_loston);
     $("#streak-score").html(`Final Streak: ${score}`);
     $("#win-modal").modal("show");
 }
 
-function commitStats(score) {
-    $.post("/api/add-game", { score: score, test: "test" })
+function commitStats(score, song) {
+    $.post("/api/add-game", { score: score, song: song, test: "test" })
         .done(function () {
             console.log("Stats saved successfully.");
         })
