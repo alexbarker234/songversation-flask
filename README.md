@@ -29,17 +29,17 @@ TODO
 1. Clone the repo
 2. Create the python virtual environment by running command: 
     ```
-    python -m venv <name-of-venv>
+    python -m venv venv
     ```
 3. Enter the venv by running command:
     
     **Windows:**
     ```
-    ./<venv>/Scripts/activate
+    ./venv/Scripts/activate
     ```
     **MacOS/Linux**
     ```
-    source <name-of-venv>/bin/activate
+    source venv/bin/activate
     ```
     
 4. Install the requirements through 
