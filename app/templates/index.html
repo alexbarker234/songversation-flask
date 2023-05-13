@@ -4,16 +4,33 @@
 
 
     {% if user_data.authorised %}
-    <h2>top artists</h2>
-    <div id="top-artists" style="display:none"></div>
-    <div class="menu-button-container">
-        <a href="/lyricgame">
-            <div class="menu-button">Guess the Song</div>
+
+
+
+    <div class="game-modes-container">
+        <a href="{{ url_for('game_page') }}" class="flippable-button">
+          <div class="button-content">
+            <div class="flippable-button-front">
+              <h1>Guess The Song!</h1>
+            </div>
+            <div class="flippable-button-back">
+              Back
+            </div>
+          </div>
         </a>
-        <a href="#">
-            <div class="menu-button">Lyric Battle</div>
+        <a href="#" class="flippable-button">
+          <div class="button-content">
+            <div class="flippable-button-front">
+              <h1>Lyric Battle!</h1>
+            </div>
+            <div class="flippable-button-back">
+              Back
+            </div>
+          </div>
         </a>
     </div>
+
+
     {% else %}
 
     <div class="align-to-middle">
