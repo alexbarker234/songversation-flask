@@ -20,8 +20,7 @@ The game is designed to test the user's knowledge of the lyrics of their chosen 
 ## Architecture
 
 TODO
-Add game mode descriptions to index.html
-Maybe make game mode descriptions fade in slowly upon hover rather than an instant transtion upon hover
+Maybe make game mode descriptions fade in slowly upon hover rather than an instant transtion upon hover. Not sure what's going on there...
 
 
 ## Requirements
