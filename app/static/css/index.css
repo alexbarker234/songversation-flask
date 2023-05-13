@@ -27,14 +27,14 @@
 
 
 .game-modes-container {
-    width: 100%;
-    height: 100%;
-    /* padding-top: 2%;
-    padding-bottom: 2%; */
+    width: 90%;
+    height: 90%;
     max-width: 1500px;
-    margin: auto;
+    margin: 0 auto;
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 .flippable-button {
     width: 90%;
@@ -48,14 +48,21 @@
     width: 100%;
     height: 100%;
     text-align: center;
+    transition: transform 0.4s;
+    transform-style: preserve-3d;
+}
+.flippable-button:hover .button-content {
+    transform: rotateY(180deg) scale(115%);
+}
+.flippable-button:hover .flippable-button-front {
+    opacity: 0;
 }
 .flippable-button:hover .flippable-button-back {
-    transform: scale(105%);
-    opacity: 1;
+    opacity: 0.85;
 }
 .flippable-button-front, .flippable-button-back {
     border-color: white;
-    border-style: double;
+    border-style: solid;
     border-width: thick;
     position: absolute;
     width: 100%;
@@ -64,6 +71,7 @@
 }
 .flippable-button-front {
     background-color: var(--spotify-green);
+    opacity: 0.85;
     color:rgb(0, 0, 0);
     display: flex;
     align-items: center;
@@ -76,6 +84,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transform: rotateY(180deg);
 }
 
 
