@@ -29,11 +29,11 @@
 .gradient-border::after {
     background: conic-gradient(
         from calc(var(--grad) * 1deg),
-        /* the most janky conversion*/ #217af7,
-        #a445eb,
-        #e3319a,
-        #a445eb,
-        #217af7
+        #1DB184,
+        #1DB56C,
+        var(--spotify-green),
+        #1DBD3C,
+        #1DC124
     );
     border-radius: inherit;
     z-index: -1;
@@ -43,7 +43,7 @@
 }
 
 .gradient-border:after {
-    filter: blur(1rem);
+    filter: blur(2rem);
 }
 
 .autocomplete-wrapper ::before,
