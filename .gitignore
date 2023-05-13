@@ -6,6 +6,7 @@ tmp-env
 venv*
 
 Songversationvenv
+Songversation-venv
 
 app.db
 
