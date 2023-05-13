@@ -29,11 +29,11 @@
 .gradient-border::after {
     background: conic-gradient(
         from calc(var(--grad) * 1deg),
-        #1DB184,
-        #1DB56C,
+        #137a5b,
+        #19a260,
         var(--spotify-green),
-        #1DBD3C,
-        #1DC124
+        #1dca40,
+        #ffffff
     );
     border-radius: inherit;
     z-index: -1;
@@ -68,7 +68,7 @@
     cursor: pointer;
 
     text-align: left;
-    transition: 0.2s;
+    transition: 0.5s;
 
     border-bottom: solid var(--border-color) 1px;
 
