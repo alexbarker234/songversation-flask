@@ -61,7 +61,7 @@ class SpotifyHelper(spotipy.Spotify):
             client_id=Config.SPOTIPY_CLIENT_ID,
             client_secret=Config.SPOTIPY_CLIENT_SECRET,
             redirect_uri=url_for('authorise', _external=True),
-            scope="user-library-read user-top-read playlist-read-private user-read-private",
+            scope="user-library-read user-top-read playlist-read-private user-read-private user-follow-read",
             cache_handler=cache_handler,
             show_dialog=True)
 

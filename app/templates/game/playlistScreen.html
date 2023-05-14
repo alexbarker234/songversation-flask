@@ -3,14 +3,16 @@
 {% block content %}
     {% if user_data.authorised %}
     <div class="tracklist-selector-container">
-        <div class="tracklist-selector">Playlists</div>
-        <div class="tracklist-selector disabled">Artists</div>
-        <div class="tracklist-selector disabled">Curated</div>
+        <a class="tracklist-selector" href="#playlist-selector">Playlists</a>
+        <a class="tracklist-selector disabled" href="#artist-selector">Artists</a>
+        <a class="tracklist-selector disabled" href="#curated-selector">Curated</a>
     </div>
     <div id="lyric-game">
         <p id="title">Choose a playlist:</p>
-        <div class="cover-art" id="playlists"></div>
-        <div class="cover-art" id="artists"></div>
+        <div class="cover-art-selectors">
+            <div class="cover-art" id="playlists"></div>
+            <div class="cover-art" id="artists"></div>
+        </div>
     </div>
     {% endif %}
 {% endblock %}

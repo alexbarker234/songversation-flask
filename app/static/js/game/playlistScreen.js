@@ -2,7 +2,44 @@ $(window).on("load", function () {
     if (window.location.pathname === "/lyricgame") {
         loadPlaylists();
     }
+    $('.tracklist-selector').on('click', function(e) {
+        if ($(e.target).hasClass('disabled')) return;
+        let link = e.target.href;
+        var fragment = link.split('#')[1];
+
+        if (fragment === "playlist-selector") {
+            selectorClick('playlists', loadPlaylists)
+        }
+        else if (fragment === "artist-selector") { 
+            selectorClick('artists', loadArtists)
+        }
+    }) 
 });
+
+function selectorClick(type, toLoad) {
+    let selectors = $('.cover-art-selectors').first().children()
+    selectors.css('display', 'none')
+
+    let selector = selectors.siblings(`#${type}`).first()
+    selector.removeAttr("style");
+    if (selector.children().length == 0) {
+        toLoad()
+    }
+}
+
+function loadArtists() {
+    loader = loaderComponent();
+    loader.css("margin", "auto");
+    $("#artists").append(loader);
+
+    $.getJSON("/api/get-artists", function (data) {
+        loader.remove();
+        console.log(data)
+        // sort alphabetically
+        data.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1)
+        addArtSelectors(data, $('#artists'), 'artist');
+    });
+}
 
 function loadPlaylists() {
     loader = loaderComponent();
@@ -10,36 +47,28 @@ function loadPlaylists() {
     $("#playlists").append(loader);
 
     $.getJSON("/api/get-playlists", function (data) {
-        addPlaylists(data);
+        addArtSelectors(data, $('#playlists'), 'playlist');
         loader.remove();
     });
 }
 
-function addPlaylists(data) {
-    let playlistDiv = $("#playlists");
+function addArtSelectors(data, div, type) {
     //let url = window.location.href;
-    playlistCache = data;
     let index = 0;
     data.forEach((element) => {
         if (element.trackCount != 0) {
-            playlistCache[element.id] = element;
-            playlistBox = coverArtBoxComponent(
+            data[element.id] = element;
+            let artBox = coverArtBoxComponent(
                 element,
                 index,
-                `lyricgame/playlist/${element.id}`
+                `lyricgame/${type}/${element.id}`
             );
-            playlistBox.css({
+            artBox.css({
                 "opacity": "0",
                 "animation": "fade-drop-in 1s forwards",
                 "animation-delay": `${index * 0.05}s`,
             });
-            /*playlistBox.children('img').click(function(e) {
-                let playlistBox = e.target.parentNode;
-                //getPlaylistTracks(playlistBox.dataset.id).then(response => loadGameWithPlaylist(playlistCache[playlistBox.dataset.id], response))
-                let newURL = window.location.href + `/playlist/${playlistBox.dataset.id}`
-                window.location.replace(newURL)
-            })*/
-            playlistDiv.append(playlistBox);
+            div.append(artBox);
             index++;
         }
     });

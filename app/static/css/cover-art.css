@@ -6,6 +6,12 @@
 
     margin-top: 1rem;
 }
+
+a.tracklist-selector {
+    text-decoration: none;
+    color:white
+}
+
 .tracklist-selector {
     width: 10rem;
     padding: 0.75rem;
@@ -26,6 +32,9 @@
     cursor: unset;
     background-color: var(--bg-color2);
     opacity: 0.5;
+
+    pointer-events: none;
+    cursor: default;
 }
 
 /* cover-art links */

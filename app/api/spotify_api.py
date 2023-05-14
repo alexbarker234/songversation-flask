@@ -31,6 +31,27 @@ def top_artists():
     except UnauthorisedException:
         return UNAUTHORISED_MESSAGE, 401
     
+@app.route('/api/get-artists')
+def get_artists():
+    '''
+    returns the current users followed artists
+    '''
+    try:
+        sp = SpotifyHelper()
+    
+        results = []
+
+        artists = sp.current_user_followed_artists(limit=50)
+        while artists:
+            for i, artist in enumerate(artists['artists']['items']):
+                results.append(Artist(artist))
+            if artists['artists']['next']:
+                artists = sp.next(artists['artists'])
+            else:
+                artists = None
+        return jsonify([ob.__dict__ for ob in results])
+    except UnauthorisedException:
+        return UNAUTHORISED_MESSAGE, 401
 
 @app.route('/api/get-playlists')
 def get_playlists():
