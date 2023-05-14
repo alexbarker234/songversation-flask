@@ -7,7 +7,7 @@ $(window).on("load", function () {
 function loadPlaylists() {
     loader = loaderComponent();
     loader.css("margin", "auto");
-    $("#cover-art").append(loader);
+    $("#playlists").append(loader);
 
     $.getJSON("/api/get-playlists", function (data) {
         addPlaylists(data);
@@ -16,7 +16,7 @@ function loadPlaylists() {
 }
 
 function addPlaylists(data) {
-    let playlistDiv = $("#cover-art");
+    let playlistDiv = $("#playlists");
     //let url = window.location.href;
     playlistCache = data;
     let index = 0;

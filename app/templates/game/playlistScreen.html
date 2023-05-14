@@ -2,9 +2,15 @@
 
 {% block content %}
     {% if user_data.authorised %}
+    <div class="tracklist-selector-container">
+        <div class="tracklist-selector">Playlists</div>
+        <div class="tracklist-selector disabled">Artists</div>
+        <div class="tracklist-selector disabled">Curated</div>
+    </div>
     <div id="lyric-game">
         <p id="title">Choose a playlist:</p>
-        <div id="cover-art"></div>
+        <div class="cover-art" id="playlists"></div>
+        <div class="cover-art" id="artists"></div>
     </div>
     {% endif %}
 {% endblock %}
