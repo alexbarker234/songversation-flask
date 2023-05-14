@@ -4,44 +4,32 @@
 
 
     {% if user_data.authorised %}
+    <h1>Choose a game mode</h1>
 
-
-
-    <div class="game-modes-container">
-        <a href="{{ url_for('game_page') }}" class="flippable-button">
-          <div class="button-content">
-            <div class="flippable-button-front gradient-border">
-              <h1>Classic Mode</h1>
+    <div class="game-modes-container">        
+        <a href="{{ url_for('game_page') }}" class="game-card">
+            <div class="game-card-content">
+                <div class="game-card-title">Classic Mode</div>
+                <div class="game-card-subtitle">
+                    Guess the song from its lyrics, but be careful!<br>
+                    One wrong guess and your streak will end.<br>
+                    How many you can get in a row?
+                </div>
             </div>
-            <div class="flippable-button-back">
-                Guess the song from its lyrics, but be careful!<br>
-                One wrong guess and your streak will end.<br>
-                How many you can get in a row?
-            </div>
-          </div>
         </a>
-        <a href="#" class="flippable-button">
-          <div class="button-content">
-            <div class="flippable-button-front gradient-border">
-              <h1>Duet Mode</h1>
+        <a class="game-card">
+            <div class="game-card-content">
+                <div class="game-card-title">Duet Mode</div>
+                <div class="game-card-subtitle">Coming soon!</div>
             </div>
-            <div class="flippable-button-back">
-                Coming soon!
-            </div>
-          </div>
         </a>
-        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="flippable-button">
-            <div class="button-content">
-              <div class="flippable-button-front gradient-border">
-                <h1>Crazy Mode</h1>
-              </div>
-              <div class="flippable-button-back">
-                &#128064;&#128064;&#128064;
-              </div>
+        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="game-card">
+            <div class="game-card-content">
+                <div class="game-card-title">Crazy Mode</div>
+                <div class="game-card-subtitle">&#128064;&#128064;&#128064;</div>
             </div>
-          </a>
+        </a>
     </div>
-
 
     {% else %}
 

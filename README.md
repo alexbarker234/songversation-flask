@@ -10,6 +10,7 @@ A lyric guessing game - powered by Flask with [Spotipy](https://spotipy.readthed
 ## Hosted on [Render.com](https://render.com)
 https://songversation.onrender.com/
 
+- After ~15 minutes of inactivity, the website goes to sleep & will take a minute or two to spin back up
 - As the public app is under a Spotify development plan - You will need to request access from [Alex](https://github.com/alexbarker234) - send the email associated with your Spotify Account
 
 ## Purpose

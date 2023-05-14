@@ -1,4 +1,3 @@
-
 /* ARTIST SCROLLER */
 #top-artists {
     background-color: var(--bg-color2);
@@ -12,9 +11,9 @@
 #top-artists img {
     width: 30rem;
     height: 30rem;
-    object-fit: cover;   
+    object-fit: cover;
 
-    -webkit-user-drag: none;  
+    -webkit-user-drag: none;
     user-select: none;
     -moz-user-select: none;
     -webkit-user-drag: none;
@@ -25,6 +24,7 @@
     margin: 2rem;
 }
 
+/* game link buttons */
 
 .game-modes-container {
     width: 90%;
@@ -36,59 +36,110 @@
     justify-content: center;
     align-items: center;
 }
-.flippable-button {
-    width: 90%;
-    height: 90%;
-    padding: 2%;
-    perspective: 500px;
-    overflow: hidden;
-}
-.button-content {
+
+.game-card {
+    border: 0.5vmin solid var(--white);
+    cursor: pointer;
     position: relative;
-    width: 100%;
+    height: 20rem;
+    overflow: hidden;
+
+    color: white;
+
+    display: block;
+
+    margin: 1rem;
+
+    flex: 1 1 0px;
+}
+
+@media only screen and (max-width: 800px) {
+    .game-modes-container {
+        flex-direction: column;
+        justify-content: unset;
+    }
+    .game-card {
+        height: 15rem;
+        width: 100%;
+        flex:unset;
+    }
+}
+
+.game-card:hover:before {
+    background-position: 100% 100%;
+    transform: scale(1.08, 1.03);
+}
+
+.game-card:hover > .game-card-content {
+    background-position: -10% 0%;
+}
+
+.game-card:before {
+    content: "";
+
+    background: linear-gradient(130deg, transparent 0% 33%, var(--spotify-green), var(--blue));
+    background-position: 0% 0%;
+    background-size: 300% 300%;
+
     height: 100%;
-    text-align: center;
-    transition: transform 0.4s;
-    transform-style: preserve-3d;
-}
-.flippable-button:hover .button-content {
-    transform: rotateY(180deg) scale(115%);
-}
-.flippable-button:hover .flippable-button-front {
-    opacity: 0;
-}
-.flippable-button:hover .flippable-button-back {
-    opacity: 0.85;
-}
-.flippable-button-front, .flippable-button-back {
-    border-color: white;
-    border-style: solid;
-    border-width: thick;
+    width: 100%;
+
     position: absolute;
-    width: 100%;
+    left: 0px;
+    top: 0px;
+
+    pointer-events: none;
+    transition: background-position 350ms ease, transform 350ms ease;
+    z-index: 1;
+}
+
+.game-card-content {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.2) 8%, transparent 8%);
+    background-size: 5vmin 5vmin;
+
     height: 100%;
-    backface-visibility: hidden;
+    width: 100%;
+    padding: 5vmin;
+    position: relative;
+    transition: background-position 350ms ease;
+    z-index: 2;
 }
-.flippable-button-front {
-    background-color: var(--spotify-green);
-    opacity: 0.85;
-    color:rgb(0, 0, 0);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+.game-card-title {
+    color: white;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    transition: 0.2s ease;
+
+    font-size: 3.5rem;
 }
-.flippable-button-back {
-    background-color: var(--spotify-green);
-    color:rgb(0, 0, 0);
+.game-card-subtitle {
+    width: 90%;
+
+    color: white;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    font-size: 1.3rem;
+
     opacity: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: rotateY(180deg);
+    transition: 0.2s ease;
 }
 
+.game-card:hover .game-card-title {
+    opacity: 0;
+}
 
-
+.game-card:hover .game-card-subtitle {
+    opacity: 1;
+}
 
 .cta-button {
     display: inline-block;
@@ -99,9 +150,9 @@
     border-radius: 5px;
     border: none;
     font-size: 16px;
-    font-family: 'Circular Std', Arial, sans-serif;
+    font-family: "Circular Std", Arial, sans-serif;
     cursor: pointer;
-  }
+}
 .cta-button:hover {
     color: rgba(0, 0, 0, 0.58);
     transform: scale(120%);

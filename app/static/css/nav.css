@@ -94,7 +94,7 @@ nav p {
 /* profile menu */
 
 .profile-dropdown .btn {
-    background-color: #68a3ea;
+    background-color: var(--bg-color2);
     border-radius: 4rem;
     height: 80%;
 
@@ -115,11 +115,11 @@ nav p {
     font-weight: 700;
 }
 .profile-dropdown .btn:hover {
-    background-color: var(--spotify-green);
+    background-color: #68a3ea;
 }
 .profile-dropdown .btn:focus {
     box-shadow: unset;
-    background-color: var(--spotify-green);
+    background-color: #68a3ea;
 }
 
 .profile-image {
