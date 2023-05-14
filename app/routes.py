@@ -55,6 +55,13 @@ def stats():
 
     return render_template('stats.html', title='My Stats', user_data=user_data, user_name=user_data.username, game_info=game_list)
 
+@app.route('/profile')
+def profile_page():
+    user_data = SpotifyWebUserData()
+    if not user_data.authorised:
+        return redirect("/")
+    return render_template('profile_page.html', title='My Profile', user_data=user_data, user_name=user_data.username, dp=user_data.image_url)
+
 
 class FailedTrack(object):
     def __init__(self, game: Game, track: Track) -> None:
