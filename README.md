@@ -21,7 +21,8 @@ The game is designed to test the user's knowledge of the lyrics of their chosen 
 ## Architecture
 
 TODO
-Maybe make game mode descriptions fade in slowly upon hover rather than an instant transtion upon hover. Not sure what's going on there...
+Show (or play?) correct song upon failed attempt.  
+Show checkmarks or happy faces or something upon correct guess before moving on to next song
 
 
 ## Requirements
