@@ -74,3 +74,9 @@ Maybe make game mode descriptions fade in slowly upon hover rather than an insta
 ## Unit Tests
 TODO
 
+Sort out placeholders for mobile app
+Make it nicer when you get it right
+like a green tick over the check button
+and then a red cross when its wrong
+when you get it wrong it shows what song it was you got wrong
+

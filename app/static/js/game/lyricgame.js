@@ -114,6 +114,7 @@ function skipButton() {
 }
 
 function checkButton() {
+    playSong(currentTrack);
     input = $("#guess-input");
     if (input.val() == trackListDisplay(currentTrack)) {
         score++;
@@ -166,6 +167,7 @@ function chooseLyrics(trackID) {
     }
 
     currentTrack = loadedTracks[trackID];
+    loadSong(currentTrack);
     displayLyrics(loadedTracks[trackID].lyrics, trackID);
 }
 
@@ -216,4 +218,25 @@ function playAgain() {
     score = 0;
     $("#score-text").html(`${score}`);
     chooseLyrics();
+}
+
+function playSong() {
+    var audioPlayer = document.getElementById('audioPlayer');
+    audioPlayer.currentTime = 0; // Start from the beginning
+    audioPlayer.play();
+
+    var duration = 10000; // 5 seconds
+    setTimeout(function() {
+      audioPlayer.pause();
+      audioPlayer.currentTime = 0; // Reset the playback position
+      // Call a function to proceed to the next song or perform any other action
+      // after the playback is finished
+    }, duration);
+}
+
+function loadSong(currentTrack) {
+    $("#audioSource").attr('src', currentTrack.preview_url);
+    var audioPlayer = document.getElementById('audioPlayer');
+    audioPlayer.load(); // Load the audio source
+    console.log(currentTrack.preview_url)
 }

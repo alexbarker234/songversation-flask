@@ -1,4 +1,7 @@
 /* game.css */
+.score-text {
+    text-shadow: 0 0 5px var(--spotify-green), 0 0 10px var(--spotify-green), 0 0 20px var(--spotify-green);
+  }
 
 /* cover-art links */
 #cover-art {

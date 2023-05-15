@@ -15,13 +15,16 @@
     <div id = "button-container">
         <button id="skip" class="button" onclick="skipButton()">Give Up</button>
         <div id="score-container">
-            <p id="score-text"></p>
+            <p class="score-text" id="score-text"></p>
         </div>
         <button id="submit" class="button" onclick="checkButton()">Submit</button>
     </div>
     <div id="win-screen" style="display:none">
         <h1 id="streak"></h1>
         <button id="play-again" class="button" onclick="playAgain()">Play Again?</button>
+        <audio id="audioPlayer" controls>
+            <source id="audioSource" type="audio/mpeg">
+        </audio>
     </div>
 
     <!-- Win Screen Modal via Bootstrap -->
