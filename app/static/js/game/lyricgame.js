@@ -114,13 +114,13 @@ function skipButton() {
 }
 
 function checkButton() {
-    playSong(currentTrack);
     input = $("#guess-input");
     if (input.val() == trackListDisplay(currentTrack)) {
         score++;
         $("#score-text").html(`${score}`);
         chooseLyrics();
     } else {
+        playSong(currentTrack);
         finishScreen();
         console.log("wrong");
     }
