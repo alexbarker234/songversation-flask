@@ -76,9 +76,14 @@ Show checkmarks or happy faces or something upon correct guess before moving on 
 ## Unit Tests
 TODO
 
-Sort out placeholders for mobile app
-Make it nicer when you get it right
-like a green tick over the check button
-and then a red cross when its wrong
-when you get it wrong it shows what song it was you got wrong
+Sort out placeholders for mobile app - The share button and stat button don't do anything
+
+Profile Page
+
+Friends Page
+
+Make it nicer when you get it right - a nice animation such as a green tick over the check button
+or a red cross when its wrong
+
+When you get it wrong it shows what song it was you got wrong
 
