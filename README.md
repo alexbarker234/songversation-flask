@@ -10,6 +10,7 @@ A lyric guessing game - powered by Flask with [Spotipy](https://spotipy.readthed
 ## Hosted on [Render.com](https://render.com)
 https://songversation.onrender.com/
 
+- After ~15 minutes of inactivity, the website goes to sleep & will take a minute or two to spin back up
 - As the public app is under a Spotify development plan - You will need to request access from [Alex](https://github.com/alexbarker234) - send the email associated with your Spotify Account
 
 ## Purpose
@@ -20,7 +21,8 @@ The game is designed to test the user's knowledge of the lyrics of their chosen 
 ## Architecture
 
 TODO
-Maybe make game mode descriptions fade in slowly upon hover rather than an instant transtion upon hover. Not sure what's going on there...
+Show (or play?) correct song upon failed attempt.  
+Show checkmarks or happy faces or something upon correct guess before moving on to next song
 
 
 ## Requirements
