@@ -110,6 +110,7 @@ function trackListDisplay(track) {
 
 // BUTTONS
 function skipButton() {
+    playSong(currentTrack);
     finishScreen();
 }
 
