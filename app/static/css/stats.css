@@ -52,3 +52,7 @@
     float: left;
     margin-right: 1rem;
 }
+
+.sortable {
+    cursor: pointer;
+}
