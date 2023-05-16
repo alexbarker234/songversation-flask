@@ -10,7 +10,7 @@ let currentTrack = null;
 
 let score = 0;
 
-let playlistID;
+let objectID;
 
 const keyUp = 38,
     keyDown = 40,
@@ -28,10 +28,17 @@ const keyUp = 38,
 */
 
 $(window).on("load", function () {
+    objectID = window.location.pathname.split("/").pop(); // get the last part in the path
     if (window.location.pathname.includes("/playlist/")) {
-        playlistID = window.location.pathname.split("/").pop(); // get the last part in the path
-
-        getPlaylist(playlistID).then((response) => {
+        getPlaylist(objectID).then((response) => {
+            if (response.error === true) {
+                displayError(response.message);
+            } else {
+                loadGameWithPlaylist(response);
+            }
+        });
+    } else if (window.location.pathname.includes("/artist/")) {
+        getPlaylist(objectID).then((response) => {
             if (response.error === true) {
                 displayError(response.message);
             } else {
@@ -61,6 +68,12 @@ function loadGameWithPlaylist(playlist) {
         map[obj.id] = obj;
         return map;
     }, {});
+    loadGame(loadedTracks);
+}
+
+function loadGameWithArtist(artist) {}
+
+function loadGame(tracklist) {
     availableTrackIDs = playlist.tracks.map(function (obj) {
         return obj.id;
     });
@@ -89,13 +102,13 @@ function finishScreen() {
         - replay with same playlist
         - back to playlists
     */
-    commitStats(score, currentTrack['id']);
+    commitStats(score, currentTrack["id"]);
     $("#streak-score").html(`Final Streak: ${score}`);
     $("#win-modal").modal("show");
 }
 
 function commitStats(score, songFailedOn) {
-    $.post("/api/add-game", { score: score, last_song: songFailedOn, game_type: 'playlist', game_object_id: playlistID })
+    $.post("/api/add-game", { score: score, last_song: songFailedOn, game_type: "playlist", game_object_id: objectID })
         .done(function () {
             console.log("Stats saved successfully.");
         })
@@ -222,25 +235,25 @@ function playAgain() {
 }
 
 function playSong() {
-    var audioPlayer = document.getElementById('audioPlayer');
+    var audioPlayer = document.getElementById("audioPlayer");
     audioPlayer.currentTime = 0; // Start from the beginning
     audioPlayer.play();
 
     var duration = 10000; // 5 seconds
-    setTimeout(function() {
-      audioPlayer.pause();
-      audioPlayer.currentTime = 0; // Reset the playback position
-      // Call a function to proceed to the next song or perform any other action
-      // after the playback is finished
+    setTimeout(function () {
+        audioPlayer.pause();
+        audioPlayer.currentTime = 0; // Reset the playback position
+        // Call a function to proceed to the next song or perform any other action
+        // after the playback is finished
     }, duration);
 }
 
 function loadSong(currentTrack) {
-    if (!currentTrack.preview_url){
-        return
+    if (!currentTrack.preview_url) {
+        return;
     }
-    $("#audioSource").attr('src', currentTrack.preview_url);
-    var audioPlayer = document.getElementById('audioPlayer');
+    $("#audioSource").attr("src", currentTrack.preview_url);
+    var audioPlayer = document.getElementById("audioPlayer");
     audioPlayer.load(); // Load the audio source
-    console.log(currentTrack.preview_url)
+    console.log(currentTrack.preview_url);
 }
