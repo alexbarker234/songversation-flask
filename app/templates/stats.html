@@ -35,6 +35,23 @@
 {% block content %}
 <div class="container-fluid">
   <h1 class="stats-header">My Stats - {{ user_name }}</h1>
+
+  <div class="score-box">
+    <div class="score-container">
+        <div class="best-score-container">
+            <h3>Best Score: </h3>
+            <p>{{ best_score }}</p>
+        </div>
+    </div>
+
+    <div class="score-container">
+        <div class="average-score-container">
+            <h3>Average Score:</h3>
+            <p>{{ average_score }}</p>
+        </div>
+    </div>
+    </div>
+
   <div class="games-table-container">
     <table class="games-table">
       <thead>
