@@ -1,3 +1,29 @@
+{% block scripts %}
+<script>
+    // Check if the Web Share API is supported by the browser
+    document.addEventListener('DOMContentLoaded', function() {
+        if (navigator.share) {
+            // Add a click event listener to the share button
+            var shareButton = document.getElementById('shareButton');
+            shareButton.addEventListener('click', function () {
+                // Call the share() method of the Web Share API
+                navigator.share({
+                    title: 'Songversation',
+                    text: 'Check out this page!',
+                    url: '#',
+                    icon: 'app/static/favicon.ico'
+                })
+                    .then(function () {
+                        console.log('Sharing succeeded.');
+                    })
+                    .catch(function (error) {
+                        console.error('Sharing failed:', error);
+                    });
+            });
+        }
+    });
+</script>
+{% endblock %}
 <nav class="top-nav">
     <div class="nav-part nav-left">
         <div class="hide-on-mobile">
@@ -73,7 +99,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" id="shareButton" href="#">
                     <div class="svg">
                         <svg width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <g>
