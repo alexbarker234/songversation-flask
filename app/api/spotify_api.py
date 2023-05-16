@@ -22,7 +22,7 @@ def top_artists():
         artists = sp.current_user_top_artists(limit=50,offset=0, time_range='short_term')
         while artists:
             for i, artist in enumerate(artists['items']):
-                results.append(Artist(artist))
+                results.append(ArtistResponse(artist))
             if artists['next']:
                 artists = sp.next(artists)
             else:
@@ -44,7 +44,7 @@ def get_artists():
         artists = sp.current_user_followed_artists(limit=50)
         while artists:
             for i, artist in enumerate(artists['artists']['items']):
-                results.append(Artist(artist))
+                results.append(ArtistResponse(artist))
             if artists['artists']['next']:
                 artists = sp.next(artists['artists'])
             else:
@@ -66,7 +66,7 @@ def get_playlists():
         playlists = sp.current_user_playlists(limit=50,offset=0)
         while playlists:
             for i, playlist in enumerate(playlists['items']):
-                platlistObj = Playlist(playlist)
+                platlistObj = PlaylistResponse(playlist)
                 if platlistObj.trackCount > 0:
                     results.append(platlistObj)
             if playlists['next']:
@@ -86,9 +86,9 @@ def get_playlist(playlist_id):
             playlist = sp.playlist(playlist_id=playlist_id)
             tracks = request_tracks(sp, playlist["tracks"])
 
-            playlistObj = Playlist(playlist, tracks)
+            playlistObj = PlaylistResponse(playlist, tracks)
             return jsonify(to_dict(playlistObj))
-        except:    
+        except Exception as e:  
             return jsonify({'error':True, 'message':'Invalid Playlist ID'})
     except UnauthorisedException:
         return UNAUTHORISED_MESSAGE, 401
@@ -119,7 +119,7 @@ def request_tracks(sp, tracks):
         for i, playlistTrack in enumerate(tracks['items']):
             # dont add local files 
             if playlistTrack['track']['is_local'] or playlistTrack['track']['id'] != None:
-                results.append(Track(playlistTrack['track']))
+                results.append(TrackResponse(playlistTrack['track']))
         if tracks['next']:
             tracks = sp.next(tracks)
         else:
@@ -164,12 +164,12 @@ def to_dict(obj):
         return obj
 
 
-class Artist:
+class ArtistResponse:
     def __init__(self, payload):
         self.name = payload['name']
         self.image = payload['images'][0]['url'] if len(payload['images']) > 0 else None
 
-class Playlist:
+class PlaylistResponse:
     def __init__(self, payload, tracks=[]):
         self.name = payload['name']
         self.id = payload['id']
@@ -182,7 +182,7 @@ class Playlist:
         else:
             self.image = url_for('static', filename='defaultCover.png')
 
-class Track:
+class TrackResponse:
     def __init__(self, payload):
         self.name = payload['name']
         self.id = payload['id']
@@ -191,4 +191,5 @@ class Track:
             self.artists.append(artist['name'])
         # PREVIEW CAN BE NULL
         self.preview_url = payload['preview_url']
+        self.image_url = payload['album']['images'][0]
 
