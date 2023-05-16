@@ -36,6 +36,8 @@ class Track(db.Model):
     preview_url = db.Column(db.String(), nullable=True)
     image_url = db.Column(db.String(), nullable=True)
 
+    release_date = db.Column(db.DateTime)
+
 class Artist(db.Model):
     id = db.Column(db.String(120), primary_key=True)
     last_cache_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
