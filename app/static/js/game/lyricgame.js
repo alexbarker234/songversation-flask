@@ -90,6 +90,7 @@ function finishScreen() {
         - back to playlists
     */
     commitStats(score, currentTrack['id']);
+    showTrack(currentTrack);
     $("#streak-score").html(`Final Streak: ${score}`);
     $("#win-modal").modal("show");
 }
@@ -243,4 +244,19 @@ function loadSong(currentTrack) {
     var audioPlayer = document.getElementById('audioPlayer');
     audioPlayer.load(); // Load the audio source
     console.log(currentTrack.preview_url)
+}
+
+function showTrack(currentTrack) {
+    $("#track-image").attr('src', currentTrack.image_url);
+    const artists=currentTrack.artists;
+    let allArtists = "";
+    for (let i = 0; i < artists.length; i++) {
+        if (i != artists.length-1){
+            allArtists += artists[i] + ', ';
+        }
+        else {
+            allArtists += artists[i];
+        }
+    }
+    $("#track-name").html(currentTrack.name + ' - ' + allArtists);
 }
