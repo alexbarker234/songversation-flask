@@ -191,5 +191,5 @@ class TrackResponse:
             self.artists.append(artist['name'])
         # PREVIEW CAN BE NULL
         self.preview_url = payload['preview_url']
-        self.image_url = payload['album']['images'][0]
+        self.image_url = payload['album']['images'][0]['url']
 
