@@ -236,6 +236,9 @@ function playSong() {
 }
 
 function loadSong(currentTrack) {
+    if (!currentTrack.preview_url){
+        return
+    }
     $("#audioSource").attr('src', currentTrack.preview_url);
     var audioPlayer = document.getElementById('audioPlayer');
     audioPlayer.load(); // Load the audio source
