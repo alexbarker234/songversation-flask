@@ -131,12 +131,9 @@ def get_artist_tracks(artist_id):
         albums = [album for album in albums if not (re.search('[\[\(].* ?(?:Rework|Remix|Version|Acoustic|Acapella|Unplugged|Live|Instrumental)[\]\)]', album.name, re.IGNORECASE))]        
         
         tracks: list[TrackResponse] = []
-        print(f'\t{len(albums)} albums found')
         for album in albums:
             track_request = sp.album_tracks(album.id, limit=50)
-            print([track.name for track in tracks])
             tracks += request_album_tracks(sp, track_request, album)
-            print([track.name for track in tracks])
 
         # remove duplicate tracks
         unique_tracks = {}

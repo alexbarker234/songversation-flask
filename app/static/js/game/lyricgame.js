@@ -38,11 +38,11 @@ $(window).on("load", function () {
             }
         });
     } else if (window.location.pathname.includes("/artist/")) {
-        getPlaylist(objectID).then((response) => {
+        getArtistTracks(objectID).then((response) => {
             if (response.error === true) {
                 displayError(response.message);
             } else {
-                loadGameWithPlaylist(response);
+                loadGameWithArtist(response);
             }
         });
     }
@@ -59,8 +59,8 @@ function getPlaylist(playlistID) {
     return $.getJSON(`/api/get-playlist/${playlistID}`);
 }
 
-function getPlaylistTracks(playlistID) {
-    return $.getJSON(`/api/get-playlist-tracks/${playlistID}`);
+function getArtistTracks(artistID) {
+    return $.getJSON(`/api/get-artist-tracks/${artistID}`);
 }
 
 function loadGameWithPlaylist(playlist) {
@@ -71,24 +71,30 @@ function loadGameWithPlaylist(playlist) {
     loadGame(loadedTracks);
 }
 
-function loadGameWithArtist(artist) {}
+function loadGameWithArtist(artist) {
+    loadedTracks = artist.reduce(function (map, obj) {
+        map[obj.id] = obj;
+        return map;
+    }, {});
+    loadGame(loadedTracks);
+}
 
-function loadGame(tracklist) {
-    availableTrackIDs = playlist.tracks.map(function (obj) {
-        return obj.id;
-    });
+function loadGame(trackDict) {
+    console.log(trackDict);
+
+    availableTrackIDs = Object.keys(trackDict);
     availableTrackIDs = availableTrackIDs.filter((n) => n).shuffle(); // remove null track ids (local files) and shuffle
 
     // playlist icon
-    selectedPlaylist = coverArtBoxComponent(playlist);
+    /*selectedPlaylist = coverArtBoxComponent(playlist);
     selectedPlaylist.css("animation", "fade-in 1s");
     selectedPlaylist.addClass("selected-playlist");
-    $("#selected-cover-art").append(selectedPlaylist);
+    $("#selected-cover-art").append(selectedPlaylist);*/
 
     // register autocomplete options
-    const trackList = $("#track-list");
-    playlist.tracks.forEach(function (track) {
-        trackList.append($("<li>", { html: `${trackListDisplay(track)}` }));
+    const trackListDiv = $("#track-list");
+    Object.values(trackDict).forEach(function (track) {
+        trackListDiv.append($("<li>", { html: `${trackListDisplay(track)}` }));
     });
 
     $("#score-text").html(`0`);
@@ -108,6 +114,17 @@ function finishScreen() {
 }
 
 function commitStats(score, songFailedOn) {
+    let parts = window.location.pathname.split("/");
+    let gameType = parts[parts.length - 2];
+
+    console.log(gameType)
+
+    let valid_types = ["playlist", "artist"];
+    if (!valid_types.includes(gameType)) {
+        console.log(`Game type, ${gameType} is invalid`);
+        return;
+    }
+
     $.post("/api/add-game", { score: score, last_song: songFailedOn, game_type: "playlist", game_object_id: objectID })
         .done(function () {
             console.log("Stats saved successfully.");
@@ -166,8 +183,13 @@ function loadLyrics(numToLoad, tracksToLoad, startGame) {
         }
         if (tracksToLoad.length != 0) {
             loadLyrics(numToLoad, tracksToLoad, startGame);
-        } else {
+        } 
+        // when lyrics have finished loading
+        else {
             console.log("finished loading lyrics");
+            if (loadedLyrics.length == 0) {
+                console.log("no lyrics")
+            }
         }
     });
 }
@@ -179,7 +201,6 @@ function chooseLyrics(trackID) {
     if (loadedLyrics.length == 0) {
         console.log("out of songs");
     }
-
     currentTrack = loadedTracks[trackID];
     loadSong(currentTrack);
     displayLyrics(loadedTracks[trackID].lyrics, trackID);
