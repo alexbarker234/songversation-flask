@@ -125,7 +125,7 @@ function commitStats(score, songFailedOn) {
         return;
     }
 
-    $.post("/api/add-game", { score: score, last_song: songFailedOn, game_type: "playlist", game_object_id: objectID })
+    $.post("/api/add-game", { score: score, last_song: songFailedOn, game_type: gameType, game_object_id: objectID })
         .done(function () {
             console.log("Stats saved successfully.");
         })

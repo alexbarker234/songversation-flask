@@ -24,4 +24,25 @@ $(document).ready(function () {
         $sortIcon.show();
         $sortIcon.removeClass("fa-caret-up fa-caret-down").addClass(isAscending ? "fa-caret-up" : "fa-caret-down");
     });
+
+    $('.tracklist-selector').on('click', function(e) {
+        target = $(e.target)
+        if (target.hasClass('disabled')) return;
+
+        id = target.attr('id')
+        type = id.split('-')[0]
+        chooseStatsTable(type)
+
+    }) 
 });
+
+function chooseStatsTable(type) {
+    if (type == 'playlist') {
+        $('#artist-table').css('display', 'none')
+        $('#playlist-table').removeAttr('style')
+    }
+    else {
+        $('#playlist-table').css('display', 'none')
+        $('#artist-table').removeAttr('style')
+    }
+}

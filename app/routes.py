@@ -47,7 +47,11 @@ def stats():
     for game in game_list:
         game.failed_track = FailedTrack(game, tracks[game.song_failed_on])
 
-    return render_template('stats.html', title='My Stats', user_data=user_data, user_name=user_data.username, game_info=game_list)
+    game_info = {}
+    game_info['playlists'] = [game for game in game_list if game.game_type == 'playlist']
+    game_info['artists'] = [game for game in game_list if game.game_type == 'artist']
+
+    return render_template('stats.html', title='My Stats', user_data=user_data, user_name=user_data.username, game_info=game_info)
 
 @app.route('/profile')
 def profile_page():

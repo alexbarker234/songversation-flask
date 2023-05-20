@@ -21,12 +21,9 @@ def get_tracks(track_ids: list[str]) -> dict[str, Track]:
         else:
             track_dict[track_id] = track_cache
 
-    print(to_cache)
-
     if len(to_cache) > 0:
         spotify = SpotifyHelper()
         cache_track_ids = list(to_cache.keys())
-        print(cache_track_ids)
         response = spotify.tracks(cache_track_ids)
 
         for track_response in response['tracks']:
@@ -75,8 +72,6 @@ def _cache_track_artists(track_response):
     existing_dict = {track_artist.artist_id:track_artist for track_artist in existing}
 
     # A track artist can be added or removed - therefore add new ones or delete ones that exist in database
-
-    print(existing_dict)
 
     removed_track_artists = existing_dict
     for artist in track_response['artists']:

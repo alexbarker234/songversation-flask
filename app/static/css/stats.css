@@ -3,11 +3,10 @@
     margin-bottom: 2rem;
 }
 
-
 /* PREVIOUS GAMES TABLE */
 .games-table-container {
     border-radius: 1rem;
-    padding: 1rem 0 ;
+    padding: 1rem 0;
     background: #121212;
 
     margin: auto;
@@ -38,7 +37,7 @@
 .games-table tr:nth-child(odd) {
     background: #202020;
 }
-.games-table td, 
+.games-table td,
 .games-table th {
     padding: 0 1rem;
 }
@@ -55,4 +54,19 @@
 
 .sortable {
     cursor: pointer;
+}
+
+.games-table th:first-child,
+.games-table td:first-child {
+    width: 25%;
+}
+
+.games-table th:nth-child(2),
+.games-table td:nth-child(2) {
+    width: 15%;
+}
+
+.games-table th:last-child,
+.games-table td:last-child {
+    width: 60%;
 }

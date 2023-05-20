@@ -15,8 +15,6 @@ def save_game():
         user_info = spotify_helper.me()
         user_id = user_info['id']
 
-        print(request.form)
-
         score = request.form['score']
         song_failed_on = request.form['last_song']
         game_type = request.form['game_type']

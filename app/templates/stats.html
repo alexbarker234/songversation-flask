@@ -3,11 +3,12 @@
 <div class="container-fluid">
     <h1 class="stats-header">My Stats - {{ user_name }}</h1>
     <div class="tracklist-selector-container">
-        <a class="tracklist-selector" href="#playlist-selector">Playlists</a>
-        <a class="tracklist-selector" href="#artist-selector">Artists</a>
-        <a class="tracklist-selector disabled" href="#curated-selector">Curated</a>
+        <a class="tracklist-selector" id="playlist-selecor">Playlists</a>
+        <a class="tracklist-selector" id="artist-selecor">Artists</a>
+        <a class="tracklist-selector disabled" id="curated-selecor">Curated</a>
     </div>
-    <div class="games-table-container">
+    <!-- PLAYLISTS -->
+    <div class="games-table-container" id="playlist-table">
         <table class="games-table">
             <thead>
                 <tr>
@@ -20,7 +21,34 @@
                 </tr>
             </thead>
             <tbody>
-                {% for game in game_info %}
+                {% for game in game_info['playlists'] %}
+                <tr>
+                    <td>{{ game.date_of_game.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>{{ game.score }}</td>
+                    <td class="song">
+                        <img src="{{ game.failed_track.image }}" alt="Failed Track Image" width="50px" height="50px" />
+                        <div>{{ game.failed_track.name }}</div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- ARTISTS -->
+    <div class="games-table-container" id="artist-table" style="display: none">
+        <table class="games-table">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col" class="sortable" data-sort="">
+                        Score
+                        <i class="fa fa-caret-up" style="display: none"></i>
+                    </th>
+                    <th scope="col">Song You Failed To Get</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for game in game_info['artists'] %}
                 <tr>
                     <td>{{ game.date_of_game.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                     <td>{{ game.score }}</td>

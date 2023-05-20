@@ -113,12 +113,10 @@ class SpotifyHelper(spotipy.Spotify):
         # split list
         max_size = 50
         to_request = []
-        print(track_ids)
         for i in range(0, len(track_ids), max_size):
             print(f'size {len(track_ids)}, max size {max_size}')
             print(track_ids[i:i + max_size])
             to_request.append(track_ids[i:i + max_size])
-        print(to_request)
 
         final = {}
         for track_id_list in to_request:
@@ -127,7 +125,6 @@ class SpotifyHelper(spotipy.Spotify):
                 final = response
             else:
                 final['tracks'] += response['tracks']
-        print(final)
         return final
 
     @staticmethod
