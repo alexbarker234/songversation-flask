@@ -18,7 +18,7 @@ def get_artist_tracks(artist_id: str) -> dict[str, Track]:
 
     # check cache
     if artist.tracks_last_cache_date and (datetime.utcnow() - artist.tracks_last_cache_date).total_seconds() < SECONDS_IN_DAY:
-        track_cache: list[Track] = db.session.query(Track).outerjoin(TrackArtist, Track.id == TrackArtist.track_id).all()
+        track_cache: list[Track] = db.session.query(Track).outerjoin(TrackArtist, Track.id == TrackArtist.track_id).filter(TrackArtist.artist_id == artist_id).all()
         track_dict = {track.id:track for track in track_cache}
     else:
         sp = SpotifyHelper()
