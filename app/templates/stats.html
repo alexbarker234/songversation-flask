@@ -17,7 +17,8 @@
                         Score
                         <i class="fa fa-caret-up" style="display: none"></i>
                     </th>
-                    <th scope="col">Song You Failed To Get</th>
+                    <th scope="col">Playlist</th>
+                    <th scope="col">Failed on</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,9 +26,17 @@
                 <tr>
                     <td>{{ game.date_of_game.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                     <td>{{ game.score }}</td>
-                    <td class="song">
-                        <img src="{{ game.failed_track.image }}" alt="Failed Track Image" width="50px" height="50px" />
-                        <div>{{ game.failed_track.name }}</div>
+                    <td>
+                        <div class="cell-flex">
+                            <img src="{{ game.game_object.image }}" alt="Artist Image" width="50px" height="50px" />
+                            <div>{{ game.game_object.name }}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="cell-flex">
+                            <img src="{{ game.failed_track.image }}" alt="Failed Track Image" width="50px" height="50px" />
+                            <div>{{ game.failed_track.name }}</div>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
@@ -44,7 +53,8 @@
                         Score
                         <i class="fa fa-caret-up" style="display: none"></i>
                     </th>
-                    <th scope="col">Song You Failed To Get</th>
+                    <th scope="col">Artist</th>
+                    <th scope="col">Failed on</th>                
                 </tr>
             </thead>
             <tbody>
@@ -52,9 +62,17 @@
                 <tr>
                     <td>{{ game.date_of_game.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                     <td>{{ game.score }}</td>
-                    <td class="song">
-                        <img src="{{ game.failed_track.image }}" alt="Failed Track Image" width="50px" height="50px" />
-                        <div>{{ game.failed_track.name }}</div>
+                    <td>
+                        <div class="cell-flex">
+                            <img src="{{ game.game_object.image }}" alt="Artist Image" width="50px" height="50px" />
+                            <div>{{ game.game_object.name }}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="cell-flex">
+                            <img src="{{ game.failed_track.image }}" alt="Failed Track Image" width="50px" height="50px" />
+                            <div>{{ game.failed_track.name }}</div>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}

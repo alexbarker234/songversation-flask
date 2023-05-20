@@ -18,6 +18,8 @@
 
 .games-table {
     width: 100%;
+    max-width: 1300px;
+    margin: auto;
 }
 
 .games-table th,
@@ -42,13 +44,14 @@
     padding: 0 1rem;
 }
 
-.games-table .song {
+.cell-flex {
     display: flex;
     justify-content: left;
+    width: 100%;
 }
 
-.games-table .song img {
-    float: left;
+.cell-flex img {
+    align-self: left;
     margin-right: 1rem;
 }
 
@@ -66,7 +69,12 @@
     width: 15%;
 }
 
-.games-table th:last-child,
-.games-table td:last-child {
-    width: 60%;
+.games-table th:nth-child(3),
+.games-table td:nth-child(3) {
+    width: 30%;
+}
+
+.games-table th:nth-child(4),
+.games-table td:nth-child(4) {
+    width: 30%;
 }
