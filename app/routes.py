@@ -103,7 +103,7 @@ def stats():
     best_score = calculate_best_score(game_list)
     average_score = round(calculate_average_score(game_list), 2)
 
-    return render_template('stats.html', title='My Stats', user_data=user_data, user_name=user_data.username, game_info=game_list, best_score=best_score, average_score=average_score)
+    return render_template('stats.html', title='My Stats', user_data=user_data, user_name=user_data.username, game_info=game_info, best_score=best_score, average_score=average_score)
 
 
 @app.route('/profile')

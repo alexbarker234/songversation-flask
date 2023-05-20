@@ -88,6 +88,7 @@
     .games-table th {
         padding: 0 0.4rem;
     }
+}
 
 .score-box {
     display: flex;
