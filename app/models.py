@@ -1,22 +1,27 @@
 from app import db
 from datetime import datetime
+from sqlalchemy.orm import relationship, Mapped, object_mapper
+from typing import List
+
+# Type hinting/mapping docs: 
+# https://docs.sqlalchemy.org/en/20/orm/mapping_styles.html
 
 #each row is a given game done by a given user id, and holds the streak they had, and the date and time of the game
 class Game(db.Model): 
     game_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String(120))
+    user_id= db.Column(db.String(120))
     score = db.Column(db.Integer)
 
     game_type = db.Column(db.String(120)) # current only supports playlist, but can be expanded to artist later
-    game_object_id = db.Column(db.String(120)) # decided how to handle from game_type
+    game_object_id= db.Column(db.String(120)) # decided how to handle from game_type
 
-    song_failed_on = db.Column(db.String(120))
-    date_of_game = db.Column(db.DateTime, default=datetime.utcnow)
+    song_failed_on: str = db.Column(db.String(120))
+    date_of_game: datetime = db.Column(db.DateTime, default=datetime.utcnow)
     
 #user table that has all the user ids and when they joined
 class User(db.Model):
-    user_id = db.Column(db.String(120), primary_key=True)
-    date_joined = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id: str = db.Column(db.String(120), primary_key=True)
+    date_joined: datetime = db.Column(db.DateTime, default=datetime.utcnow)
 
 # cache some data locally to speed up load times (especially with lyrics)
 class Playlist(db.Model):
@@ -28,6 +33,14 @@ class Playlist(db.Model):
     track_count = db.Column(db.Integer)
     image_url = db.Column(db.String(), nullable=True)
 
+class Artist(db.Model):
+    id = db.Column(db.String(120), primary_key=True)
+    last_cache_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    tracks_last_cache_date = db.Column(db.DateTime, index=True)
+
+    name = db.Column(db.String(120), nullable=True)
+    image_url = db.Column(db.String(), nullable=True)
+
 class Track(db.Model):
     id = db.Column(db.String(120), primary_key=True)
     last_cache_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
@@ -36,13 +49,12 @@ class Track(db.Model):
     preview_url = db.Column(db.String(), nullable=True)
     image_url = db.Column(db.String(), nullable=True)
 
-class Artist(db.Model):
-    id = db.Column(db.String(120), primary_key=True)
-    last_cache_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    release_date = db.Column(db.DateTime)
 
-    name = db.Column(db.String(120), nullable=True)
-    image_url = db.Column(db.String(), nullable=True)
-
+    artists: Mapped[List[Artist]] = relationship('Artist', secondary="track_artist", 
+                                            primaryjoin='Track.id == TrackArtist.track_id',
+                                            secondaryjoin='TrackArtist.artist_id == Artist.id')
+    
 class TrackArtist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     lastCacheDate = db.Column(db.DateTime, index=True, default=datetime.utcnow)

@@ -1,13 +1,14 @@
 import asyncio
-from datetime import datetime
+from datetime import datetime, timedelta
 import aiohttp
+from app.cache_manager.track_cache import get_tracks
 from app.helpers.fetch_helper import fetch
 
 from app.models import Lyric, TrackLyrics
 
 from app import db
 
-from constants import SECONDS_IN_DAY
+from constants import SECONDS_IN_DAY, SECONDS_IN_WEEK
 
 async def get_lyrics(track_ids: list[str]) -> dict:
     ''' Returns a dictionary with keys of track ids containing arrays of lyrics '''
@@ -83,7 +84,14 @@ def get_cached_track_lyrics(track_id) -> list[str]:
     lyric_lines_cache: list[Lyric] = Lyric.query.filter(Lyric.track_lyric_id == lyric_cache.id).order_by(Lyric.order.asc()).all()
 
     # check if cache is old
-    if (datetime.utcnow() - lyric_cache.last_cache_date).total_seconds() > SECONDS_IN_DAY:
+
+    # if the song just got relased, cache expires every day, otherwise every week
+    cache_time = SECONDS_IN_WEEK
+    time_since_release: timedelta = datetime.utcnow() - get_tracks([track_id])[track_id].release_date
+    if time_since_release.total_seconds() < SECONDS_IN_WEEK:
+        cache_time = SECONDS_IN_DAY
+
+    if (datetime.utcnow() - lyric_cache.last_cache_date).total_seconds() > cache_time:
         print(f"Cache expired for lyrics with track_id: {track_id}")
         delete_old_lyrics(lyric_lines_cache)
         return None

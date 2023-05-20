@@ -30,8 +30,8 @@ $(window).on("load", function () {
 function setAutocompleteVisibility(autocomplete, enabled) {
     autocomplete = $(autocomplete);
 
-    textBox = autocomplete.children(".autocomplete-input:first-child")
-    optionDiv = autocomplete.children(".autocomplete-options:first-child")
+    textBox = autocomplete.children(".autocomplete-input").first()
+    optionDiv = autocomplete.children(".autocomplete-options").first()
 
     // never display if input is empty
     if (textBox.val() == "") enabled = false; 

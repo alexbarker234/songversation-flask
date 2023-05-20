@@ -3,11 +3,10 @@
     margin-bottom: 2rem;
 }
 
-
 /* PREVIOUS GAMES TABLE */
 .games-table-container {
     border-radius: 1rem;
-    padding: 1rem 0 ;
+    padding: 1rem 0;
     background: #121212;
 
     margin: auto;
@@ -19,6 +18,8 @@
 
 .games-table {
     width: 100%;
+    max-width: 1300px;
+    margin: auto;
 }
 
 .games-table th,
@@ -38,24 +39,55 @@
 .games-table tr:nth-child(odd) {
     background: #202020;
 }
-.games-table td, 
+.games-table td,
 .games-table th {
     padding: 0 1rem;
 }
 
-.games-table .song {
+.cell-flex {
     display: flex;
     justify-content: left;
+    width: 100%;
 }
 
-.games-table .song img {
-    float: left;
+.cell-flex img {
+    align-self: left;
     margin-right: 1rem;
 }
 
 .sortable {
     cursor: pointer;
 }
+
+.games-table th:first-child,
+.games-table td:first-child {
+    width: 25%;
+}
+
+.games-table th:nth-child(2),
+.games-table td:nth-child(2) {
+    width: 15%;
+}
+
+.games-table th:nth-child(3),
+.games-table td:nth-child(3) {
+    width: 30%;
+}
+
+.games-table th:nth-child(4),
+.games-table td:nth-child(4) {
+    width: 30%;
+}
+
+@media only screen and (max-width: 800px) {
+    .games-table {
+        font-size: 0.8rem;
+    }
+
+    .games-table td,
+    .games-table th {
+        padding: 0 0.4rem;
+    }
 
 .score-box {
     display: flex;
