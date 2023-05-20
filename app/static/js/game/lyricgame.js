@@ -108,7 +108,10 @@ function finishScreen() {
         - replay with same playlist
         - back to playlists
     */
-    commitStats(score, currentTrack["id"]);
+
+    commitStats(score, currentTrack['id']);
+    showTrack(currentTrack);
+  
     $("#streak-score").html(`Final Streak: ${score}`);
     $("#win-modal").modal("show");
 }
@@ -256,17 +259,13 @@ function playAgain() {
 }
 
 function playSong() {
-    var audioPlayer = document.getElementById("audioPlayer");
+    var audioPlayer = document.getElementById('audioPlayer');
     audioPlayer.currentTime = 0; // Start from the beginning
     audioPlayer.play();
-
-    var duration = 10000; // 5 seconds
-    setTimeout(function () {
+    audioPlayer.addEventListener('ended', function() {
+        // Playback has finished, pause
         audioPlayer.pause();
-        audioPlayer.currentTime = 0; // Reset the playback position
-        // Call a function to proceed to the next song or perform any other action
-        // after the playback is finished
-    }, duration);
+    });
 }
 
 function loadSong(currentTrack) {
@@ -277,4 +276,19 @@ function loadSong(currentTrack) {
     var audioPlayer = document.getElementById("audioPlayer");
     audioPlayer.load(); // Load the audio source
     console.log(currentTrack.preview_url);
+}
+
+function showTrack(currentTrack) {
+    $("#track-image").attr('src', currentTrack.image_url);
+    const artists=currentTrack.artists;
+    let allArtists = "";
+    for (let i = 0; i < artists.length; i++) {
+        if (i != artists.length-1){
+            allArtists += artists[i] + ', ';
+        }
+        else {
+            allArtists += artists[i];
+        }
+    }
+    $("#track-name").html(currentTrack.name + ' - ' + allArtists);
 }

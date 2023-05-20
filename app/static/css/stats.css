@@ -88,4 +88,21 @@
     .games-table th {
         padding: 0 0.4rem;
     }
+
+.score-box {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+  
+.score-container {
+    flex-basis: 50%;
+}
+  
+.best-score-container,
+.average-score-container {
+    background-color: #2c2c2c;
+    padding: 10px;
+    border: 1px solid #ccc;
 }
