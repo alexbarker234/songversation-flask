@@ -1,6 +1,7 @@
 
 import re
 from flask import jsonify, request, url_for
+from app.cache_manager import artist_cache
 
 from app.cache_manager.track_cache import get_tracks
 from app.cache_manager.track_lyrics_cache import get_lyrics
@@ -8,6 +9,7 @@ from app.helpers.spotify_helper import SpotifyHelper, UnauthorisedException
 
 
 from app import app
+from app.models import Artist, Track
 from constants import UNAUTHORISED_MESSAGE
 
 class AlbumResponse:
@@ -35,8 +37,18 @@ class PlaylistResponse:
         else:
             self.image = url_for('static', filename='defaultCover.png')
 
-class TrackResponse:
-    def __init__(self, payload, album: AlbumResponse = None):
+class TrackResponse:   
+    def __init__(self):
+        self.name = None
+        self.id = None
+        self.artists = None
+        self.preview_url = None
+        self.image_url = None
+
+    @classmethod
+    def from_payload(cls, payload: dict, album: AlbumResponse = None):
+        self = cls()
+
         self.name = payload['name']
         self.id = payload['id']
         self.artists = []
@@ -48,6 +60,7 @@ class TrackResponse:
             self.image_url = payload['album']['images'][0]['url']
         elif album:
             self.image_url = album.image
+        return self
 
 @app.route('/api/top-artists', methods=['GET'])
 def top_artists():
@@ -114,36 +127,23 @@ def get_artist(artist_id):
 
 @app.route('/api/get-artist-tracks/<artist_id>')
 def get_artist_tracks(artist_id):
-    try:
-        sp = SpotifyHelper()
-        
-        results = []
-
+    try:        
         print('Fetching Tracks for artist id: ' + artist_id)
+        tracks = artist_cache.get_artist_tracks(artist_id)
 
-        # spotipy doesnt let you do ['album', 'single'] for some reason
-        album_request = sp.artist_albums(artist_id, limit = 50, album_type='album')
-        albums = request_albums(sp, album_request)
-        album_request = sp.artist_albums(artist_id, limit = 50, album_type='single')
-        albums.extend(request_albums(sp, album_request))
+        response = []
+        # there might be a way to shorten this
+        for track in tracks.values():
+            track_resp = TrackResponse()
+            track_resp.id = track.id 
+            track_resp.image_url = track.image_url
+            track_resp.name = track.name
+            track_resp.preview_url = track.preview_url
+            track_resp.artists = [artist.name for artist in track.artists]
 
-        # filter remixes, alt versions, acoustics, etc out
-        albums = [album for album in albums if not (re.search('[\[\(].* ?(?:Rework|Remix|Version|Acoustic|Acapella|Unplugged|Live|Instrumental)[\]\)]', album.name, re.IGNORECASE))]        
+            response.append(track_resp.__dict__)
         
-        tracks: list[TrackResponse] = []
-        for album in albums:
-            track_request = sp.album_tracks(album.id, limit=50)
-            tracks += request_album_tracks(sp, track_request, album)
-
-        # remove duplicate tracks
-        unique_tracks = {}
-        for track in tracks:
-            if track.name not in unique_tracks:
-                unique_tracks[track.name] = track
-
-        unique_tracks = list(unique_tracks.values())
-
-        return jsonify([ob.__dict__ for ob in unique_tracks])
+        return jsonify(response)
     except UnauthorisedException:
         return UNAUTHORISED_MESSAGE, 401
 
@@ -215,39 +215,11 @@ def request_playlist_tracks(sp, items):
         for playlist_track in items['items']:
             # dont add local files 
             if playlist_track['track']['is_local'] or playlist_track['track']['id'] != None:
-                results.append(TrackResponse(playlist_track['track']))
+                results.append(TrackResponse.from_payload(playlist_track['track']))
         if items['next']:
             items = sp.next(items)
         else:
             items = None
-    return results
-
-def request_album_tracks(sp, tracks, album) -> list[TrackResponse]:
-    '''
-    Requests the rest of the tracks given an existing request and turns them into a TrackResponse object for ease of use
-    '''
-    results = []
-    while tracks:
-        for track in tracks['items']:
-            results.append(TrackResponse(track, album))
-        if tracks['next']:
-            tracks = sp.next(tracks)
-        else:
-            tracks = None
-    return results
-
-def request_albums(sp, albums) -> list[AlbumResponse]:
-    '''
-    Requests the rest of the albums given an existing request and turns them into a AlbumResponse object for ease of use
-    '''
-    results = []
-    while albums:
-        for i, album in enumerate(albums['items']):
-            results.append(AlbumResponse(album))
-        if albums['next']:
-            albums = sp.next(albums)
-        else:
-            albums = None
     return results
 
 @app.route('/api/get-track-lyrics', methods=['GET'])
@@ -258,9 +230,10 @@ async def get_track_lyrics():
     }
 
     track_ids = request.args.get('track_ids').split(',')
-    if len(track_ids) == 0:
+    if len(track_ids) == 0 or (len(track_ids) == 1 and track_ids[0] ==''):
         return_data['error'] = True
         return_data['error_message'] = "No track ids entered"
+        return jsonify(return_data)
 
     # fetch lyrics from cache/refresh cache
     return_data['track_lyrics'] = await get_lyrics(track_ids)
