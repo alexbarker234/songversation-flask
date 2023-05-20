@@ -24,8 +24,11 @@
             <tbody>
                 {% for game in game_info['playlists'] %}
                 <tr>
-                    <td>{{ game.date_of_game.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                    <td>{{ game.score }}</td>
+                    <td>
+                        {{ game.date_of_game.strftime('%d %b %Y') }}
+                        <br>
+                        {{ game.date_of_game.strftime('%H:%M') }}
+                    </td>                    <td>{{ game.score }}</td>
                     <td>
                         <div class="cell-flex">
                             <img src="{{ game.game_object.image }}" alt="Artist Image" width="50px" height="50px" />
@@ -60,7 +63,11 @@
             <tbody>
                 {% for game in game_info['artists'] %}
                 <tr>
-                    <td>{{ game.date_of_game.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>
+                        {{ game.date_of_game.strftime('%d %b %Y') }}
+                        <br>
+                        {{ game.date_of_game.strftime('%H:%M') }}
+                    </td>
                     <td>{{ game.score }}</td>
                     <td>
                         <div class="cell-flex">

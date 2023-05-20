@@ -44,19 +44,26 @@ def stats():
     track_ids = [game.song_failed_on for game in game_list]
     tracks = get_tracks(track_ids)
 
+    # prevents requesting the same thing many times
+    playlist_cache = {}
+    artist_cache = {}
+
+    sp = SpotifyHelper()
+
     for game in game_list:
         track = tracks[game.song_failed_on]
         game.failed_track = {'name': track.name, 'image': track.image_url} 
-        if game.game_type == 'artist':
-            artist = get_artist(game.game_object_id)    
-            game.game_object = {'name': artist.name, 'image': artist.image_url}
-        else:
-            try:
-                sp = SpotifyHelper()
-                playlist =  sp.playlist(game.game_object_id)
+        try:
+            if game.game_type == 'artist':
+                artist = artist_cache.get(game.game_object_id, get_artist(game.game_object_id))
+                artist_cache[game.game_object_id] = artist
+                game.game_object = {'name': artist.name, 'image': artist.image_url}
+            else:
+                playlist = artist_cache.get(game.game_object_id, sp.playlist(game.game_object_id))
+                playlist_cache[game.game_object_id] = playlist
                 game.game_object = {'name': playlist['name'], 'image': playlist['images'][0]['url']}
-            except:
-                game.game_object = {'name': 'invalid', 'image': ''}
+        except:
+            game.game_object = {'name': 'error', 'image': ''}
 
     game_info = {}
     # sort the games & get first 50 elements
