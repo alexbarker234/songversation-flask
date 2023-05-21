@@ -3,32 +3,13 @@
 {% block content %}
 
 <div class="container-fluid">
-    <h1 class="stats-header">Search - {{ user_name }}</h1>
+    <h1 class="stats-header">Search - {{  user_data.username  }}</h1>
     <div class="container-fluid">
         <!-- Search Function -->
-        <form method="GET" action="/search_friends">
-            <input type="text" name="search_query" placeholder="Search by display name">
-            <button type="submit">Search</button>
-        </form>
+        <input type="text" id="user-search-input" placeholder="Search by name">
+        <button type="submit" onclick="searchUsers()">Search</button>
         <!-- Display search results -->
-        <table class="games-table">
-            <thead>
-                <tr>
-                    <th>Status</th>
-                    <th>Username</th>
-                    <th>Date Joined</th>
-                </tr>
-            </thead>
-            <tbody id="friends-table">
-                {% for user in users %}
-                <tr>
-                    <td><button id="add-friend-{{ user.user_id }}" onclick="addFriendship('{{ user.user_id }}')">Add Friend</button></td>
-                    <td><img src="{{ user.display_photo_url }}" alt="Profile Photo" width="50">{{ user.display_name }}</td>
-                    <td data-date-joined="{{ user.date_joined }}">{{ user.date_joined }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div id="user-search-results"></div>
     </div>    
 </div>
 

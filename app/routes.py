@@ -80,7 +80,7 @@ def stats():
     best_score = max(game_list, key=lambda game: game.score).score if len(game_list) > 0 else '-'
     average_score = round(sum(game.score for game in game_list) / len(game_list), 2) if len(game_list) > 0 else '-'
 
-    return render_template('user/stats.html', title='My Stats', user_data=user_data, user_name=user_data.username, game_info=game_info, best_score=best_score, average_score=average_score)
+    return render_template('user/stats.html', title='My Stats', user_data=user_data, game_info=game_info, best_score=best_score, average_score=average_score)
 
 # @app.route('/profile')
 # def profile_page():
@@ -102,8 +102,15 @@ def friends_page():
     for friend in friends:
         friends_list.append({
             'id': friend.user_id,
-            'date_joined': friend.date_joined
+            'date_joined': friend.date_joined or ''
         })
-    print([friend.user_id for friend in friends])
 
-    return render_template('user/friends.html', title='Friends', user_data=user_data, user_name=user_data.username, friends=friends_list)
+    return render_template('user/friends.html', title='Friends', user_data=user_data, friends=friends_list)
+
+@app.route('/add-friends')
+def add_friends_page():
+    user_data = SpotifyWebUserData()
+    if not user_data.authorised:
+        return redirect("/")
+
+    return render_template('user/add_friends.html', title='Add Friends', user_data=user_data)

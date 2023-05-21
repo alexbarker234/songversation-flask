@@ -1,0 +1,47 @@
+#user-search-results {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    margin-top: 2rem;
+
+    max-width: 1200px;
+}
+.user-result {
+    background-color: var(--bg-color2);
+    height: 8rem;
+    display: flex;
+    position: relative;
+
+    margin-bottom: 2rem;
+}
+.user-result img {
+    height: 6rem;
+    margin-right: 1rem;
+
+}
+
+.user-result-details {
+    position: absolute;
+    display: flex;
+
+    margin-left: 1rem;
+
+    top: 50%;
+    transform: translate(0,-50%);
+}
+
+.user-result .username {
+    font-size: 2rem;
+}
+
+.add-friend-container {
+    position: absolute;
+    top: 50%;
+    right: 2rem;
+    transform: translate(0,-50%);
+
+    font-size: 1.5rem;
+}
+.add-friend-container * {
+    width: 250px;
+}

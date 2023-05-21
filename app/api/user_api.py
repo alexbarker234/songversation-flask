@@ -38,8 +38,13 @@ def search_users():
     if not user_data.authorised:
         return 'Not authenticated', 401
     search_query = request.args.get('name')
+
+    # get searching user
+    current_user = User.query.filter(User.user_id == user_data.id).first()
+
     users = User.query.filter(User.user_id.ilike(f'%{search_query}%')).all()
-    return jsonify([UserResponse.from_db_user(user).__dict__ for user in users])
+    print(users)
+    return jsonify([UserResponse.from_db_user(current_user, user).__dict__ for user in users])
 
 @app.route('/api/add-friend')
 def add_friend():
@@ -72,8 +77,10 @@ def add_friend():
 
 class UserResponse:
     @classmethod
-    def from_db_user(cls, user: User) :
+    def from_db_user(cls, current_user: User, user: User) :
         self = cls()
         self.id = user.user_id
-
+        self.is_self = current_user.user_id == user.user_id
+        self.is_friend = user in current_user.friends
+        self.image = ''
         return self
