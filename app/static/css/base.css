@@ -44,14 +44,14 @@ body {
 }
 .welcome-bubble {
     position: absolute;
-    top: 10%;
+    top: 20%;
     height: inherit;
     stroke: var(--spotify-green);
     fill: var(--spotify-green);
     stroke-width: 2.5;
     stroke-linecap: round;
     stroke-linejoin: round;
-    animation: up-down 4s alternate infinite ease-in-out;
+    animation: up-down 3s alternate infinite ease-in-out;
 }
 
 .welcome-bubble:nth-of-type(1) {
@@ -79,31 +79,31 @@ body {
     left: 50%;
 }
 .welcome-bubble:nth-of-type(7) {
-    animation-delay: 0.4s;
+    animation-delay: 0.6s;
     left: 58.33%;
 }
 .welcome-bubble:nth-of-type(8) {
-    animation-delay: 0.3s;
+    animation-delay: 0.7s;
     left: 66.67%;
 }
 .welcome-bubble:nth-of-type(9) {
-    animation-delay: 0.2s;
+    animation-delay: 0.8s;
     left: 75%;
 }
 .welcome-bubble:nth-of-type(10) {
-    animation-delay: 0.1s;
+    animation-delay: 0.9s;
     left: 83.33%;
 }
 .welcome-bubble:nth-of-type(11) {
-    animation-delay: 0s;
+    animation-delay: 1s;
     left: 91.67%;
 }
 
 @keyframes up-down {
-    0%, 100%{top: 10%;}
-    25%{top: 90%;}
-    50%{top: 10%;}
-    75%{top: 90%;}
+    0%, 100%{top: 20%;}
+    25%{top: 80%;}
+    50%{top: 20%;}
+    75%{top: 80%;}
 }
 /* @keyframes left-right {
     to { transform: translatex(100%);} \* width of container is 10% so 1000% of 10% is the whole width *\
