@@ -40,11 +40,11 @@ body {
     width: 100%;
     height: 30%;
     z-index: -1;
-    /* animation: left-right 5s alternate-reverse infinite ease-in-out; */
+    /* animation: left-right 3s alternate-reverse infinite; */
 }
 .welcome-bubble {
     position: absolute;
-    top: 20%;
+    top: 30%;
     height: inherit;
     stroke: var(--spotify-green);
     fill: var(--spotify-green);
@@ -59,53 +59,53 @@ body {
     left: 8.33%;
 }
 .welcome-bubble:nth-of-type(2) {
-    animation-delay: 0.1s;   
+    animation-delay: 0.2s;   
     left: 16.67%; 
 }
 .welcome-bubble:nth-of-type(3) {
-    animation-delay: 0.2s;
+    animation-delay: 0.4s;
     left: 25%;
 }
 .welcome-bubble:nth-of-type(4) {
-    animation-delay: 0.3s;
+    animation-delay: 0.6s;
     left: 33.33%;
 }
 .welcome-bubble:nth-of-type(5) {
-    animation-delay: 0.4s;
+    animation-delay: 0.8s;
     left: 41.67%;
 }
 .welcome-bubble:nth-of-type(6) {
-    animation-delay: 0.5s;
+    animation-delay: 1s;
     left: 50%;
 }
 .welcome-bubble:nth-of-type(7) {
-    animation-delay: 0.6s;
+    animation-delay: 1.2s;
     left: 58.33%;
 }
 .welcome-bubble:nth-of-type(8) {
-    animation-delay: 0.7s;
+    animation-delay: 1.4s;
     left: 66.67%;
 }
 .welcome-bubble:nth-of-type(9) {
-    animation-delay: 0.8s;
+    animation-delay: 1.6s;
     left: 75%;
 }
 .welcome-bubble:nth-of-type(10) {
-    animation-delay: 0.9s;
+    animation-delay: 1.8s;
     left: 83.33%;
 }
 .welcome-bubble:nth-of-type(11) {
-    animation-delay: 1s;
+    animation-delay: 2s;
     left: 91.67%;
 }
 
 @keyframes up-down {
-    0%, 100%{top: 20%;}
-    25%{top: 80%;}
-    50%{top: 20%;}
-    75%{top: 80%;}
+    0%, 100%{top: 30%;}
+    25%{top: 70%;}
+    50%{top: 30%;}
+    75%{top: 70%;}
 }
 /* @keyframes left-right {
     to { transform: translatex(100%);} \* width of container is 10% so 1000% of 10% is the whole width *\
 } 
-*/
+ */
