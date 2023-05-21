@@ -1,7 +1,7 @@
 from typing import List
 from app.cache_manager.artist_cache import get_artist
 from app.cache_manager.track_cache import get_tracks
-from app.models import Game, User
+from app.models import Game, Message, User
 from flask import redirect, render_template
 from app import app
 from app.helpers.spotify_helper import SpotifyHelper, SpotifyWebUserData
@@ -102,7 +102,9 @@ def friends_page():
     for friend in friends:
         friends_list.append({
             'id': friend.user_id,
-            'date_joined': friend.date_joined or ''
+            'username': friend.display_name,
+            'date_joined': friend.date_joined or '',
+            'image': friend.image_url or ''
         })
 
     return render_template('user/friends.html', title='Friends', user_data=user_data, friends=friends_list)
@@ -114,3 +116,30 @@ def add_friends_page():
         return redirect("/")
 
     return render_template('user/add_friends.html', title='Add Friends', user_data=user_data)
+
+@app.route('/chat/<reciever_id>')
+def chat_page(reciever_id):
+    user_data = SpotifyWebUserData()
+    if not user_data.authorised:
+        return redirect("/")
+    
+    reciever = User.query.filter(User.user_id == reciever_id).first()
+    if not reciever:
+        return render_template('errors/404.html', user_data=user_data), 404
+
+    previous_msgs = []
+    messages: List[Message] = Message.query.filter(
+        ((Message.sender_id == user_data.id) & (Message.reciever_id == reciever_id)) | 
+        ((Message.sender_id == reciever_id) & (Message.reciever_id == user_data.id))
+        ).all()
+    
+    user_dict = {}
+    for msg in messages:
+        user = user_dict.get(msg.sender_id, User.query.filter(User.user_id == msg.sender_id).first())
+        previous_msgs.append({
+            'msg': msg.content,
+            'date': msg.date.strftime('%d %b %Y %H:%M'),
+            'user': user
+        })
+
+    return render_template('user/chatroom.html', title='Songversation', user_data=user_data, reciever_name = reciever.display_name, previous_msgs=previous_msgs) 

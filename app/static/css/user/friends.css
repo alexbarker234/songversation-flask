@@ -1,0 +1,116 @@
+/* friends list */
+#friends-list {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    margin-top: 2rem;
+
+    max-width: 1200px;
+}
+
+#friends-list .friend-row {
+    background-color: var(--bg-color2);
+    height: 5rem;
+    display: flex;
+    position: relative;
+
+    margin-bottom: 2rem;
+}
+.friend-row img {
+    height: 4rem;
+    width: 4rem;
+    margin-left: 1rem;
+    border-radius: 2rem;
+
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+.friend-row .username {
+    position: absolute;
+    left: 6rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.friend-row .chat-button {
+    position: absolute;
+    top: 50%;
+    right: 2rem;
+    transform: translate(0, -50%);
+
+    background-color: var(--bg-color3);
+    padding: 0.75rem;
+    border-radius: 5rem;
+}
+.friend-row .chat-button i {
+    font-size:30px;
+    color:white;
+    transform: translate(0, 10%);
+}
+.friend-row .chat-button:hover {
+    filter: brightness(70%);
+}
+
+/* adding friends */
+#user-search-results {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    margin-top: 2rem;
+
+    max-width: 1200px;
+}
+.user-result {
+    background-color: var(--bg-color2);
+    height: 8rem;
+    display: flex;
+    position: relative;
+
+    margin-bottom: 2rem;
+}
+.user-result img {
+    width: 6rem;
+    height: 6rem;
+    margin-right: 1rem;
+}
+
+.user-result-details {
+    position: absolute;
+    display: flex;
+
+    margin-left: 1rem;
+
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.user-result .username {
+    font-size: 2rem;
+}
+
+.add-friend-container {
+    position: absolute;
+    top: 50%;
+    right: 2rem;
+    transform: translate(0, -50%);
+
+    font-size: 1.5rem;
+}
+.add-friend-container * {
+    width: 250px;
+}
+
+#user-search-input {
+    color: white;
+    background-color: var(--bg-color2);
+    border: var(--spotify-green) 2px solid;
+    outline: none;
+    padding: 0 1rem;
+    height: 50px;
+}
+#user-search-input::placeholder {
+    color: grey;
+}

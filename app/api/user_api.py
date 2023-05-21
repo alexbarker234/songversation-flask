@@ -44,7 +44,6 @@ def search_users():
     current_user = User.query.filter(User.user_id == user_data.id).first()
 
     users = User.query.filter(User.user_id.ilike(f'%{search_query}%')).all()
-    print(users)
     return jsonify({'users':[UserResponse.from_db_user(current_user, user).__dict__ for user in users]})
 
 @app.route('/api/add-friend', methods=['POST'])

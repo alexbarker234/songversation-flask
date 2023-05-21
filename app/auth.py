@@ -1,7 +1,8 @@
 
 from flask import session, redirect
 from app import app, db
-from app.helpers.spotify_helper import SpotifyHelper
+from app.cache_manager import user_cache
+from app.helpers.spotify_helper import SpotifyHelper, SpotifyWebUserData
 from spotipy.exceptions import SpotifyException
 from app.models import User
 from datetime import datetime
@@ -29,13 +30,7 @@ def authorise():
         user_info = spotify_helper.me()
 
         # add user to database on first log in
-        user = User.query.filter(User.user_id == user_info['id']).first()
-        if not user:
-            # Create new user row if user does not exist in database
-            user = User(user_id=user_info['id'], date_joined=datetime.utcnow())
-            db.session.add(user)
-            db.session.commit()
-            print(f"Registered user '{user_info['display_name']}' with id '{user_info['id']}'")
+        SpotifyWebUserData()
 
     except SpotifyException as e:
         if 'User not registered in the Developer Dashboard' in e.msg: 

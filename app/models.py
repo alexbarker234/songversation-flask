@@ -86,6 +86,15 @@ class User(db.Model):
         db.session.delete(existing)
         db.session.commit()
 
+class Message(db.Model):
+    id: int = db.Column(db.Integer, primary_key=True)
+
+    sender_id: str = db.Column(db.String(120))
+    reciever_id: str = db.Column(db.String(120))
+
+    content: str = db.Column(db.String(120))
+    date: datetime = db.Column(db.DateTime, default=datetime.utcnow)
+
 # cache some data locally to speed up load times (especially with lyrics)
 class Playlist(db.Model):
     id = db.Column(db.String(120), primary_key=True)
