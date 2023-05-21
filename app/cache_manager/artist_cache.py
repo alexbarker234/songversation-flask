@@ -42,7 +42,6 @@ def get_artist_tracks(artist_id: str) -> dict[str, Track]:
 
         # cache all tracks
         track_dict = get_tracks(track_ids)
-
         # update last cache date
         artist.tracks_last_cache_date = datetime.utcnow()
 
