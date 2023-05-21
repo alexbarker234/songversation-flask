@@ -67,6 +67,25 @@ class User(db.Model):
         db.session.add(friendship)
         db.session.commit()
 
+    def remove_friend(self, friend_id):
+        # stop user removing themselves
+        if friend_id == self.user_id:
+            raise InvalidFriendException('Cannot remove self as friend')
+
+        # verify friend user exist
+        friend_user = User.query.filter(User.user_id == friend_id).one_or_none()
+        if not friend_user:
+            raise UserNotFoundException('User does not exist')
+
+        # verify not already friend
+        existing = Friendship.query.filter(Friendship.user_id == self.user_id and Friendship.friend_id == friend_id).one_or_none()
+        if not existing:
+           raise InvalidFriendException('User is not friends')
+        
+        # remove friend
+        db.session.delete(existing)
+        db.session.commit()
+
 # cache some data locally to speed up load times (especially with lyrics)
 class Playlist(db.Model):
     id = db.Column(db.String(120), primary_key=True)
@@ -89,6 +108,13 @@ class Artist(db.Model):
     image_url = db.Column(db.String(), nullable=True)
 
 
+class TrackArtist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    lastCacheDate = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    artist_id = db.Column(db.String(120))  # UNENFORCED FK
+    track_id = db.Column(db.String(120))  # UNENFORCED FK
+
 class Track(db.Model):
     id = db.Column(db.String(120), primary_key=True)
     last_cache_date = db.Column(
@@ -103,15 +129,6 @@ class Track(db.Model):
     artists: Mapped[List[Artist]] = relationship('Artist', secondary="track_artist",
                                                  primaryjoin='Track.id == TrackArtist.track_id',
                                                  secondaryjoin='TrackArtist.artist_id == Artist.id')
-
-
-class TrackArtist(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    lastCacheDate = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-
-    artist_id = db.Column(db.String(120))  # UNENFORCED FK
-    track_id = db.Column(db.String(120))  # UNENFORCED FK
-
 
 class TrackLyrics(db.Model):
     id = db.Column(db.Integer, primary_key=True)
