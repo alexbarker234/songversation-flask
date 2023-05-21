@@ -79,8 +79,8 @@ class UserResponse:
     @classmethod
     def from_db_user(cls, current_user: User, user: User) :
         self = cls()
-        self.id = user.user_id
+        self.username = user.display_name
         self.is_self = current_user.user_id == user.user_id
         self.is_friend = user in current_user.friends
-        self.image = ''
+        self.image_url = user.image_url
         return self
