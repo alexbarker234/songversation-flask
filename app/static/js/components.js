@@ -34,3 +34,17 @@ function errorMessageComponent(message) {
     <a href="/">Back to Home</a>
     `)
 }
+
+function userResultComponent(user) {
+    return wrapComponent(`
+    <div class="user-result" data-id=${user.id}>
+        <div class="user-result-details">
+            <img class="profile-pic" src="${user.image_url ?? ''}">
+            <div class="username">${user.username}</div>
+        </div>
+        <div class="add-friend-container">
+            ${user.is_self ? '' : user.is_friend ? `<div>Added</div>` : `<button class="button green add-friend">Add Friend</button>`}
+        </div>
+    </div>
+    `)
+}

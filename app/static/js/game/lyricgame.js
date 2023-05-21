@@ -10,7 +10,7 @@ let currentTrack = null;
 
 let score = 0;
 
-let playlistID;
+let objectID;
 
 const keyUp = 38,
     keyDown = 40,
@@ -28,14 +28,21 @@ const keyUp = 38,
 */
 
 $(window).on("load", function () {
+    objectID = window.location.pathname.split("/").pop(); // get the last part in the path
     if (window.location.pathname.includes("/playlist/")) {
-        playlistID = window.location.pathname.split("/").pop(); // get the last part in the path
-
-        getPlaylist(playlistID).then((response) => {
+        getPlaylist(objectID).then((response) => {
             if (response.error === true) {
                 displayError(response.message);
             } else {
                 loadGameWithPlaylist(response);
+            }
+        });
+    } else if (window.location.pathname.includes("/artist/")) {
+        getArtistTracks(objectID).then((response) => {
+            if (response.error === true) {
+                displayError(response.message);
+            } else {
+                loadGameWithArtist(response);
             }
         });
     }
@@ -52,8 +59,8 @@ function getPlaylist(playlistID) {
     return $.getJSON(`/api/get-playlist/${playlistID}`);
 }
 
-function getPlaylistTracks(playlistID) {
-    return $.getJSON(`/api/get-playlist-tracks/${playlistID}`);
+function getArtistTracks(artistID) {
+    return $.getJSON(`/api/get-artist-tracks/${artistID}`);
 }
 
 function loadGameWithPlaylist(playlist) {
@@ -61,21 +68,33 @@ function loadGameWithPlaylist(playlist) {
         map[obj.id] = obj;
         return map;
     }, {});
-    availableTrackIDs = playlist.tracks.map(function (obj) {
-        return obj.id;
-    });
+    loadGame(loadedTracks);
+}
+
+function loadGameWithArtist(artist) {
+    loadedTracks = artist.reduce(function (map, obj) {
+        map[obj.id] = obj;
+        return map;
+    }, {});
+    loadGame(loadedTracks);
+}
+
+function loadGame(trackDict) {
+    console.log(trackDict);
+
+    availableTrackIDs = Object.keys(trackDict);
     availableTrackIDs = availableTrackIDs.filter((n) => n).shuffle(); // remove null track ids (local files) and shuffle
 
     // playlist icon
-    selectedPlaylist = coverArtBoxComponent(playlist);
+    /*selectedPlaylist = coverArtBoxComponent(playlist);
     selectedPlaylist.css("animation", "fade-in 1s");
     selectedPlaylist.addClass("selected-playlist");
-    $("#selected-cover-art").append(selectedPlaylist);
+    $("#selected-cover-art").append(selectedPlaylist);*/
 
     // register autocomplete options
-    const trackList = $("#track-list");
-    playlist.tracks.forEach(function (track) {
-        trackList.append($("<li>", { html: `${trackListDisplay(track)}` }));
+    const trackListDiv = $("#track-list");
+    Object.values(trackDict).forEach(function (track) {
+        trackListDiv.append($("<li>", { html: `${trackListDisplay(track)}` }));
     });
 
     $("#score-text").html(`0`);
@@ -89,14 +108,27 @@ function finishScreen() {
         - replay with same playlist
         - back to playlists
     */
+
     commitStats(score, currentTrack['id']);
     showTrack(currentTrack);
+  
     $("#streak-score").html(`Final Streak: ${score}`);
     $("#win-modal").modal("show");
 }
 
 function commitStats(score, songFailedOn) {
-    $.post("/api/add-game", { score: score, last_song: songFailedOn, game_type: 'playlist', game_object_id: playlistID })
+    let parts = window.location.pathname.split("/");
+    let gameType = parts[parts.length - 2];
+
+    console.log(gameType)
+
+    let valid_types = ["playlist", "artist"];
+    if (!valid_types.includes(gameType)) {
+        console.log(`Game type, ${gameType} is invalid`);
+        return;
+    }
+
+    $.post("/api/add-game", { score: score, last_song: songFailedOn, game_type: gameType, game_object_id: objectID })
         .done(function () {
             console.log("Stats saved successfully.");
         })
@@ -154,8 +186,13 @@ function loadLyrics(numToLoad, tracksToLoad, startGame) {
         }
         if (tracksToLoad.length != 0) {
             loadLyrics(numToLoad, tracksToLoad, startGame);
-        } else {
+        } 
+        // when lyrics have finished loading
+        else {
             console.log("finished loading lyrics");
+            if (loadedLyrics.length == 0) {
+                console.log("no lyrics")
+            }
         }
     });
 }
@@ -167,7 +204,6 @@ function chooseLyrics(trackID) {
     if (loadedLyrics.length == 0) {
         console.log("out of songs");
     }
-
     currentTrack = loadedTracks[trackID];
     loadSong(currentTrack);
     displayLyrics(loadedTracks[trackID].lyrics, trackID);
@@ -233,13 +269,13 @@ function playSong() {
 }
 
 function loadSong(currentTrack) {
-    if (!currentTrack.preview_url){
-        return
+    if (!currentTrack.preview_url) {
+        return;
     }
-    $("#audioSource").attr('src', currentTrack.preview_url);
-    var audioPlayer = document.getElementById('audioPlayer');
+    $("#audioSource").attr("src", currentTrack.preview_url);
+    var audioPlayer = document.getElementById("audioPlayer");
     audioPlayer.load(); // Load the audio source
-    console.log(currentTrack.preview_url)
+    console.log(currentTrack.preview_url);
 }
 
 function showTrack(currentTrack) {

@@ -1,12 +1,13 @@
 from datetime import datetime
 import json
-from flask import request
+from flask import jsonify, request
 from app.api.spotify_api import UNAUTHORISED_MESSAGE
+from app.exceptions import InvalidFriendException, UserNotFoundException, UnauthorisedException
 
-from app.helpers.spotify_helper import SpotifyHelper, UnauthorisedException
+from app.helpers.spotify_helper import SpotifyHelper, SpotifyWebUserData
 
 from app import app, db
-from app.models import Game
+from app.models import Friendship, Game, User
 
 @app.route('/api/add-game', methods=['POST'])
 def save_game():
@@ -14,8 +15,6 @@ def save_game():
         spotify_helper = SpotifyHelper()     
         user_info = spotify_helper.me()
         user_id = user_info['id']
-
-        print(request.form)
 
         score = request.form['score']
         song_failed_on = request.form['last_song']
@@ -33,3 +32,49 @@ def save_game():
         return json.dumps({'success':True}), 201, {'ContentType':'application/json'} 
     except UnauthorisedException:
         return UNAUTHORISED_MESSAGE, 401
+    
+@app.route('/api/search-users')
+def search_users():
+    user_data = SpotifyWebUserData()
+    if not user_data.authorised:
+        return 'Not authenticated', 401
+    search_query = request.args.get('name')
+
+    # get searching user
+    current_user = User.query.filter(User.user_id == user_data.id).first()
+
+    users = User.query.filter(User.user_id.ilike(f'%{search_query}%')).all()
+    print(users)
+    return jsonify({'users':[UserResponse.from_db_user(current_user, user).__dict__ for user in users]})
+
+@app.route('/api/add-friend', methods=['POST'])
+def add_friend():
+    user_data = SpotifyWebUserData()
+    if not user_data.authorised:
+        return 'Not authenticated', 401
+    
+    friend_id = request.json.get('id')
+    if not friend_id:
+        return 'No user id included', 400
+
+    # get current user
+    user: User = User.query.filter(User.user_id == user_data.id).one_or_none()
+    try:
+        user.add_friend(friend_id)
+    except UserNotFoundException as e:
+        return str(e), 404
+    except InvalidFriendException as e:
+        return str(e), 400
+    
+    return 'Success'
+
+class UserResponse:
+    @classmethod
+    def from_db_user(cls, current_user: User, user: User) :
+        self = cls()
+        self.id = user.user_id
+        self.username = user.display_name
+        self.is_self = current_user.user_id == user.user_id
+        self.is_friend = user in current_user.friends
+        self.image_url = user.image_url
+        return self

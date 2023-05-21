@@ -1,6 +1,5 @@
 $(window).on("load", function () {
     let borderElements = $(".gradient-border");
-    console.log({borderElements})
     if (borderElements) {
         setInterval(() => {
             borderElements.each(function (index) {

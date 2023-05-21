@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <h1 class="stats-header">Search - {{  user_data.username  }}</h1>
+    <div class="container-fluid">
+        <!-- Search Function -->
+        <input type="text" id="user-search-input" placeholder="Search by name">
+        <button type="submit" class="button green" style="width: 6rem; height: 50px" onclick="searchUsers()">Search</button>
+        <!-- Display search results -->
+        <div id="user-search-results"></div>
+    </div>    
+</div>
+
+{% endblock %}

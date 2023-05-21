@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid">
+    <h1 class="stats-header">My Stats - {{ user_data.username }}</h1>
+
+    <div class="score-box">
+      <div class="score-container">
+          <div class="best-score-container">
+              <h3>Best Score: </h3>
+              <p>{{ best_score }}</p>
+          </div>
+      </div>
+
+      <div class="score-container">
+          <div class="average-score-container">
+              <h3>Average Score:</h3>
+              <p>{{ average_score }}</p>
+          </div>
+      </div>
+    </div>
+
+    <div class="tracklist-selector-container">
+        <a class="tracklist-selector" id="playlist-selecor">Playlists</a>
+        <a class="tracklist-selector" id="artist-selecor">Artists</a>
+        <a class="tracklist-selector disabled" id="curated-selecor">Curated</a>
+    </div>
+    <!-- PLAYLISTS -->
+    <div class="games-table-container" id="playlist-table">
+        <table class="games-table">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col" class="sortable" data-sort="">
+                        Score
+                        <i class="fa fa-caret-up" style="display: none"></i>
+                    </th>
+                    <th scope="col">Playlist</th>
+                    <th scope="col">Failed on</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for game in game_info['playlists'] %}
+                <tr>
+                    <td>
+                        {{ game.date_of_game.strftime('%d %b %Y') }}
+                        <br>
+                        {{ game.date_of_game.strftime('%H:%M') }}
+                    </td>                    <td>{{ game.score }}</td>
+                    <td>
+                        <div class="cell-flex">
+                            <img src="{{ game.game_object.image }}" alt="Artist Image" width="50px" height="50px" />
+                            <div>{{ game.game_object.name }}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="cell-flex">
+                            <img src="{{ game.failed_track.image }}" alt="Failed Track Image" width="50px" height="50px" />
+                            <div>{{ game.failed_track.name }}</div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- ARTISTS -->
+    <div class="games-table-container" id="artist-table" style="display: none">
+        <table class="games-table">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col" class="sortable" data-sort="">
+                        Score
+                        <i class="fa fa-caret-up" style="display: none"></i>
+                    </th>
+                    <th scope="col">Artist</th>
+                    <th scope="col">Failed on</th>                
+                </tr>
+            </thead>
+            <tbody>
+                {% for game in game_info['artists'] %}
+                <tr>
+                    <td>
+                        {{ game.date_of_game.strftime('%d %b %Y') }}
+                        <br>
+                        {{ game.date_of_game.strftime('%H:%M') }}
+                    </td>
+                    <td>{{ game.score }}</td>
+                    <td>
+                        <div class="cell-flex">
+                            <img src="{{ game.game_object.image }}" alt="Artist Image" width="50px" height="50px" />
+                            <div>{{ game.game_object.name }}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="cell-flex">
+                            <img src="{{ game.failed_track.image }}" alt="Failed Track Image" width="50px" height="50px" />
+                            <div>{{ game.failed_track.name }}</div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}
