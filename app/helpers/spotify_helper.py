@@ -114,8 +114,6 @@ class SpotifyHelper(spotipy.Spotify):
         max_size = 50
         to_request = []
         for i in range(0, len(track_ids), max_size):
-            print(f'size {len(track_ids)}, max size {max_size}')
-            print(track_ids[i:i + max_size])
             to_request.append(track_ids[i:i + max_size])
 
         final = {}
@@ -125,6 +123,7 @@ class SpotifyHelper(spotipy.Spotify):
                 final = response
             else:
                 final['tracks'] += response['tracks']
+
         return final
 
     @staticmethod

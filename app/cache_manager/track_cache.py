@@ -25,14 +25,14 @@ def get_tracks(track_ids: list[str]) -> dict[str, Track]:
         spotify = SpotifyHelper()
         cache_track_ids = list(to_cache.keys())
         response = spotify.tracks(cache_track_ids)
-
+        
         for track_response in response['tracks']:
             # track does not exist
             if track_response is None:
                 continue
             
             track_cache = cache_track(track_response, to_cache[track_response['id']])
-            track_dict[track_id] = track_cache       
+            track_dict[track_response['id']] = track_cache       
 
         print(f'Caching tracks with ids: {cache_track_ids}')
 

@@ -142,7 +142,7 @@ def get_artist_tracks(artist_id):
             track_resp.artists = [artist.name for artist in track.artists]
 
             response.append(track_resp.__dict__)
-        
+
         return jsonify(response)
     except UnauthorisedException:
         return UNAUTHORISED_MESSAGE, 401
