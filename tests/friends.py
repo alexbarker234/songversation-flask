@@ -40,5 +40,18 @@ class StudentModelCase(unittest.TestCase):
         friends = user.friends
         self.assertTrue(friends[0].user_id == 'user2')
 
+    def test_remove_friend(self):
+        user: User = User.query.filter(User.user_id == 'user1').first()
+        self.assertRaises(InvalidFriendException, user.remove_friend, 'user1')
+        self.assertRaises(InvalidFriendException, user.remove_friend, 'user2')
+
+        user.add_friend('user2')
+        friends = user.friends
+        self.assertTrue(friends[0].user_id == 'user2')
+
+        user.remove_friend('user2')
+        isFriend = len([friend for friend in user.friends if friend.id == 'user2']) > 0
+        self.assertFalse(isFriend)
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

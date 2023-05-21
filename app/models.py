@@ -67,6 +67,25 @@ class User(db.Model):
         db.session.add(friendship)
         db.session.commit()
 
+    def remove_friend(self, friend_id):
+        # stop user removing themselves
+        if friend_id == self.user_id:
+            raise InvalidFriendException('Cannot remove self as friend')
+
+        # verify friend user exist
+        friend_user = User.query.filter(User.user_id == friend_id).one_or_none()
+        if not friend_user:
+            raise UserNotFoundException('User does not exist')
+
+        # verify not already friend
+        existing = Friendship.query.filter(Friendship.user_id == self.user_id and Friendship.friend_id == friend_id).one_or_none()
+        if not existing:
+           raise InvalidFriendException('User is not friends')
+        
+        # remove friend
+        db.session.delete(existing)
+        db.session.commit()
+
 # cache some data locally to speed up load times (especially with lyrics)
 class Playlist(db.Model):
     id = db.Column(db.String(120), primary_key=True)
