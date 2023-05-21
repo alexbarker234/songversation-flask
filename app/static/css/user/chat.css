@@ -1,0 +1,26 @@
+#chatroom {
+    height: 80%;
+    width: 100%;
+}
+#messages {
+    background-color: var(--bg-color3);
+    width: 50%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+
+    position: relative;
+    height: 80%;
+    overflow-y: auto;
+}
+
+.chat-line {
+    margin: 0.25rem 2rem;
+}
+
+.chat-line.sender {
+    align-self: flex-end;
+}
+.chat-line.reciever {
+    align-self: flex-start;
+}

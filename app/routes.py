@@ -1,7 +1,7 @@
 from typing import List
 from app.cache_manager.artist_cache import get_artist
 from app.cache_manager.track_cache import get_tracks
-from app.models import Game, User
+from app.models import Game, Message, User
 from flask import redirect, render_template
 from app import app
 from app.helpers.spotify_helper import SpotifyHelper, SpotifyWebUserData
@@ -37,6 +37,29 @@ def game_page(object_id):
 @app.route('/lyricgame/artist/<artist_id>')
 def artist_page(artist_id):
     return "not implemented"
+
+@app.route('/chat/<reciever_id>')
+def chat_page(reciever_id):
+    user_data = SpotifyWebUserData()
+    if not user_data.authorised:
+        return redirect("/")
+    
+    reciever = User.query.filter(User.user_id == reciever_id)
+    if not reciever:
+        return render_template('errors/404.html', user_data=user_data), 404
+
+    previous_msgs = []
+    messages: List[Message] = Message.query.filter(
+        (Message.sender_id == user_data.id and Message.reciever_id == reciever_id) | 
+        (Message.sender_id == reciever_id and Message.reciever_id == user_data.id)
+        ).all()
+    for msg in messages:
+        previous_msgs.append({
+            'msg': msg.content,
+            'reciever': msg.sender_id != user_data.id
+        })
+
+    return render_template('user/chatroom.html', title='Songversation', user_data=user_data, previous_msgs=previous_msgs) 
 
 @app.route('/stats')
 def stats():

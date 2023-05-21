@@ -2,6 +2,7 @@ import glob
 import os
 import logging
 from pathlib import Path
+from flask_socketio import SocketIO
 from config import Config
 from logging.handlers import RotatingFileHandler
 from datetime import date
@@ -17,6 +18,8 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 assets = Environment(app)
+
+socketio = SocketIO(app)
 
 # bundles - dynamically load all files in css & js files
 
@@ -41,4 +44,7 @@ if not app.debug:
     app.logger.setLevel(logging.INFO)
     app.logger.info('Starting Songversation...')
 
-from app import routes, models, errors, api, auth, cache_manager, exceptions
+from app import routes, models, errors, api, auth, cache_manager, exceptions, sockets
+
+if __name__ == "__main__":
+    socketio.run(app, log_output=False)
