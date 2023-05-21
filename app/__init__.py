@@ -41,4 +41,4 @@ if not app.debug:
     app.logger.setLevel(logging.INFO)
     app.logger.info('Starting Songversation...')
 
-from app import routes, models, errors, api, auth, cache_manager
+from app import routes, models, errors, api, auth, cache_manager, exceptions

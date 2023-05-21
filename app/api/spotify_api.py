@@ -1,5 +1,3 @@
-
-import re
 from flask import jsonify, request, url_for
 from app.cache_manager import artist_cache
 
@@ -7,9 +5,7 @@ from app.cache_manager.track_cache import get_tracks
 from app.cache_manager.track_lyrics_cache import get_lyrics
 from app.helpers.spotify_helper import SpotifyHelper, UnauthorisedException
 
-
 from app import app
-from app.models import Artist, Track
 from constants import UNAUTHORISED_MESSAGE
 
 class AlbumResponse:

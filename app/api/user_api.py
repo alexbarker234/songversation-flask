@@ -2,8 +2,9 @@ from datetime import datetime
 import json
 from flask import jsonify, request
 from app.api.spotify_api import UNAUTHORISED_MESSAGE
+from app.exceptions import InvalidFriendException, UserNotFoundException, UnauthorisedException
 
-from app.helpers.spotify_helper import SpotifyHelper, SpotifyWebUserData, UnauthorisedException
+from app.helpers.spotify_helper import SpotifyHelper, SpotifyWebUserData
 
 from app import app, db
 from app.models import Friendship, Game, User
@@ -53,29 +54,18 @@ def add_friend():
         return 'Not authenticated', 401
     
     friend_id = request.json.get('id')
-
     if not friend_id:
         return 'No user id included', 400
 
-    # stop user adding themselves
-    if friend_id == user_data.id:
-        return 'Cannot add self as friend', 400
-
-    # verify friend user exist
-    friend_user = User.query.filter(User.user_id == friend_id).one_or_none()
-    if not friend_user:
-        return 'User does not exist', 404
-
-    # verify not already friend
-    existing = Friendship.query.filter(Friendship.user_id == user_data.id and Friendship.friend_id == friend_id).one_or_none()
-    if existing:
-        return 'Already added as friend', 400
+    # get current user
+    user: User = User.query.filter(User.user_id == user_data.id).one_or_none()
+    try:
+        user.add_friend(friend_id)
+    except UserNotFoundException as e:
+        return str(e), 404
+    except InvalidFriendException as e:
+        return str(e), 400
     
-    # add friend
-    friendship = Friendship(user_id = user_data.id, friend_id = friend_id)
-    db.session.add(friendship)
-
-    db.session.commit()
     return 'Success'
 
 class UserResponse:
