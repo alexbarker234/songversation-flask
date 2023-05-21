@@ -115,7 +115,7 @@
 #score-text {
     margin: auto;
     height: fit-content;
-    float: 50%;
+    /* float: 50% */
     font-size: 3rem;
 
     position: relative;

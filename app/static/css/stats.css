@@ -51,7 +51,7 @@
 }
 
 .cell-flex img {
-    align-self: left;
+    align-self: auto;
     margin-right: 1rem;
 }
 
