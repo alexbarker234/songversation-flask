@@ -32,10 +32,6 @@ nav {
     user-select: none;
 }
 
-.logo-part svg {
-    transform: translate(0, 140%);
-}
-
 /* NAV BUTTONS */
 
 .nav-button {
