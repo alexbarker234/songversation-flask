@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <h1 class="stats-header">{{ user_data.username }}' Friends</h1>
+    <div class="container-fluid">
+        <a href="/add-friends" class="basic">
+            <div class="button green" style="margin: auto; margin-bottom: 1rem;">Add friends</div>
+        </a>
+        <table class="games-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Date Joined</th>
+                </tr>
+            </thead>
+            <tbody id="friends-table">
+                {% for friend in friends %}
+                <tr>
+                    <td><img src="{{ friend.display_photo_url }}" style="max-width:50">{{ friend.id }}</td>
+                    <td data-date-joined="{{ friend.date_joined }}">{{ friend.date_joined }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>    
+</div>
+
+{% endblock %}

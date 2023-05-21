@@ -31,5 +31,8 @@ body {
 
     overflow-x: hidden;
     overflow-y: scroll;
+}
 
+a.basic {
+    text-decoration: none;
 }

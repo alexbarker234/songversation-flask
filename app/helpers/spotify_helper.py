@@ -2,6 +2,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from flask import request, url_for, session
 import time
+from app.cache_manager import user_cache
 from config import Config
 
 
@@ -156,5 +157,8 @@ class SpotifyWebUserData:
             self.image_url = payload['images'][0]['url'] if len(
                 payload['images']) > 0 else url_for('static', filename='defaultPfp.png')
             self.id = payload['id']
+
+            # CACHE DATA IN DB
+            user_cache.update_cache(self)
         except UnauthorisedException:
             self.authorised = False
