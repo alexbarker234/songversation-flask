@@ -37,9 +37,9 @@ function errorMessageComponent(message) {
 
 function userResultComponent(user) {
     return wrapComponent(`
-    <div class="user-result">
+    <div class="user-result" data-id=${user.id}>
         <div class="user-result-details">
-            <img class="profile-pic" src="${user.image_url}">
+            <img class="profile-pic" src="${user.image_url ?? ''}">
             <div class="username">${user.username}</div>
         </div>
         <div class="add-friend-container">

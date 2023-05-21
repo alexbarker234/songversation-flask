@@ -44,15 +44,18 @@ def search_users():
 
     users = User.query.filter(User.user_id.ilike(f'%{search_query}%')).all()
     print(users)
-    return jsonify([UserResponse.from_db_user(current_user, user).__dict__ for user in users])
+    return jsonify({'users':[UserResponse.from_db_user(current_user, user).__dict__ for user in users]})
 
-@app.route('/api/add-friend')
+@app.route('/api/add-friend', methods=['POST'])
 def add_friend():
     user_data = SpotifyWebUserData()
     if not user_data.authorised:
         return 'Not authenticated', 401
     
-    friend_id = request.args.get('id')
+    friend_id = request.json.get('id')
+
+    if not friend_id:
+        return 'No user id included', 400
 
     # stop user adding themselves
     if friend_id == user_data.id:
@@ -79,6 +82,7 @@ class UserResponse:
     @classmethod
     def from_db_user(cls, current_user: User, user: User) :
         self = cls()
+        self.id = user.user_id
         self.username = user.display_name
         self.is_self = current_user.user_id == user.user_id
         self.is_friend = user in current_user.friends
