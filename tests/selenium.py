@@ -7,16 +7,20 @@ from app import app, db
 class SongversationTester(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
+
         if not self.driver:
             self.skipTest('Web browser not available')
-        else:
+        else:            
+            self.app_context = app.app_context()
+            self.app_context.push()
             self.app = app.test_client()
+            
             self.driver.maximize_window()
             self.driver.get('http://localhost:5000')
 
     def tearDown(self):
         if self.driver:
-            self.driver.close()
+            self.driver.quit()
 
     def test_navigation(self):
 

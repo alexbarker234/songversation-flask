@@ -12,6 +12,7 @@ class StudentModelCase(unittest.TestCase):
     def setUp(self):
         self.app_context = app.app_context()
         self.app_context.push()
+        self.app = app.test_client()
 
         db.create_all()
 
