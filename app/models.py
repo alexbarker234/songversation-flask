@@ -3,6 +3,8 @@ from datetime import datetime
 from sqlalchemy.orm import relationship, Mapped, object_mapper
 from typing import List
 
+from app.exceptions import InvalidFriendException, UserNotFoundException
+
 # Type hinting/mapping docs:
 # https://docs.sqlalchemy.org/en/20/orm/mapping_styles.html
 
@@ -31,8 +33,6 @@ class Friendship(db.Model):
     friend_id: str = db.Column(db.String(120))
 
 # user table that has all the user ids and when they joined
-
-
 class User(db.Model):
     user_id: str = db.Column(db.String(120), primary_key=True)
     date_joined: datetime = db.Column(db.DateTime, default=datetime.utcnow)
@@ -46,6 +46,26 @@ class User(db.Model):
     # CACHED SPOTIFY DATA
     display_name: str = db.Column(db.String(120))
     image_url: str = db.Column(db.String(), nullable=True)
+
+    def add_friend(self, friend_id):
+        # stop user adding themselves
+        if friend_id == self.user_id:
+            raise InvalidFriendException('Cannot add self as friend')
+
+        # verify friend user exist
+        friend_user = User.query.filter(User.user_id == friend_id).one_or_none()
+        if not friend_user:
+            raise UserNotFoundException('User does not exist')
+
+        # verify not already friend
+        existing = Friendship.query.filter(Friendship.user_id == self.user_id and Friendship.friend_id == friend_id).one_or_none()
+        if existing:
+           raise InvalidFriendException('Already added as friend')
+        
+        # add friend
+        friendship = Friendship(user_id = self.user_id, friend_id = friend_id)
+        db.session.add(friendship)
+        db.session.commit()
 
 # cache some data locally to speed up load times (especially with lyrics)
 class Playlist(db.Model):

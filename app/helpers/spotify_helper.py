@@ -3,12 +3,9 @@ from spotipy.oauth2 import SpotifyOAuth
 from flask import request, url_for, session
 import time
 from app.cache_manager import user_cache
+from app.exceptions import UnauthorisedException
 from config import Config
 
-
-class UnauthorisedException(Exception):
-    "Raised when user is not authorised"
-    pass
 
 
 class SpotifyHelper(spotipy.Spotify):
