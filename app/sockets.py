@@ -28,8 +28,8 @@ def message(data):
     db.session.commit()
 
     send(json.dumps({
-        'author': user_data.username,
-        'message': content
+        'author': { 'username': user_data.username, 'image': user_data.image_url },
+        'message': { 'content': content, 'date': msg_db.date.strftime('%d %b %Y %H:%M')}
     }), room=make_room_name(user_data.id, reciever_id))
 
 @socketio.on("join")

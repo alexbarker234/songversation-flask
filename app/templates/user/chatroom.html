@@ -10,11 +10,11 @@
     <div id="chatroom">
         <div id="messages">
             {% for msg in previous_msgs %}
-            {% if msg['reciever'] %}
-                <div class="chat-line reciever">{{ msg['msg'] }}</div>
-            {% else %}
-                <div class="chat-line sender">{{ msg['msg'] }}</div>
-            {% endif %}
+            <div class="chat-line">
+                <img src="{{ msg['user'].image_url }}">
+                <div class="username">{{msg['user'].display_name}} <span class="date">{{ msg['date'] }}</span></div>
+                <div class="message">{{ msg['msg'] }}</div>
+            </div>
             {% endfor %}
         </div>
         <div id="chat-input">

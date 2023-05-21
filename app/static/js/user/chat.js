@@ -1,6 +1,6 @@
 var socket;
 $(document).ready(function () {
-    reciever = objectID = window.location.pathname.split("/").pop();
+    let reciever = objectID = window.location.pathname.split("/").pop();
 
     socket = io.connect("http://" + document.domain + ":" + location.port);
 
@@ -8,11 +8,14 @@ $(document).ready(function () {
         socket.emit("join", { reciever: reciever });
     });
 
+    // scroll to the bottom
+    let messagesDiv = $("#messages")
+    messagesDiv.scrollTop(messagesDiv.prop("scrollHeight"));
+
     socket.on("message", function (msg) {
-        console.log(msg);
         json = JSON.parse(msg);
 
-        messageLine = $($.parseHTML(`<div class="chat-line ${json.reciever == reciever ? "reciever" : "sender"}">${json.message}</div>`));
+        messageLine = messageComponent(json.message, json.author);
 
         if (json.author == "server") {
             $(messageLine).addClass("server");
@@ -20,7 +23,11 @@ $(document).ready(function () {
         }
         $("#messages").append(messageLine);
 
-        console.log("recieved message");
+        // scroll to the bottom
+        $("#messages").animate ({
+            scrollTop: $("#messages")[0].scrollHeight
+        }, 60);;
+
     });
 
     $("#sendButton").on("click", function () {

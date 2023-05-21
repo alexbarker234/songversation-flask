@@ -48,3 +48,13 @@ function userResultComponent(user) {
     </div>
     `)
 }
+
+function messageComponent(message, user) {
+    return wrapComponent(`
+    <div class="chat-line">
+        <img src="${user.image}">
+        <div class="username">${user.username} <span class="date">${message.date}</span></div>
+        <div class="message">${message.content}</div>
+    </div>
+    `)
+}

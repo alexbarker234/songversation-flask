@@ -6,21 +6,52 @@
     background-color: var(--bg-color3);
     width: 50%;
     margin: auto;
-    display: flex;
-    flex-direction: column;
 
     position: relative;
     height: 80%;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .chat-line {
-    margin: 0.25rem 2rem;
+    padding: 1rem 1rem;
+    position: relative;
+    width: 100%;
+
+    height: fit-content;
+    min-height: 4rem;
+
+    transition: 0.2s;
+}
+.chat-line:hover {
+    background-color: var(--bg-color2);
 }
 
-.chat-line.sender {
-    align-self: flex-end;
+.chat-line img {
+    width: 4rem;
+    height: 4rem;
+    margin-left: 0.5rem;
+    border-radius: 2rem;
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    transform: translate(0,-50%);
 }
-.chat-line.reciever {
-    align-self: flex-start;
+.chat-line .username {
+    position: absolute;
+    top: 15%;
+    left: 5rem;
+    font-weight: 600;
+}
+.chat-line .username .date {
+    font-weight: 100;
+    font-size: 0.75rem;
+    color: rgb(172, 172, 172);
+}
+
+.chat-line .message {
+    text-align: left;
+    padding-left: 4.5rem;
+    padding-top: 1.5rem;
+    width: calc(100% - 4.5rem);
 }

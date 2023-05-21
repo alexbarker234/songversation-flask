@@ -130,10 +130,14 @@ def chat_page(reciever_id):
         ((Message.sender_id == user_data.id) & (Message.reciever_id == reciever_id)) | 
         ((Message.sender_id == reciever_id) & (Message.reciever_id == user_data.id))
         ).all()
+    
+    user_dict = {}
     for msg in messages:
+        user = user_dict.get(msg.sender_id, User.query.filter(User.user_id == msg.sender_id).first())
         previous_msgs.append({
             'msg': msg.content,
-            'reciever': msg.sender_id != user_data.id
+            'date': msg.date.strftime('%d %b %Y %H:%M'),
+            'user': user
         })
 
     return render_template('user/chatroom.html', title='Songversation', user_data=user_data, previous_msgs=previous_msgs) 
