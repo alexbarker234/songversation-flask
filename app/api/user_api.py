@@ -1,12 +1,12 @@
 from datetime import datetime
 import json
-from flask import request
+from flask import jsonify, request
 from app.api.spotify_api import UNAUTHORISED_MESSAGE
 
-from app.helpers.spotify_helper import SpotifyHelper, UnauthorisedException
+from app.helpers.spotify_helper import SpotifyHelper, SpotifyWebUserData, UnauthorisedException
 
 from app import app, db
-from app.models import Game
+from app.models import Friendship, Game, User
 
 @app.route('/api/add-game', methods=['POST'])
 def save_game():
@@ -31,3 +31,49 @@ def save_game():
         return json.dumps({'success':True}), 201, {'ContentType':'application/json'} 
     except UnauthorisedException:
         return UNAUTHORISED_MESSAGE, 401
+    
+@app.route('/api/search-users')
+def search_users():
+    user_data = SpotifyWebUserData()
+    if not user_data.authorised:
+        return 'Not authenticated', 401
+    search_query = request.args.get('name')
+    users = User.query.filter(User.user_id.ilike(f'%{search_query}%')).all()
+    return jsonify([UserResponse.from_db_user(user).__dict__ for user in users])
+
+@app.route('/api/add-friend')
+def add_friend():
+    user_data = SpotifyWebUserData()
+    if not user_data.authorised:
+        return 'Not authenticated', 401
+    
+    friend_id = request.args.get('id')
+
+    # stop user adding themselves
+    if friend_id == user_data.id:
+        return 'Cannot add self as friend', 400
+
+    # verify friend user exist
+    friend_user = User.query.filter(User.user_id == friend_id).one_or_none()
+    if not friend_user:
+        return 'User does not exist', 404
+
+    # verify not already friend
+    existing = Friendship.query.filter(Friendship.user_id == user_data.id and Friendship.friend_id == friend_id).one_or_none()
+    if existing:
+        return 'Already added as friend', 400
+    
+    # add friend
+    friendship = Friendship(user_id = user_data.id, friend_id = friend_id)
+    db.session.add(friendship)
+
+    db.session.commit()
+    return 'Success'
+
+class UserResponse:
+    @classmethod
+    def from_db_user(cls, user: User) :
+        self = cls()
+        self.id = user.user_id
+
+        return self
