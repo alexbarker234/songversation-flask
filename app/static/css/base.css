@@ -35,60 +35,60 @@ body {
 }
 
 .welcome-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    width: 10%;
+    height: 30%;
     pointer-events: none;
     z-index: -1;
+    animation: left-right 3s alternate-reverse infinite ease-in-out;
 }
 .welcome-bubble {
+    align-content: center;
     position: relative;
     stroke: var(--spotify-green);
-    stroke-width: 2px;
-    width: 100px;
-    height: 100px;
-    transform: scale(0);
-}
-.welcome-bubble:nth-child(odd) {
-    animation: fly-up 3s linear infinite;
-}
-.welcome-bubble:nth-child(even) {
-    animation: fly-down 3s linear infinite;
-}
-.welcome-bubble:nth-child(1n) {
-    animation-delay: 0.5s;
-}
-.welcome-bubble:nth-child(2n) {
-    animation-delay: 1s;
-}
-.welcome-bubble:nth-child(3n) {
-    animation-delay: 1.5s;
-}
-.welcome-bubble:nth-child(4n) {
-    animation-delay: 2s;
-}
-.welcome-bubble:nth-child(5n) {
-    animation-delay: 2.5s;
-}
-.welcome-bubble:nth-child(6n) {
-    animation-delay: 3s;
+    fill: var(--spotify-green);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    width: 100%;
+
+    animation: up-down 1.5s alternate infinite ease-in-out;
 }
 
-@keyframes fly-up {
-    0% {
-        transform: translateY(100vh) scale(0);
-    }
-    100% {
-        transform: translateY(-10vh) scale(1);
-    }
+/* .welcome-container:nth-child(1) {
+    animation-delay: 0.5s;
 }
-@keyframes fly-down {
-    0% {
-        transform: translateY(-10vh) scale(0);
-    }
-    100% {
-        transform: translateY(100vh) scale(1);
-    }
+.welcome-container:nth-child(2) {
+    animation-delay: 1s;
+}
+.welcome-container:nth-child(3) {
+    animation-delay: 1.5s;
+}
+.welcome-container:nth-child(4) {
+    animation-delay: 2s;
+}
+.welcome-container:nth-child(5) {
+    animation-delay: 2.5s;
+}
+.welcome-container:nth-child(6) {
+    animation-delay: 3s;
+}
+.welcome-container:nth-child(7) {
+    animation-delay: 3.5s;
+}
+.welcome-container:nth-child(8) {
+    animation-delay: 4s;
+}
+.welcome-container:nth-child(9) {
+    animation-delay: 4.5s;
+}
+.welcome-container:nth-child(10) {
+    animation-delay: 5s;
+} */
+
+@keyframes up-down {
+    to { transform: translatey(200%);}
+}
+@keyframes left-right {
+    to { transform: translatex(100%);} /* width of container is 10% so 1000% of 10% is the whole width */
 }
