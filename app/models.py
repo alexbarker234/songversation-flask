@@ -89,6 +89,13 @@ class Artist(db.Model):
     image_url = db.Column(db.String(), nullable=True)
 
 
+class TrackArtist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    lastCacheDate = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    artist_id = db.Column(db.String(120))  # UNENFORCED FK
+    track_id = db.Column(db.String(120))  # UNENFORCED FK
+
 class Track(db.Model):
     id = db.Column(db.String(120), primary_key=True)
     last_cache_date = db.Column(
@@ -103,15 +110,6 @@ class Track(db.Model):
     artists: Mapped[List[Artist]] = relationship('Artist', secondary="track_artist",
                                                  primaryjoin='Track.id == TrackArtist.track_id',
                                                  secondaryjoin='TrackArtist.artist_id == Artist.id')
-
-
-class TrackArtist(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    lastCacheDate = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-
-    artist_id = db.Column(db.String(120))  # UNENFORCED FK
-    track_id = db.Column(db.String(120))  # UNENFORCED FK
-
 
 class TrackLyrics(db.Model):
     id = db.Column(db.Integer, primary_key=True)

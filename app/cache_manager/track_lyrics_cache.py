@@ -70,7 +70,7 @@ async def get_lyrics(track_ids: list[str]) -> dict:
                 lyric_cache.lyric_count = lyricCount
                 lyric_cache.last_cache_date = datetime.utcnow()
 
-                print("Caching lyrics for track_id:" + track_id )
+        print("Caching lyrics for track_ids:" + str(uncached_track_ids) )
 
     db.session.commit()
     return track_lyrics 

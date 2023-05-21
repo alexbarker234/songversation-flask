@@ -136,6 +136,7 @@ def get_artist_tracks(artist_id):
             track_resp.name = track.name
             track_resp.preview_url = track.preview_url
             track_resp.artists = [artist.name for artist in track.artists]
+            print(track_resp.artists)
 
             response.append(track_resp.__dict__)
 

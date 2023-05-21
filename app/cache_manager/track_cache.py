@@ -67,7 +67,7 @@ def cache_track(track_response: dict, existing_cache: Track) -> Track:
         return track_cache
 
 def _cache_track_artists(track_response):
-    existing: list[TrackArtist] = TrackArtist.query.filter(TrackArtist.id == track_response['id']).all()
+    existing: list[TrackArtist] = TrackArtist.query.filter(TrackArtist.track_id == track_response['id']).all()
     # keys are artist_id for O(1) checks if an element exists
     existing_dict = {track_artist.artist_id:track_artist for track_artist in existing}
 
