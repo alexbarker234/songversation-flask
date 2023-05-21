@@ -8,22 +8,15 @@
         <a href="/add-friends" class="basic">
             <div class="button green" style="margin: auto; margin-bottom: 1rem;">Add friends</div>
         </a>
-        <table class="games-table">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Date Joined</th>
-                </tr>
-            </thead>
-            <tbody id="friends-table">
-                {% for friend in friends %}
-                <tr>
-                    <td><img src="{{ friend.display_photo_url }}" style="max-width:50">{{ friend.id }}</td>
-                    <td data-date-joined="{{ friend.date_joined }}">{{ friend.date_joined }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div id="friends-list">
+            {% for friend in friends %}
+            <div class="friend-row">
+                <img src="{{ friend.image }}" style="max-width:50">
+                <div class="username">{{ friend.username }}</div>
+                <a href="/chat/{{ friend.id }}"><div class="chat-button"><i class='fas fa-comment-alt'></i></div></a>
+            </div>
+            {% endfor %}
+        </div>
     </div>    
 </div>
 

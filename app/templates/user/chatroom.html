@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1>chatroom</h1>
+    <h1>{{ reciever_name }}</h1>
     <div id="chatroom">
         <div id="messages">
             {% for msg in previous_msgs %}
@@ -18,8 +18,8 @@
             {% endfor %}
         </div>
         <div id="chat-input">
-            <input type="text" id="myMessage" style="color:black">
-            <button id="sendButton" style="color:black">Send</button>
+            <input type="text" id="myMessage" >
+            <button id="sendButton" class="button green" style="width: 6rem; height: 50px">Send</button>
         </div>
     </div>
 {% endblock %}

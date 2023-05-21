@@ -102,7 +102,9 @@ def friends_page():
     for friend in friends:
         friends_list.append({
             'id': friend.user_id,
-            'date_joined': friend.date_joined or ''
+            'username': friend.display_name,
+            'date_joined': friend.date_joined or '',
+            'image': friend.image_url or ''
         })
 
     return render_template('user/friends.html', title='Friends', user_data=user_data, friends=friends_list)
@@ -140,4 +142,4 @@ def chat_page(reciever_id):
             'user': user
         })
 
-    return render_template('user/chatroom.html', title='Songversation', user_data=user_data, previous_msgs=previous_msgs) 
+    return render_template('user/chatroom.html', title='Songversation', user_data=user_data, reciever_name = reciever.display_name, previous_msgs=previous_msgs) 

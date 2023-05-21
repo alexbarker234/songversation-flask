@@ -4,7 +4,8 @@
 }
 #messages {
     background-color: var(--bg-color3);
-    width: 50%;
+    width: 90%;
+    max-width: 1600px;
     margin: auto;
 
     position: relative;
@@ -14,7 +15,7 @@
 }
 
 .chat-line {
-    padding: 1rem 1rem;
+    padding: 2rem 1rem;
     position: relative;
     width: 100%;
 
@@ -52,6 +53,26 @@
 .chat-line .message {
     text-align: left;
     padding-left: 4.5rem;
-    padding-top: 1.5rem;
+    padding-top: 0.75rem;
     width: calc(100% - 4.5rem);
+}
+
+#chat-input {
+    margin: auto;
+    margin-top: 1rem;
+    width: 90%;
+    max-width: 800px;
+}
+
+#chat-input input {
+    color: white;
+    background-color: var(--bg-color2);
+    border: var(--spotify-green) 2px solid;
+    outline: none;
+    padding: 0 1rem;
+    height: 50px;
+    width: calc(100% - 7rem);
+}
+#chat-input input::placeholder {
+    color: grey;
 }
