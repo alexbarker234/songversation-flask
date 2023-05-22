@@ -46,5 +46,6 @@ if not app.debug:
 
 from app import routes, models, errors, api, auth, cache_manager, exceptions, sockets
 
+
 if __name__ == "__main__":
     socketio.run(app, log_output=False)

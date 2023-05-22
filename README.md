@@ -18,12 +18,45 @@ Songversation is a music guessing game that allows users to log into their Spoti
 
 The game is designed to test the user's knowledge of the lyrics of their chosen artist or playlist and provide them with a fun and challenging way to engage with their favorite music, compared to Heardle or Lyricle- which use random songs that you may have never heard of.
 
+Our website also implements friends, you can search for any Spotify user who has used the app before and add them as a friend. You are also able to start a chat with them.
+
 ## Architecture
 
-TODO
-Show (or play?) correct song upon failed attempt.  
-Show checkmarks or happy faces or something upon correct guess before moving on to next song
+The flask app is built in the format suggested on the [Flask Website](https://flask.palletsprojects.com/en/2.3.x/tutorial/layout/), with a few adjustments for scaling and readability
+```
+/Songversation
+├── app/
+│   ├── __init__.py
+│   ├── auth.py - routes for authentication
+│   ├── route.py - webpage routes
+│   ├── errors.py - error routes
+│   ├── sockets.py - socket endpoints for user chat
+│   ├── models.py
+│   ├── exceptions.py
+│   ├── auth.py
+│   ├── api/
+│   │   └── various api endpoints
+│   ├── templates/
+│   │   └── .html file templates
+│   └── static/
+│       ├── js/
+│       |   └── all .js files packaged together at runtime
+│       └── css/
+|           └── all .css files packaged together at runtime
+├── tests/
+│   └── various tests
+├── constants.py
+├── config.py
+├── app.py (flask entrypoint)
+├── app.db
+├── .gitignore
+├── .env
+└── .venv/
+```
 
+The app uses Flask_Assets in order to bundle together the .js & .css files into one large folder. This increases the first time load, but every subsequent load is much faster as we take advantage of browser caching.
+
+The deployed application uses a PostgreSQL database, locally deploying uses a SQLite database
 
 ## Requirements
     Python (confirmed working with 3.10)
@@ -73,6 +106,16 @@ Show checkmarks or happy faces or something upon correct guess before moving on 
     flask run
     ```
 
-## Unit Tests
-TODO
+### NOTES
+- Sometimes browser caching messes up the local deployment, if there is a problem try use an incognito/private tab
 
+## Unit Tests
+
+- Test friending/removing friends:
+    ```
+    python -m unittest tests.friends
+    ```
+- Test caching of spotify data
+    ```
+    python -m unittest tests.cache
+    ```

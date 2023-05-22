@@ -95,18 +95,3 @@ def _cache_artist(artist_response: dict, existing_cache: Artist) -> Artist:
     else:
         db.session.add(artist_cache)
         return artist_cache
-
-def get_cached_artist_track(artist_id: str, ) -> Tuple[bool, Track]:
-    track_cache = db.session.query(Track).outerjoin(TrackArtist, Track.id == TrackArtist.track_id)
-    
-    # check if the track_cache exists
-    if not track_cache:
-        return False, None
-
-    # check if cache is old
-    if (datetime.utcnow() - track_cache.last_cache_date).total_seconds() > SECONDS_IN_MONTH:
-        # print(f"Cache expired for track with track_id: {track_id}")
-        return False, track_cache
-
-    # return just the lyrics
-    return True, track_cache

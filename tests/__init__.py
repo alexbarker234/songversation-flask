@@ -1,1 +1,2 @@
-from app import app
+import os
+os.environ['DATABASE_URL'] = 'sqlite://'
