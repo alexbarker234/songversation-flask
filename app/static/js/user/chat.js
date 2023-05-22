@@ -1,6 +1,12 @@
 var socket;
-$(document).ready(function () {
-    let reciever = objectID = window.location.pathname.split("/").pop();
+$(document).ready(function () {    
+    let path = window.location.pathname.split("/")
+
+    let reciever = path.pop();
+    let chat_link = path.pop()
+
+    if (chat_link != "chat")
+        return
 
     socket = io.connect("http://" + document.domain + ":" + location.port);
 

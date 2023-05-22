@@ -1,13 +1,9 @@
 import unittest
-
-import os
-os.environ['DATABASE_URL'] = 'sqlite://'
-
 from app import app, db
 from app.exceptions import InvalidFriendException, UserNotFoundException
-from app.models import User, Friendship
+from app.models import User
 
-class StudentModelCase(unittest.TestCase):
+class FriendsTestCase(unittest.TestCase):
 
     def setUp(self):
         self.app_context = app.app_context()
