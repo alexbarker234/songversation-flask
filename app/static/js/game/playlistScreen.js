@@ -1,29 +1,30 @@
 $(window).on("load", function () {
-    if (window.location.pathname === "/lyricgame") {
-        loadPlaylists();
-    }
-    $('.tracklist-selector').on('click', function(e) {
-        if ($(e.target).hasClass('disabled')) return;
+    if (window.location.pathname != "/lyricgame") return;
+
+    loadPlaylists();
+    $(".tracklist-selector").on("click", function (e) {
+        if ($(e.target).hasClass("disabled")) return;
         let link = e.target.href;
-        var fragment = link.split('#')[1];
+        var fragment = link.split("#")[1];
 
         if (fragment === "playlist-selector") {
-            selectorClick('playlists', loadPlaylists)
+            selectorClick("playlists", loadPlaylists);
+        } else if (fragment === "artist-selector") {
+            selectorClick("artists", loadArtists);
         }
-        else if (fragment === "artist-selector") { 
-            selectorClick('artists', loadArtists)
-        }
-    }) 
+    });
 });
 
 function selectorClick(type, toLoad) {
-    let selectors = $('.cover-art-selectors').first().children()
-    selectors.css('display', 'none')
+    let selectors = $(".cover-art-selectors").first().children();
+    selectors.css("display", "none");
 
-    let selector = selectors.siblings(`#${type}`).first()
+    $("#title").html("Choose a" + (type == "artists" ? "n artist" : " playlist"));
+
+    let selector = selectors.siblings(`#${type}`).first();
     selector.removeAttr("style");
     if (selector.children().length == 0) {
-        toLoad()
+        toLoad();
     }
 }
 
@@ -34,10 +35,9 @@ function loadArtists() {
 
     $.getJSON("/api/get-artists", function (data) {
         loader.remove();
-        console.log(data)
         // sort alphabetically
-        data.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1)
-        addArtSelectors(data, $('#artists'), 'artist');
+        data.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1));
+        addArtSelectors(data, $("#artists"), "artist");
     });
 }
 
@@ -47,7 +47,7 @@ function loadPlaylists() {
     $("#playlists").append(loader);
 
     $.getJSON("/api/get-playlists", function (data) {
-        addArtSelectors(data, $('#playlists'), 'playlist');
+        addArtSelectors(data, $("#playlists"), "playlist");
         loader.remove();
     });
 }
@@ -58,14 +58,10 @@ function addArtSelectors(data, div, type) {
     data.forEach((element) => {
         if (element.trackCount != 0) {
             data[element.id] = element;
-            let artBox = coverArtBoxComponent(
-                element,
-                index,
-                `lyricgame/${type}/${element.id}`
-            );
+            let artBox = coverArtBoxComponent(element, index, `lyricgame/${type}/${element.id}`);
             artBox.css({
-                "opacity": "0",
-                "animation": "fade-drop-in 1s forwards",
+                opacity: "0",
+                animation: "fade-drop-in 1s forwards",
                 "animation-delay": `${index * 0.05}s`,
             });
             div.append(artBox);

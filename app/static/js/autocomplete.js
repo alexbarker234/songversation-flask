@@ -49,7 +49,6 @@ function setAutocompleteVisibility(autocomplete, enabled) {
 
 function selectAutocomplete(autocomplete, value) {
     autocomplete = $(autocomplete);
-    console.log(autocomplete)
     autocomplete.children(".autocomplete-input").first().val(value);
     setAutocompleteVisibility(autocomplete, false);
 }
@@ -115,7 +114,6 @@ function autocompleteKeyControls(e) {
         if (optionsList.css("display") == "none") return;
 
         if (e.keyCode == keyUp) {
-            console.log(acSelected[autocomplete.id])
             if (acSelected[autocomplete.id] == -1) acSelected[autocomplete.id]++;
             acSelected[autocomplete.id] = (acSelected[autocomplete.id] - 1).mod(optionCount);
         } else if (e.keyCode == keyDown) {

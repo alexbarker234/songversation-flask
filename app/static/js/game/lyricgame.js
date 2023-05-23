@@ -80,8 +80,6 @@ function loadGameWithArtist(artist) {
 }
 
 function loadGame(trackDict) {
-    console.log(trackDict);
-
     availableTrackIDs = Object.keys(trackDict);
     availableTrackIDs = availableTrackIDs.filter((n) => n).shuffle(); // remove null track ids (local files) and shuffle
 
@@ -120,8 +118,6 @@ function commitStats(score, songFailedOn) {
     let parts = window.location.pathname.split("/");
     let gameType = parts[parts.length - 2];
 
-    console.log(gameType)
-
     let valid_types = ["playlist", "artist"];
     if (!valid_types.includes(gameType)) {
         console.log(`Game type, ${gameType} is invalid`);
@@ -156,7 +152,6 @@ function checkButton() {
     } else {
         playSong(currentTrack);
         finishScreen();
-        console.log("wrong");
     }
 
     input.val("");
@@ -189,8 +184,9 @@ function loadLyrics(numToLoad, tracksToLoad, startGame) {
         } 
         // when lyrics have finished loading
         else {
-            console.log("finished loading lyrics");
+            //console.log("finished loading lyrics");
             if (loadedLyrics.length == 0) {
+                // TODO: add case here
                 console.log("no lyrics")
             }
         }
@@ -202,6 +198,7 @@ function chooseLyrics(trackID) {
     if (!trackID) trackID = loadedLyrics.pop();
 
     if (loadedLyrics.length == 0) {
+        // TODO: add case here
         console.log("out of songs");
     }
     currentTrack = loadedTracks[trackID];
@@ -275,7 +272,6 @@ function loadSong(currentTrack) {
     $("#audioSource").attr("src", currentTrack.preview_url);
     var audioPlayer = document.getElementById("audioPlayer");
     audioPlayer.load(); // Load the audio source
-    console.log(currentTrack.preview_url);
 }
 
 function showTrack(currentTrack) {
