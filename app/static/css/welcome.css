@@ -37,8 +37,8 @@
 .welcome-bubble svg {
     position: absolute;
     animation: up-down 3s alternate infinite ease-in-out;
-    width: 25px;
-    height: 25px;
+    width: 40px;
+    height: 40px;
     opacity: 1;
     transition: 0.5s;
 }
