@@ -1,3 +1,4 @@
+import os
 from typing import List
 from app.cache_manager.artist_cache import get_artist
 from app.cache_manager.track_cache import get_tracks
@@ -19,7 +20,8 @@ TODO:
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html', title='Songversation', user_data=SpotifyWebUserData())
+    debug = os.environ.get('FLASK_DEBUG', False)
+    return render_template('index.html', title='Songversation', user_data=SpotifyWebUserData(), debug=debug)
 
 
 @app.route('/lyricgame')
