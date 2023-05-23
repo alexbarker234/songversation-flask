@@ -1,44 +1,43 @@
-{% extends "base.html" %}
+{% extends "base.html" %} 
+{% block content %} 
+{% include "welcome_animation.html" %} 
+{% if user_data.authorised %}
 
-{% block content %}
-{% include "welcome_animation.html" %}
-
-
-    {% if user_data.authorised %}
-    <h1>Choose a game mode</h1>
-
-    <div class="game-modes-container">        
-        <a href="{{ url_for('select_screen') }}" class="game-card">
-            <div class="game-card-content">
-                <div class="game-card-title">Classic Mode</div>
-                <div class="game-card-subtitle">
-                    Guess the song from its lyrics, but be careful!<br>
-                    One wrong guess and your streak will end.<br>
-                    How many you can get in a row?
-                </div>
+<div class="game-modes-container">
+    <a href="{{ url_for('select_screen') }}" class="game-card">
+        <div class="game-card-content">
+            <div class="game-card-title">Classic Mode</div>
+            <div class="game-card-subtitle">
+                Guess the song from its lyrics, but be careful!<br />
+                One wrong guess and your streak will end.<br />
+                How many you can get in a row?
             </div>
-        </a>
-        <a class="game-card">
-            <div class="game-card-content">
-                <div class="game-card-title">Duet Mode</div>
-                <div class="game-card-subtitle">Coming soon!</div>
-            </div>
-        </a>
-        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="game-card">
-            <div class="game-card-content">
-                <div class="game-card-title">Crazy Mode</div>
-                <div class="game-card-subtitle">&#128064;&#128064;&#128064;</div>
-            </div>
-        </a>
-    </div>
+        </div>
+    </a>
+    <a class="game-card">
+        <div class="game-card-content">
+            <div class="game-card-title">Duet Mode</div>
+            <div class="game-card-subtitle">Coming soon!</div>
+        </div>
+    </a>
+    {% if debug %}
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="game-card">
+        <div class="game-card-content">
+            <div class="game-card-title">Crazy Mode</div>
+            <div class="game-card-subtitle">&#128064;&#128064;&#128064;</div>
+        </div>
+    </a>
+    {% endif %} 
+</div>
 
-    {% else %}
+{% else %}
 
-    <div class="align-to-middle">
-        <h1>Welcome to Songversation - the song-guessing chat game that meets all the 
-            CITS3403 project requirements!<br>
-            <a class="cta-button" href="{{ url_for('login') }}" id="log-in-button">Log in with Spotify</a>
-        </h1>
-    </div>
-    {% endif %}
+<div class="align-to-middle">
+    <h1>Welcome to Songversation - the song-guessing chat game that meets all the CITS3403 project requirements!</h1>
+    <a href="{{ url_for('login') }}">
+        <div class="button green"  id="log-in-button"  style="margin: auto; display: block">Log in with Spotify</div>
+    </a>
+</div>
+
+{% endif %} 
 {% endblock %}

@@ -28,7 +28,7 @@
 
 .game-modes-container {
     width: 90%;
-    height: 90%;
+    height: var(--full-height);
     max-width: 1500px;
     margin: 0 auto;
     display: flex;
@@ -95,7 +95,7 @@
 
 .game-card-content {
     background-image: radial-gradient(rgba(255, 255, 255, 0.2) 8%, transparent 8%);
-    background-size: 5vmin 5vmin;
+    background-size: 3rem 3rem;
 
     height: 100%;
     width: 100%;
@@ -159,9 +159,3 @@
     text-decoration: none;
 }
 
-.align-to-middle {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}

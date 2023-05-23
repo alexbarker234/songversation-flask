@@ -13,16 +13,72 @@ nav {
 
     z-index: 2000;
 
+    height: var(--nav-height);
+
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
+/* popout nav */
+.side-nav {
+    position: absolute;
+
+    right: 0%;
+
+    top: var(--nav-height);
+    width: min(100%, 300px); /* avoid using max-x properties with transitions */
+    height: calc(100% - var(--nav-height));
+
+    z-index: 100;
+
+    background-color: var(--bg-color2);
+    
+    transition: 0.2s;
+
+    display: flex;
+    flex-direction: column;
+}
+.side-nav.disabled {
+    width: 0px;
+    will-change: width;
+}
+
+.side-nav .nav-item {
+    text-align: left;
+    height: 4rem;
+    line-height: 4rem;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.side-nav .nav-item:hover {
+    background-color: var(--bg-color);
+}
+
+.side-nav .nav-item i {
+    align-self: center;
+    float: left;
+    margin-left: 2rem;
+    margin-right: 1rem;
+    font-size: 2rem;
+    width: 50px;
+}
+
+.side-nav .nav-item:last-child {
+    margin-top: auto;
+    color: rgb(204, 0, 27);
+}
+
+
 
 /* LOGO */
 .logo {
     display: flex;
     text-decoration: none;
     font-size: 2rem;
+    font-weight: 600;
     width: fit-content;
 
     -moz-user-select: -moz-none;
@@ -44,14 +100,14 @@ nav {
 }
 
 nav a {
-    color: rgb(0, 0, 0);
-    text-decoration: none;
+    color: black;
+    opacity: 1;
     transition: 300ms;
     padding: 0rem 1rem 0rem 1rem;
 }
 nav a:hover {
-    color: rgba(0, 0, 0, 0.58);
-    text-decoration: none;
+    color: black;
+    opacity: 0.5;
 }
 
 nav p {
@@ -93,7 +149,7 @@ nav p {
 
 /* profile menu */
 
-.profile-dropdown .btn {
+.profile-dropdown  {
     background-color: var(--bg-color2);
     border-radius: 4rem;
     height: 80%;
@@ -113,12 +169,11 @@ nav p {
 
     color: white;
     font-weight: 700;
+
+    outline: inherit;
+    border: none;
 }
-.profile-dropdown .btn:hover {
-    background-color: #68a3ea;
-}
-.profile-dropdown .btn:focus {
-    box-shadow: unset;
+.profile-dropdown:hover {
     background-color: #68a3ea;
 }
 
@@ -181,12 +236,11 @@ nav p {
     .hide-on-mobile {
         display: none;
     }
-    .profile-dropdown .btn {
+    .profile-dropdown {
         padding: 0;
         background-color: transparent;
     }
-    .profile-dropdown .btn:focus,
-    .profile-dropdown .btn:hover {
+    .profile-dropdown:hover {
         background-color: transparent;
     }
     .profile-image {

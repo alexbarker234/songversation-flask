@@ -1,22 +1,23 @@
 /* main.css */
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap");
 
-:root{
-    --bg-color:#121314;
-    --bg-color2:#16171a;
+:root {
+    --bg-color: #121314;
+    --bg-color2: #16171a;
     --bg-color3: #262627;
-    --border-color:#30363d;
-    --spotify-green:#1DB954;
-    --blue:#1d8db9;
+    --border-color: #30363d;
+    --spotify-green: #1db954;
+    --blue: #1d8db9;
     --purple: rgba(164, 54, 228);
     --red: rgba(228, 60, 54);
-    --nav-height:6rem;
+    --nav-height: 4rem;
+    --full-height: calc(100% - var(--nav-height));
 }
-body, html {
+body,
+html {
     height: 100%;
-    font-family: 'Circular Std', Arial, sans-serif;
-
+    font-family: sans-serif, "Helvetica Neue", "Helvetica", "Arial";
 }
 
 body {
@@ -30,18 +31,23 @@ body {
     text-align: center;
 
     overflow-x: hidden;
-    overflow-y: scroll;
-
+    overflow-y: auto;
 }
 
-
-@keyframes up-down {
-    0%, 100%{top: 30%;}
-    25%{top: 70%;}
-    50%{top: 30%;}
-    75%{top: 70%;}
+/* delete pesky default styling */
+a {
+    color: white;
 }
-/* @keyframes left-right {
-    to { transform: translatex(100%);} \* width of container is 10% so 1000% of 10% is the whole width *\
-} 
- */
+
+a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.align-to-middle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: var(--full-height);
+}
