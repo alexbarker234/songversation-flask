@@ -28,7 +28,7 @@
 
 .game-modes-container {
     width: 90%;
-    height: 90%;
+    height: var(--full-height);
     max-width: 1500px;
     margin: 0 auto;
     display: flex;
@@ -159,9 +159,3 @@
     text-decoration: none;
 }
 
-.align-to-middle {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}

@@ -21,6 +21,8 @@ assets = Environment(app)
 
 socketio = SocketIO(app)
 
+import os
+
 # bundles - dynamically load all files in css & js files
 
 css_files = [str(path.relative_to('app/static')) for path in Path('app/static/css').rglob('*.css')]

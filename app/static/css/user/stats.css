@@ -20,6 +20,7 @@
     width: 100%;
     max-width: 1300px;
     margin: auto;
+    margin-top: 1rem;
 }
 
 .games-table th,
@@ -92,18 +93,20 @@
 
 .score-box {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     padding: 10px;
     margin-bottom: 20px;
 }
   
 .score-container {
     flex-basis: 50%;
+    margin: 0rem 1rem;
+    max-width: 400px;
+    height: 100%;
 }
   
 .best-score-container,
 .average-score-container {
-    background-color: #2c2c2c;
+    background-color: var(--bg-color3);
     padding: 10px;
-    border: 1px solid #ccc;
 }
