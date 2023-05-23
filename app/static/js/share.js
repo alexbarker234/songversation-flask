@@ -1,5 +1,5 @@
 // Check if the Web Share API is supported by the browser
-// disabled for now - reimplement in the finish screen
+// disabled for now - TODO: reimplement in the finish screen
 /*document.addEventListener("DOMContentLoaded", function () {
     if (navigator.share) {
         // Add a click event listener to the share button
