@@ -7,10 +7,9 @@ A lyric guessing game - powered by Flask with [Spotipy](https://spotipy.readthed
 - Gihad Coorey (2309188)
 - Daniel Lindsay (23164864)
 
-## Hosted on [Render.com](https://render.com)
-https://songversation.onrender.com/
+## Hosted on [Railway](https://railway.app)
+https://songversation.up.railway.app/
 
-- After ~15 minutes of inactivity, the website goes to sleep & will take a minute or two to spin back up
 - As the public app is under a Spotify development plan - You will need to request access from [Alex](https://github.com/alexbarker234) - send the email associated with your Spotify Account
 
 ## Purpose
